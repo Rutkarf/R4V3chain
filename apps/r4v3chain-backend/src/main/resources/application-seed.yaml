@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile: seed
+  main:
+    web-application-type: none
+
+r4v3chain:
+  data:
+    seed-local: true
+    exit-after-seed: true

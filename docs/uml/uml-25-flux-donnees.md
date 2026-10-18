@@ -10,8 +10,8 @@ Moyen. Les modes, les noms de propriétés de chemins et les URL externes ont é
 
 ## Sources analysées
 
-- `application.yaml` : `dartchain.persistence.mode` défaut `memory` (`DARTCHAIN_PERSISTENCE_MODE`), chemins `BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`
-- Stores JPA sous `io.dartchain.backend.persistence` conditionnés `havingValue = "postgres"`
+- `application.yaml` : `r4v3chain.persistence.mode` défaut `memory` (`R4V3CHAIN_PERSISTENCE_MODE`), chemins `BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`
+- Stores JPA sous `io.r4v3chain.backend.persistence` conditionnés `havingValue = "postgres"`
 - `JsonFaqQuestionStore` (`memory`, `matchIfMissing = true`) et `InMemoryFaqQuestionStore` (`postgres`)
 - `OverpassProxyService` : `https://lz4.overpass-api.de/api/interpreter` puis `https://overpass-api.de/api/interpreter`
 - `CryptoRatesProxyService` : `https://api.coingecko.com/api/v3` et `https://api.geckoterminal.com/api/v2`
@@ -35,7 +35,7 @@ flowchart LR
   GT[GeckoTerminal api v2]
 
   SPA -->|HTTP /api et /api/v1| API
-  API -->|dartchain.persistence.mode memory| MEM
+  API -->|r4v3chain.persistence.mode memory| MEM
   API -->|mode postgres| JPA --> PG
   API -->|POST /api/metaverse/overpass| OV
   API -->|/api/crypto-rates| CG
@@ -46,7 +46,7 @@ Légende : une seule API, deux stores exclusifs selon la propriété. Overpass e
 
 ## Explication
 
-Le défaut est `dartchain.persistence.mode: ${DARTCHAIN_PERSISTENCE_MODE:memory}`. Tant que la variable n’est pas `postgres`, les stores JSON dont la condition est `memory` avec `matchIfMissing = true` prennent le relais. Les profils Compose `default`, `dev`, `staging`, `prod` et `p2p` fixent au contraire `DARTCHAIN_PERSISTENCE_MODE: postgres` dans les services backend relus. Le binaire lancé sans cette variable reste en mémoire.
+Le défaut est `r4v3chain.persistence.mode: ${R4V3CHAIN_PERSISTENCE_MODE:memory}`. Tant que la variable n’est pas `postgres`, les stores JSON dont la condition est `memory` avec `matchIfMissing = true` prennent le relais. Les profils Compose `default`, `dev`, `staging`, `prod` et `p2p` fixent au contraire `R4V3CHAIN_PERSISTENCE_MODE: postgres` dans les services backend relus. Le binaire lancé sans cette variable reste en mémoire.
 
 Chemins par défaut lus dans `application.yaml` (noms de propriétés d’environnement entre parenthèses) :
 
@@ -71,23 +71,23 @@ Overpass : `OverpassProxyController` préfixe `/api/metaverse/overpass`. `Overpa
 
 CoinGecko : `CryptoRatesProxyService.COINGECKO_BASE` = `https://api.coingecko.com/api/v3`. GeckoTerminal : `https://api.geckoterminal.com/api/v2`. Le contrôleur est `CryptoRatesController` `/api/crypto-rates`. Le service frontend `crypto-rate.service.ts` appelle `${apiUrl}/crypto-rates` (`chart`, `panels/batch`, `panels/native`, `search`). Les résultats de recherche portent la source `"coingecko"` ou `"geckoterminal"`.
 
-WiGLE (`WiglePointsService`, `WigleVisualizationController` `/api/metaverse/wigle`) est un autre externe. `dartchain.wigle.mock-enabled` vaut `true` par défaut. Les jetons `WIGLE_API_NAME` et `WIGLE_API_TOKEN` sont [SECRET MASQUÉ]. Ce flux ne remplace pas Overpass.
+WiGLE (`WiglePointsService`, `WigleVisualizationController` `/api/metaverse/wigle`) est un autre externe. `r4v3chain.wigle.mock-enabled` vaut `true` par défaut. Les jetons `WIGLE_API_NAME` et `WIGLE_API_TOKEN` sont [SECRET MASQUÉ]. Ce flux ne remplace pas Overpass.
 
 OAuth (google, meta, apple, microsoft, github, x, discord) est désactivé par défaut (`enabled: false`). Aucun provisionnement réel hors dépôt n’est identifié. Les client secrets sont [SECRET MASQUÉ].
 
 ## Correspondance avec le code
 
-- Bascule : annotation `@ConditionalOnProperty(name = "dartchain.persistence.mode", ...)`.
+- Bascule : annotation `@ConditionalOnProperty(name = "r4v3chain.persistence.mode", ...)`.
 - Chaîne : `BlockchainStateStore`, `JsonBlockchainStateStore` (package `blockchain`, condition `memory`), `JpaBlockchainStateStore`.
 - FAQ : `FaqQuestionStore` et les deux implémentations du package `showcase.faq`.
 - Santé : `HealthController` renvoie le `persistenceMode` courant dans `GET /api/health`.
-- Déploiement documenté : `deploy/render.yaml` pose `DARTCHAIN_PERSISTENCE_MODE=postgres` et une base `dartchain-db`. Ce fichier décrit un déploiement ; cette session n’a pas exécuté le réseau (vue 36).
+- Déploiement documenté : `deploy/render.yaml` pose `R4V3CHAIN_PERSISTENCE_MODE=postgres` et une base `r4v3chain-db`. Ce fichier décrit un déploiement ; cette session n’a pas exécuté le réseau (vue 36).
 
 Flyway : V1 auth, V2 quests, V3 quest week key, V4 faucet claims, V5 quest explored blocks, V6 blockchain, V7 exchange ledger, V8 launch projects, V9 chat messages, V10 news items, V11 auth ab, V12 `ad_persistence`, V13 launch project metadata, V14 oauth identities. Colonnes de V12 : voir le fichier SQL. Aucune table `ads` n’est affirmée ici.
 
 ## Hypothèses
 
-- `JsonBlockchainStateStore` est dans `io.dartchain.backend.blockchain` et implémente `BlockchainStateStore`. Il n’est pas dans le package `persistence` (c’est `JpaBlockchainStateStore` qui y est).
+- `JsonBlockchainStateStore` est dans `io.r4v3chain.backend.blockchain` et implémente `BlockchainStateStore`. Il n’est pas dans le package `persistence` (c’est `JpaBlockchainStateStore` qui y est).
 - Les fichiers sous `data/` ne sont pas versionnés comme source de vérité produit. Seuls les noms de propriétés sont des faits.
 - GeckoTerminal est utilisé en complément de CoinGecko dans le même service. Le choix d’appel selon l’endpoint (`search` contre `panels`) n’a été lu que par les constantes et les constructions de résultats, pas par un test d’intégration rejoué.
 

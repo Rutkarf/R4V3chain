@@ -10,10 +10,10 @@ Non identifié dans le périmètre lu. Une absence dans le mémo et dans les fic
 
 ## Sources analysées
 
-- `/home/azertyuiop/dev/dartchain/README.md` (licence, feuille de route, attribution)
+- `/home/azertyuiop/dev/r4v3chain/README.md` (licence, feuille de route, attribution)
 - Recherche de fichiers `.sol` : aucun, d’après le mémo
 - `V12__ad_persistence.sql` ouvert : pas de table publicitaire
-- `/home/azertyuiop/dev/dartchainReview` pour ne pas mélanger ses tables avec le canon
+- `/home/azertyuiop/dev/R4V3chainReview` pour ne pas mélanger ses tables avec le canon
 - `environment.ts` : pas de synchro serveur Star Conquest identifiée
 
 ## Éléments représentés
@@ -37,7 +37,7 @@ flowchart LR
     ScSync[Sync serveur Star Conquest]
     Pre[Produit preseed]
   end
-  Canon[Canon dartchain] -.-> absent
+  Canon[Canon r4v3chain] -.-> absent
 ```
 
 Légende : le pointillé signifie « pas d’objet à modéliser ». La vue 58 reprend le cas des contrats.
@@ -70,7 +70,7 @@ Les fournisseurs google, meta, apple, microsoft, github, x et discord sont dans 
 
 ### Secrets
 
-Les noms de propriétés sont connus. Les valeurs ne sont pas recopiées : `dartchain.auth.jwt-secret`, `dartchain.admin.seed-sha256`, `dartchain.auth.bootstrap-admin-password`, `dartchain.ops.actuator-token`, `m4t3r.reward.signing-key`, secrets OAuth, jetons WiGLE, secret Review `dartchain.review.jwt.secret`. Écriture imposée : `[SECRET MASQUÉ]`. Le fichier local cité en commentaire YAML, `deploy/admin-seed.local.txt`, n’a pas été ouvert.
+Les noms de propriétés sont connus. Les valeurs ne sont pas recopiées : `r4v3chain.auth.jwt-secret`, `r4v3chain.admin.seed-sha256`, `r4v3chain.auth.bootstrap-admin-password`, `r4v3chain.ops.actuator-token`, `m4t3r.reward.signing-key`, secrets OAuth, jetons WiGLE, secret Review `r4v3chain.review.jwt.secret`. Écriture imposée : `[SECRET MASQUÉ]`. Le fichier local cité en commentaire YAML, `deploy/admin-seed.local.txt`, n’a pas été ouvert.
 
 ### Publicité et V12
 
@@ -88,7 +88,7 @@ La chaîne démo, elle, est identifiée (vues 55, 56, 57 et 59). L’absence con
 
 ### Autres produits et échelles
 
-Le mot « preseed » ne désigne pas un produit dans l’arbre `/home/azertyuiop/dev/dartchainPreSeed/dartchain`. Review a ses propres tables. Elles sont hors dictionnaire canon. Le facteur numérique unique entre R4V3 et M4T3R n’est pas identifié. Le rôle opérationnel de l’origine CORS `https://dartzvz01-tagname.onrender.com` n’est pas identifié dans le README. Un forum canon n’est pas identifié. La page forum de Review n’est pas dans `app.routes.ts`.
+Le mot « preseed » ne désigne pas un produit dans l’arbre `/home/azertyuiop/dev/r4v3chainPreSeed/r4v3chain`. Review a ses propres tables. Elles sont hors dictionnaire canon. Le facteur numérique unique entre R4V3 et M4T3R n’est pas identifié. Le rôle opérationnel de l’origine CORS `https://r4v3zvz01-tagname.onrender.com` n’est pas identifié dans le README. Un forum canon n’est pas identifié. La page forum de Review n’est pas dans `app.routes.ts`.
 
 ## Correspondance avec le code
 

@@ -12,9 +12,9 @@ Moyen. La composition du shell est confirmée par `app.html`. L’ordre dans leq
 
 ## Sources analysées
 
-- `apps/dartchain-frontend/Dart/src/app/app.html`
-- `apps/dartchain-frontend/Dart/src/app/app.ts` (signaux `activeShowcaseTab`, `activeBottomTab`, `r4v3SceneVisible`)
-- `apps/dartchain-frontend/Dart/src/app/app.routes.ts`
+- `apps/r4v3chain-frontend/R4V3/src/app/app.html`
+- `apps/r4v3chain-frontend/R4V3/src/app/app.ts` (signaux `activeShowcaseTab`, `activeBottomTab`, `r4v3SceneVisible`)
+- `apps/r4v3chain-frontend/R4V3/src/app/app.routes.ts`
 - `environments/environment.ts` (`starConquestEnabled: false`)
 - `showcase/models/showcase-tab.model.ts`
 - `dock/services/dock-navigation.service.ts` (`BottomDockTab`)

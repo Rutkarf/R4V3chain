@@ -10,7 +10,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- Package `io.dartchain.backend.persistence.entity`
+- Package `io.r4v3chain.backend.persistence.entity`
 - Migrations `V1__auth.sql` à `V14__oauth_identities.sql`
 - Classe identifiant `ExchangeLedgerAdjustmentId`
 

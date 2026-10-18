@@ -94,7 +94,7 @@ Le trait entre `ada` et `tx` n'est pas une association JPA. Il rappelle que `ens
 ## Anomalies détectées
 
 - Le même transfert peut exister comme `PendingTransaction` (champs `fromAddress` / `toAddress`) et, après mine unitaire, seulement comme texte dans `Block.data`. Un diagramme d'objets pris après `minePendingTransaction` montrerait la pending au statut `MINED` retirée du pool, et un bloc dont `transactions` est vide.
-- Les secrets réels des fichiers YAML et des stores JSON ne doivent pas être collés dans un objet d'exemple. Les défauts `dartchain.admin.seed-sha256` et `dartchain.auth.jwt-secret` restent des noms de propriétés.
+- Les secrets réels des fichiers YAML et des stores JSON ne doivent pas être collés dans un objet d'exemple. Les défauts `r4v3chain.admin.seed-sha256` et `r4v3chain.auth.jwt-secret` restent des noms de propriétés.
 
 ## Recommandations
 

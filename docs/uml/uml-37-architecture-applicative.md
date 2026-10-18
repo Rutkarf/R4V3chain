@@ -6,16 +6,16 @@ Découper le démonstrateur en contextes applicatifs : SPA, API, données, syst�
 
 ## Statut
 
-Élevé. Les quatre contextes sont ceux que le code et la configuration séparent déjà. Leurs frontières sont les URL et la propriété `dartchain.persistence.mode`.
+Élevé. Les quatre contextes sont ceux que le code et la configuration séparent déjà. Leurs frontières sont les URL et la propriété `r4v3chain.persistence.mode`.
 
 ## Sources analysées
 
-- SPA : `apps/dartchain-frontend/Dart`, `app.routes.ts`, `environment.ts`
-- API : `io.dartchain.backend`, 42 contrôleurs, 4 WebSockets
+- SPA : `apps/r4v3chain-frontend/R4V3`, `app.routes.ts`, `environment.ts`
+- API : `io.r4v3chain.backend`, 42 contrôleurs, 4 WebSockets
 - Données : YAML `persistence.mode`, stores JSON, package `persistence`, Flyway
-- Externes : `OverpassProxyService`, `CryptoRatesProxyService`, `dartchain.wigle`, `dartchain.oauth`
+- Externes : `OverpassProxyService`, `CryptoRatesProxyService`, `r4v3chain.wigle`, `r4v3chain.oauth`
 
-Le site `dartchainReview` (`io.dartchain.review`, port 8081, H2) est un autre produit. Il n’est pas un contexte de ce schéma.
+Le site `R4V3chainReview` (`io.r4v3chain.review`, port 8081, H2) est un autre produit. Il n’est pas un contexte de ce schéma.
 
 ## Éléments représentés
 
@@ -76,7 +76,7 @@ La FAQ reste en mémoire même en postgres (`InMemoryFaqQuestionStore`). Le memp
 
 - Overpass, deux hôtes dans `OverpassProxyService`, exposés au SPA seulement via `/api/metaverse/overpass`.
 - CoinGecko `api/v3` et GeckoTerminal `api/v2`, via `/api/crypto-rates`.
-- WiGLE : `dartchain.wigle.mock-enabled: true`. Les secrets d’API sont [SECRET MASQUÉ].
+- WiGLE : `r4v3chain.wigle.mock-enabled: true`. Les secrets d’API sont [SECRET MASQUÉ].
 - OAuth : google, meta, apple, microsoft, github, x, discord, tous `enabled: false` par défaut. Secrets [SECRET MASQUÉ]. Provisionnement hors dépôt : non identifié.
 
 Le README présente le produit comme une démo, pas une crypto réelle, pas un mainnet. Le jeton affiché est R4V3, chain-id 3377. Ce contexte « chaîne » est une bibliothèque Java dans l’API (`BlockchainService`), pas un réseau de nœuds public identifié au-delà du WebSocket `/ws/peers` et du profil Compose `p2p`.
@@ -87,7 +87,7 @@ Le README présente le produit comme une démo, pas une crypto réelle, pas un m
 | --- | --- |
 | SPA | `environment.apiUrl`, `liveWsUrl`, `chatWsUrl`, `arenaWsUrl` |
 | API | port `PORT` défaut 8080, contexte servlet unique |
-| Données | `DARTCHAIN_PERSISTENCE_MODE` |
+| Données | `R4V3CHAIN_PERSISTENCE_MODE` |
 | Externes | constantes URL dans `OverpassProxyService` et `CryptoRatesProxyService` |
 
 Acteurs rattachés : A1 visiteur et A2/A3 utilisateurs sont dans la SPA et l’API ; A4 pair P2P est le socket `/ws/peers` ; A5 jobs locaux sont les profils `seed` et `application-data-import.yaml`, plus `TestnetSettlementService` (M4T3R), sans être un cinquième produit ; A6 regroupe les externes de ce dessin.
@@ -102,7 +102,7 @@ Acteurs rattachés : A1 visiteur et A2/A3 utilisateurs sont dans la SPA et l’A
 - Contexte données « postgres » qui ne couvre pas la FAQ.
 - Contexte externe OAuth déclaré dans le YAML et éteint.
 - Contexte SPA qui contient Star Conquest et `depth-rail` sans que le shell par défaut les montre.
-- `dartchainReview` pourrait être confondu avec un bounded context du même produit. Ce n’en est pas un : pas de wallet, pas de bloc, pas de `.sol`, 134 fichiers hors caches, JWT toujours `ROLE_USER`.
+- `R4V3chainReview` pourrait être confondu avec un bounded context du même produit. Ce n’en est pas un : pas de wallet, pas de bloc, pas de `.sol`, 134 fichiers hors caches, JWT toujours `ROLE_USER`.
 
 ## Recommandations
 

@@ -18,7 +18,7 @@ Déduit du projet.
 
 ## Éléments représentés
 
-- Profil documentaire `DartchainDoc`.
+- Profil documentaire `R4v3chainDoc`.
 - Stéréotypes `entity`, `restcontroller`, `websocket`, plus `service` et `configuration` parce qu'ils évitent de confondre un bean Spring avec une entité.
 - Exemples d'application sur des classes déjà citées dans les fiches 02 et 08.
 
@@ -29,7 +29,7 @@ Le profil ne crée pas de nouvelle métaclasse au-delà de ces stéréotypes. Il
 ```plantuml
 @startuml
 skinparam shadowing false
-package "Profil documentaire DartchainDoc" <<profile>> {
+package "Profil documentaire R4v3chainDoc" <<profile>> {
   class entity <<stereotype>>
   class restcontroller <<stereotype>>
   class websocket <<stereotype>>
@@ -57,11 +57,11 @@ class WebSocketConfig <<configuration>>
 @enduml
 ```
 
-Légende : le mot entre guillemets doubles dans les fiches UML (`<<entity>>`, `<<restcontroller>>`, `<<websocket>>`) renvoie à ce profil documentaire. Il ne faut pas le lire comme un profil OMG livré avec DartChain.
+Légende : le mot entre guillemets doubles dans les fiches UML (`<<entity>>`, `<<restcontroller>>`, `<<websocket>>`) renvoie à ce profil documentaire. Il ne faut pas le lire comme un profil OMG livré avec R4V3chain.
 
 ## Explication
 
-Un profil UML étend le métamodèle avec des stéréotypes, des tagged values et des contraintes. DartChain n'a pas fait ce travail dans un fichier d'outil. Les annotations Java jouent un rôle voisin, et ce sont elles qui justifient trois stéréotypes utiles.
+Un profil UML étend le métamodèle avec des stéréotypes, des tagged values et des contraintes. R4V3chain n'a pas fait ce travail dans un fichier d'outil. Les annotations Java jouent un rôle voisin, et ce sont elles qui justifient trois stéréotypes utiles.
 
 `entity` correspond à `@Entity` et `@Table`. Exemple : `UserEntity` sur `users`, `FaucetClaimEntity` sur `faucet_claims`, `PendingTransactionEntity` sur `pending_transactions`. Ce stéréotype ne s'applique pas à `Block`, `Transaction` ni `PendingTransaction` dans `blockchain.model` : ces classes n'ont pas `@Entity`. Leur image JPA est `BlockEntity` et `PendingTransactionEntity`. `FaqQuestion` n'a pas non plus `@Entity`. En mode postgres elle est tenue par `InMemoryFaqQuestionStore`.
 
@@ -76,7 +76,7 @@ Tagged values documentaires, non présentes dans un fichier de profil, mais stab
 - `entity.table` : nom `@Table`, par exemple `users`, `faucet_claims`.
 - `restcontroller.prefix` : valeur de `@RequestMapping`.
 - `websocket.path` : argument de `addHandler`.
-- `service.persistence` : `memory` ou `postgres`, propriété `dartchain.persistence.mode`, qui change le store derrière le même service.
+- `service.persistence` : `memory` ou `postgres`, propriété `r4v3chain.persistence.mode`, qui change le store derrière le même service.
 
 Aucune contrainte OCL n'est écrite dans le dépôt. Une contrainte utile à retenir à la lecture : une classe `<<restcontroller>>` ne doit pas être confondue avec le rôle `UserRole`. Le rôle est un enum, pas un stéréotype.
 

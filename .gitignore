@@ -26,15 +26,15 @@ logs/
 npm-debug.log*
 
 # Frontend (Angular)
-apps/dartchain-frontend/Dart/node_modules/
-apps/dartchain-frontend/Dart/dist/
-apps/dartchain-frontend/Dart/.angular/
+apps/r4v3chain-frontend/R4V3/node_modules/
+apps/r4v3chain-frontend/R4V3/dist/
+apps/r4v3chain-frontend/R4V3/.angular/
 
 # Backend (Java)
-apps/dartchain-backend/target/
-apps/dartchain-backend/*.jar
-apps/dartchain-backend/data/*.json
-!apps/dartchain-backend/data/seed/
+apps/r4v3chain-backend/target/
+apps/r4v3chain-backend/*.jar
+apps/r4v3chain-backend/data/*.json
+!apps/r4v3chain-backend/data/seed/
 
 # Divers
 coverage/
@@ -43,7 +43,7 @@ reports/
 backups/
 
 # Reliquat archive GitHub / montages Docker accidentels
-DartChainz-app-main/
+R4V3chain-app-main/
 
 # Admin unlock seed (local)
 deploy/admin-seed.local.txt

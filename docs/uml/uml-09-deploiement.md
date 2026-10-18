@@ -12,8 +12,8 @@ Confirmé par le code.
 
 - `docker-compose.yml` : blocs `profiles` et images.
 - `infra/nginx/nginx.prod.conf` : upstream `backend-a` et `backend-b`.
-- `deploy/render.yaml` : base `dartchain-db`, service `dartchain-backend`.
-- `wrangler.toml` : `name = "dartchain"`, assets `apps/dartchain-frontend/Dart/dist/browser`.
+- `deploy/render.yaml` : base `r4v3chain-db`, service `r4v3chain-backend`.
+- `wrangler.toml` : `name = "r4v3chain"`, assets `apps/r4v3chain-frontend/R4V3/dist/browser`.
 - `.github/workflows/ci.yml` et `.github/workflows/cloudflare-deploy.yml`.
 - `application.yaml`, `application-prod.yaml`, `application-staging.yaml`, `application-postgres.yaml`, `application-seed.yaml`, `application-data-import.yaml` (présence des profils).
 
@@ -25,8 +25,8 @@ Confirmé par le code.
 - Profil `staging` : `postgres-staging`, `backend-staging`, `frontend-staging`.
 - Profil `prod` : `postgres-prod`, `backend-a`, `backend-b`, `frontend-prod`.
 - Profil `p2p` : `postgres-a`, `postgres-b`, `backend-p2p-a`, `backend-p2p-b`.
-- Pages `dartchain` et Render `dartchain-backend` + `dartchain-db`.
-- Volume `dartchain_pg_data` sur le postgres du profil default.
+- Pages `r4v3chain` et Render `r4v3chain-backend` + `r4v3chain-db`.
+- Volume `r4v3chain_pg_data` sur le postgres du profil default.
 - Santé backend : `/actuator/health` ou `/api/health`.
 
 ## Diagramme
@@ -37,7 +37,7 @@ skinparam shadowing false
 node "profil default" as def {
   artifact "frontend :80\nAPP_PORT defaut 8080" as fe
   artifact "backend" as be
-  database "postgres\npostgres:16-alpine\nvolume dartchain_pg_data" as pg
+  database "postgres\npostgres:16-alpine\nvolume r4v3chain_pg_data" as pg
 }
 node "profil dev" as dev {
   artifact "backend-dev" as bed
@@ -60,8 +60,8 @@ node "profil p2p" as p2p {
   database "postgres-a" as pga
   database "postgres-b" as pgb
 }
-cloud "Cloudflare Pages\nwrangler name dartchain\ndartchain.pages.dev" as pages
-cloud "Render\ndartchain-backend\ndartchain-db\nprofils postgres,prod" as render
+cloud "Cloudflare Pages\nwrangler name r4v3chain\nr4v3chain.pages.dev" as pages
+cloud "Render\nr4v3chain-backend\nr4v3chain-db\nprofils postgres,prod" as render
 
 fe --> be : /api /ws actuator
 be --> pg
@@ -80,15 +80,15 @@ pages ..> render : API build BACKEND_URL
 
 ## Explication
 
-Le fichier unique `docker-compose.yml` active des services par profil Compose. Le profil `default` construit `backend` depuis `apps/dartchain-backend/Dockerfile` (image de base `eclipse-temurin:21`) et `frontend` depuis `apps/dartchain-frontend/Dart/Dockerfile` (`node:22-alpine` pour le build, `nginx:1.27-alpine` pour le runtime). `frontend` publie `${APP_PORT:-8080}:80`. `postgres` utilise `postgres:16-alpine`, la base et l'utilisateur par défaut `dartchain`, et le volume nommé `dartchain_pg_data`. Le mot de passe n'est pas dans cette fiche : [SECRET MASQUÉ], variable `POSTGRES_PASSWORD`. Le healthcheck backend du compose interroge `http://localhost:8080/actuator/health` puis, en repli, `http://localhost:8080/api/health`.
+Le fichier unique `docker-compose.yml` active des services par profil Compose. Le profil `default` construit `backend` depuis `apps/r4v3chain-backend/Dockerfile` (image de base `eclipse-temurin:21`) et `frontend` depuis `apps/r4v3chain-frontend/R4V3/Dockerfile` (`node:22-alpine` pour le build, `nginx:1.27-alpine` pour le runtime). `frontend` publie `${APP_PORT:-8080}:80`. `postgres` utilise `postgres:16-alpine`, la base et l'utilisateur par défaut `r4v3chain`, et le volume nommé `r4v3chain_pg_data`. Le mot de passe n'est pas dans cette fiche : [SECRET MASQUÉ], variable `POSTGRES_PASSWORD`. Le healthcheck backend du compose interroge `http://localhost:8080/actuator/health` puis, en repli, `http://localhost:8080/api/health`.
 
-`dev` ne lance pas de conteneur frontend : `postgres-dev` et `backend-dev` servent un développement hybride, la SPA restant sur la machine hôte (le port 4200 apparaît comme callback OAuth de développement dans `application.yaml`, propriété `dartchain.oauth.frontend-callback-url`). `db-local` ne lance que `postgres-local`.
+`dev` ne lance pas de conteneur frontend : `postgres-dev` et `backend-dev` servent un développement hybride, la SPA restant sur la machine hôte (le port 4200 apparaît comme callback OAuth de développement dans `application.yaml`, propriété `r4v3chain.oauth.frontend-callback-url`). `db-local` ne lance que `postgres-local`.
 
 `staging` reprend le trio `postgres-staging`, `backend-staging`, `frontend-staging`. `prod` sépare deux backends, `backend-a` et `backend-b`, derrière `frontend-prod`. `nginx.prod.conf` les cite par ces noms DNS compose, port 8080, avec `max_fails=2` et `fail_timeout=10s`. Ils partagent `postgres-prod` dans le graphe de services du fichier. `p2p` est le seul profil à deux bases : `postgres-a` avec `backend-p2p-a`, `postgres-b` avec `backend-p2p-b`. C'est le déploiement qui correspond à l'acteur A4 (pairs), pas un deuxième produit.
 
-Hors Docker Compose du dépôt, le README pointe la SPA `https://dartchain.pages.dev` et l'API Render `https://dartchain-backend-1-0-0.onrender.com`. `wrangler.toml` fixe le nom Pages `dartchain` et le répertoire d'assets. Le workflow `cloudflare-deploy.yml` est en `workflow_dispatch` et utilise Wrangler. `deploy/render.yaml` décrit une base gratuite `dartchain-db` (nom logique `dartchain`, utilisateur `dartchain`) et un service web image `dartchain-backend`, healthcheck `/api/health`, région `frankfurt`, profils Spring `postgres,prod`, persistance `postgres`. Le jeton JWT et le jeton actuator y sont générés par Render (`generateValue: true`) : valeurs [SECRET MASQUÉ]. Le CORS d'exemple contient le texte `https://YOUR-PROJECT.pages.dev`, à remplacer au déploiement. Le document `deploy/soc-readme.md` est une note du dossier `deploy` ; il n'ajoute pas un service compose.
+Hors Docker Compose du dépôt, le README pointe la SPA `https://r4v3chain.pages.dev` et l'API Render `https://r4v3chain-backend-1-0-0.onrender.com`. `wrangler.toml` fixe le nom Pages `r4v3chain` et le répertoire d'assets. Le workflow `cloudflare-deploy.yml` est en `workflow_dispatch` et utilise Wrangler. `deploy/render.yaml` décrit une base gratuite `r4v3chain-db` (nom logique `r4v3chain`, utilisateur `r4v3chain`) et un service web image `r4v3chain-backend`, healthcheck `/api/health`, région `frankfurt`, profils Spring `postgres,prod`, persistance `postgres`. Le jeton JWT et le jeton actuator y sont générés par Render (`generateValue: true`) : valeurs [SECRET MASQUÉ]. Le CORS d'exemple contient le texte `https://YOUR-PROJECT.pages.dev`, à remplacer au déploiement. Le document `deploy/soc-readme.md` est une note du dossier `deploy` ; il n'ajoute pas un service compose.
 
-La CI (`.github/workflows/ci.yml`, nom CI) construit sur push `main` et sur pull request : job backend `./mvnw -q verify` (Java 21 Temurin), job frontend (`npm ci`, `npm test`, `verify:a11y`, `build`, `build:cloudflare` avec l'URL Render), job docker (images `dartchain-backend:ci` et `dartchain-frontend:ci`). Ce sont des nœuds d'intégration, pas des nœuds d'exécution du produit.
+La CI (`.github/workflows/ci.yml`, nom CI) construit sur push `main` et sur pull request : job backend `./mvnw -q verify` (Java 21 Temurin), job frontend (`npm ci`, `npm test`, `verify:a11y`, `build`, `build:cloudflare` avec l'URL Render), job docker (images `r4v3chain-backend:ci` et `r4v3chain-frontend:ci`). Ce sont des nœuds d'intégration, pas des nœuds d'exécution du produit.
 
 Le profil Spring `seed` (`application-seed.yaml`) et `application-data-import.yaml` sont des modes de processus, pas des services compose nommés `seed`.
 
@@ -117,7 +117,7 @@ Le profil Spring `seed` (`application-seed.yaml`) et `application-data-import.ya
 - Le README ne cite pas l'infra compose, le Makefile ni `wrangler.toml`, alors que ces fichiers portent le déploiement réel.
 - Prod compose a deux backends et une base. Le mode FAQ en postgres reste en RAM : les deux nœuds `backend-a` et `backend-b` n'auraient pas la même FAQ.
 - p2p a deux Postgres. Ce n'est pas le même partage que prod. Un diagramme qui fusionnerait « la base » serait faux.
-- `network-name` YAML « DartChain Native » et défaut Java « R4V3 Testnet » peuvent diverger selon le fichier de config chargé par le nœud.
+- `network-name` YAML « R4V3chain Native » et défaut Java « R4V3 Testnet » peuvent diverger selon le fichier de config chargé par le nœud.
 - Aucun service Prometheus ou Grafana n'est identifié dans le compose.
 
 ## Recommandations

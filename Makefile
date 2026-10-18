@@ -1,9 +1,9 @@
-# DartChain — orchestration locale
+# R4V3chain — orchestration locale
 # Usage : make help | make dev-stack | make stop | make status
 
 ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-BACKEND := $(ROOT)/apps/dartchain-backend
-FRONTEND := $(ROOT)/apps/dartchain-frontend/Dart
+BACKEND := $(ROOT)/apps/r4v3chain-backend
+FRONTEND := $(ROOT)/apps/r4v3chain-frontend/R4V3
 LOG_DIR := $(ROOT)/.dev-logs
 
 .DEFAULT_GOAL := help
@@ -14,7 +14,7 @@ LOG_DIR := $(ROOT)/.dev-logs
 	soc2-check w3c-check
 
 help:
-	@echo "DartChain make targets"
+	@echo "R4V3chain make targets"
 	@echo "  make dev-stack     Postgres + backend (:8080) + frontend (:4200)"
 	@echo "  make stop          Arrête la stack détachée"
 	@echo "  make status        Health API + UI"

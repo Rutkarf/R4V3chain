@@ -10,9 +10,9 @@ Montrer le sens des dépendances entre le frontend, l’API et les packages back
 
 ## Sources analysées
 
-- `apps/dartchain-frontend/Dart/package.json` (un projet Angular, pas une dépendance Maven)
-- `apps/dartchain-backend/pom.xml` (un jar `dartchain-backend`)
-- Listing des packages `io.dartchain.backend`
+- `apps/r4v3chain-frontend/R4V3/package.json` (un projet Angular, pas une dépendance Maven)
+- `apps/r4v3chain-backend/pom.xml` (un jar `r4v3chain-backend`)
+- Listing des packages `io.r4v3chain.backend`
 - `environment.ts` (`apiUrl: '/api'`)
 - Nginx qui proxy `/api/` et `/ws/` vers le backend
 - Aucun `pom.xml` parent multi-modules relu comme agrégateur de plusieurs apps Java. Le backend est un module Maven unique.
@@ -25,8 +25,8 @@ Dépendance de build et dépendance d’exécution SPA → API. Familles de pack
 
 ```mermaid
 flowchart TB
-  fe[Module Angular Dart]
-  api[Artefact dartchain-backend]
+  fe[Module Angular R4V3]
+  api[Artefact r4v3chain-backend]
   fe -->|HTTP /api et WebSocket /ws| api
   api --> auth[package auth]
   api --> bc[package blockchain]
@@ -48,8 +48,8 @@ Légende : la flèche va de l’appelant vers l’appelé. Il n’y a pas de fl�
 
 Le dépôt a deux applications compilées séparément :
 
-- Frontend : `apps/dartchain-frontend/Dart`, npm, sortie statique `dist/browser`.
-- Backend : `apps/dartchain-backend`, Maven, un jar Spring Boot.
+- Frontend : `apps/r4v3chain-frontend/R4V3`, npm, sortie statique `dist/browser`.
+- Backend : `apps/r4v3chain-backend`, Maven, un jar Spring Boot.
 
 Le frontend ne compile pas contre les classes Java. Il dépend de l’API à l’exécution : `apiUrl` relatif `/api`, sockets `/ws/live`, `/ws/chat`, `/ws/metaverse-arena`. En Docker, nginx de l’image frontend envoie ces préfixes à `backend:8080`. En prod Compose, `frontend-prod` monte `nginx.prod.conf` qui envoie vers `backend-a` et `backend-b`. Cette dépendance est un contrat HTTP, pas un import TypeScript du backend.
 
@@ -57,7 +57,7 @@ Le frontend ne compile pas contre les classes Java. Il dépend de l’API à l�
 
 - `infrastructure/web` (contrôleurs) appelle les services `application`.
 - Les services appellent des stores (`FaucetClaimStore`, `TransactionPoolService`, `UserAccountStore`, `FaqQuestionStore`).
-- Le package `persistence` fournit les implémentations JPA quand `dartchain.persistence.mode=postgres`.
+- Le package `persistence` fournit les implémentations JPA quand `r4v3chain.persistence.mode=postgres`.
 - `shared.config` (`SecurityConfig`, `WebSocketConfig`, `CorsConfig`) est utilisé par toute l’application au démarrage.
 
 `auth` est utilisé par `faucet` (`AuthService` dans `FaucetServiceImpl`) et par `PendingTransactionController` (`RoleAuthorizationService`). Ce sont des dépendances vers `auth`, pas l’inverse. `blockchain` est appelé par le faucet (`enqueueSystemCredit`). Le mempool ne rappelle pas le contrôleur faucet.
@@ -66,20 +66,20 @@ Les externes sont des dépendances sortantes de l’API : Overpass depuis `metav
 
 PostgreSQL est une dépendance du backend en mode `postgres` et des profils Compose. En mode `memory`, cette flèche ne s’active pas ; les fichiers JSON remplacent les stores JPA. Le frontend ne dépend pas de Postgres.
 
-`dartchainReview` et `dartchainPreSeed` ne sont pas des modules de ce graphe.
+`R4V3chainReview` et `r4v3chainPreSeed` ne sont pas des modules de ce graphe.
 
 Aucun cycle du type « persistence → contrôleur → persistence » n’a été observé. En inventer un pour « faire UML » serait faux. Des références croisées de services (auth ↔ quêtes via `@Lazy QuestService` dans `AuthService`) existent. `@Lazy` sur `QuestService` dans le constructeur de `AuthService` montre que l’auth peut appeler les quêtes après coup (login quotidien, le nom `recordDailyLoginQuest` a été lu). Le faucet appelle aussi les quêtes. Ce n’est pas dessiné comme un cycle de modules Maven : ce sont des beans du même jar.
 
 ## Correspondance avec le code
 
-- Front : `package.json` name `dart`, dépendance `@angular/router` sans routes métier.
-- Back : `groupId` `io.dartchain`, `artifactId` `dartchain-backend`.
-- Proxy : `apps/dartchain-frontend/Dart/nginx.conf` `location /api/` → `http://backend:8080/api/`.
-- Condition de store : `@ConditionalOnProperty` sur `dartchain.persistence.mode`.
+- Front : `package.json` name `r4v3chain-frontend`, dépendance `@angular/router` sans routes métier.
+- Back : `groupId` `io.r4v3chain`, `artifactId` `r4v3chain-backend`.
+- Proxy : `apps/r4v3chain-frontend/R4V3/nginx.conf` `location /api/` → `http://backend:8080/api/`.
+- Condition de store : `@ConditionalOnProperty` sur `r4v3chain.persistence.mode`.
 
 ## Hypothèses
 
-- Il n’existe pas de second `pom.xml` d’agrégation qui ferait du frontend un module Maven. La recherche des POM a trouvé `apps/dartchain-backend/pom.xml` et un `package.json` backend d’outillage. Pas de cycle Maven.
+- Il n’existe pas de second `pom.xml` d’agrégation qui ferait du frontend un module Maven. La recherche des POM a trouvé `apps/r4v3chain-backend/pom.xml` et un `package.json` backend d’outillage. Pas de cycle Maven.
 - `@Lazy QuestService` évite une boucle de création de beans entre auth et quêtes. Le graphe d’injection complet n’a pas été calculé par le compilateur dans cette session. On n’affirme donc pas « zéro cycle de beans », seulement « pas de cycle de modules inventé ».
 
 ## Anomalies détectées

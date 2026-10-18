@@ -12,7 +12,7 @@ Déduit du projet.
 
 - Contrôleurs et mappings listés pour les fiches 01 et 20.
 - Acteurs A1–A6, fiche 16.
-- Absence de fichier user-stories dans `/home/azertyuiop/dev/dartchain`.
+- Absence de fichier user-stories dans `/home/azertyuiop/dev/r4v3chain`.
 - `app.routes.ts` vide : aucune story ne promet une URL d'écran Angular.
 
 Chaque story cite l'endpoint qui la justifie. Si l'endpoint est un GET public, la story le dit.

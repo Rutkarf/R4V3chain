@@ -1,7 +1,7 @@
-# SOC2 Type 1 — carte de contrôles techniques (DartChain)
+# SOC2 Type 1 — carte de contrôles techniques (R4V3chain)
 
 > **Important :** SOC 2 Type 1 est une **attestation d’un auditeur indépendant** (AICPA Trust Services Criteria) sur le *design* des contrôles à une date donnée.  
-> Ce fichier **ne certifie pas** DartChain. Il cartographie ce que le code / l’ops couvrent déjà pour préparer un audit.
+> Ce fichier **ne certifie pas** R4V3chain. Il cartographie ce que le code / l’ops couvrent déjà pour préparer un audit.
 
 Produit : démo (tokens R4V3/M4T3R sans valeur). Périmètre audit réel = org + hébergeurs (Render, Cloudflare, Docker Hub) + process humains.
 
@@ -10,7 +10,7 @@ Produit : démo (tokens R4V3/M4T3R sans valeur). Périmètre audit réel = org +
 | Critère (extrait) | Contrôle attendu | Preuve code / ops |
 |---|---|---|
 | **CC6.1** Logical access | Auth JWT, RBAC USER/ADMIN, OAuth, **seed unlock panel admin** | `auth/`, `SecurityConfig`, `RoleAuthorizationService`, `AdminUnlockService` |
-| **CC6.6 / CC6.7** Transmission & secrets | TLS en prod, secrets forts, seed admin = SHA-256 only | `ProductionSecretPolicy`, `DARTCHAIN_ADMIN_SEED_SHA256`, `.gitignore` `admin-seed.local.txt` |
+| **CC6.6 / CC6.7** Transmission & secrets | TLS en prod, secrets forts, seed admin = SHA-256 only | `ProductionSecretPolicy`, `R4V3CHAIN_ADMIN_SEED_SHA256`, `.gitignore` `admin-seed.local.txt` |
 | **CC6.8** Prevention unauthorized software | Images/build reproductibles, CI | `.github/workflows/ci.yml`, Dockerfiles |
 | **CC7.1 / CC7.2** Detection / monitoring | Health, métriques, logs, rate limit, **admin export pack** | `/api/health`, `/api/v1/ops`, `/api/v1/admin/export`, `RateLimitFilter` |
 | **CC7.3** Evaluation of anomalies | Alertes / smoke | `bin/check-stack-alerts.sh`, `smoke:live` |

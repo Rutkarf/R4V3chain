@@ -105,7 +105,7 @@ Les contrôleurs exposent les deux générations : `AuthController` sous `/api/a
 
 ### Déverrouillage admin
 
-`AdminUnlockService.unlock` refuse si la propriété seed n’a pas 64 caractères hex (`503`, message citant `DARTCHAIN_ADMIN_SEED_SHA256`). La phrase est normalisée, son SHA-256 est comparé en temps constant (`MessageDigest.isEqual`) à `dartchain.admin.seed-sha256`. Succès : UUID en mémoire, expiration `unlock-ttl-seconds` (défaut de propriété 3600). L’en-tête attendu ensuite est `X-Admin-Unlock-Token`. `lock` retire le jeton. `requireUnlock` refuse un jeton absent ou expiré.
+`AdminUnlockService.unlock` refuse si la propriété seed n’a pas 64 caractères hex (`503`, message citant `R4V3CHAIN_ADMIN_SEED_SHA256`). La phrase est normalisée, son SHA-256 est comparé en temps constant (`MessageDigest.isEqual`) à `r4v3chain.admin.seed-sha256`. Succès : UUID en mémoire, expiration `unlock-ttl-seconds` (défaut de propriété 3600). L’en-tête attendu ensuite est `X-Admin-Unlock-Token`. `lock` retire le jeton. `requireUnlock` refuse un jeton absent ou expiré.
 
 Ce jeton n’est pas le JWT `ROLE_ADMIN`.
 
@@ -119,12 +119,12 @@ Ce jeton n’est pas le JWT `ROLE_ADMIN`.
 | Register / login | `AuthService` | `/api/auth` et `/api/v1/auth` |
 | Unlock | `AdminUnlockService` | `POST /api/v1/admin/unlock` (`ApiRoutes.ADMIN_UNLOCK_V1`) |
 
-Persistance du claim et des blocs : store mémoire JSON ou JPA selon `dartchain.persistence.mode` (voir la vue 25). Le processus métier ne change pas de forme ; seul le store change.
+Persistance du claim et des blocs : store mémoire JSON ou JPA selon `r4v3chain.persistence.mode` (voir la vue 25). Le processus métier ne change pas de forme ; seul le store change.
 
 ## Hypothèses
 
 - L’adresse mineur est saisie par un utilisateur déjà capable d’appeler la route. Le contrôleur de mine groupé n’a pas été relu au-delà de la délégation à `minePendingTransactions`. Le mine unitaire, lui, appelle `authorizeMutation`.
-- `resolveBootstrapRole` peut promouvoir un username de bootstrap. Le mot de passe de bootstrap est une propriété (`dartchain.auth.bootstrap-admin-password`) dont la valeur est [SECRET MASQUÉ]. Le détail de la promotion n’est pas redessiné.
+- `resolveBootstrapRole` peut promouvoir un username de bootstrap. Le mot de passe de bootstrap est une propriété (`r4v3chain.auth.bootstrap-admin-password`) dont la valeur est [SECRET MASQUÉ]. Le détail de la promotion n’est pas redessiné.
 - Le montant de récompense `MINING_REWARD` existe comme constante du service. Sa valeur numérique n’est pas recopiée ici faute de l’avoir relue dans cette session.
 
 ## Anomalies détectées

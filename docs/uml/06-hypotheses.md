@@ -63,9 +63,9 @@ Fait : le README appelle M4T3R la micro-unité de R4V3. `quest_progress.pending_
 
 Hypothèse non confirmée : un facteur unique du type 10 exposant n convertirait les deux symboles partout. Ce facteur n’est pas nommé dans le mémo. Il n’est pas déduit des précisions SQL, qui peuvent servir des usages différents.
 
-### H6 — Hôte CORS `dartzvz01-tagname.onrender.com`
+### H6 — Hôte CORS `r4v3zvz01-tagname.onrender.com`
 
-Fait : le motif est dans `dartchain.cors.allowed-origin-patterns`.
+Fait : le motif est dans `r4v3chain.cors.allowed-origin-patterns`.
 
 Hypothèse non confirmée : cet hôte serait un environnement personnel, un ancien service Render, ou un alias encore utilisé. Le README ne le nomme pas.
 
@@ -89,7 +89,7 @@ Hypothèse non confirmée : chaque libellé correspond à un identifiant de comp
 
 ### H10 — « random » des bootstrap admin
 
-Fait : les propriétés `dartchain.auth.bootstrap-admin-username` et `dartchain.auth.bootstrap-admin-password` existent, branchées sur `DARTCHAIN_BOOTSTRAP_ADMIN` et `DARTCHAIN_BOOTSTRAP_ADMIN_PASSWORD`.
+Fait : les propriétés `r4v3chain.auth.bootstrap-admin-username` et `r4v3chain.auth.bootstrap-admin-password` existent, branchées sur `R4V3CHAIN_BOOTSTRAP_ADMIN` et `R4V3CHAIN_BOOTSTRAP_ADMIN_PASSWORD`.
 
 Hypothèse non confirmée : le comportement runtime quand la valeur par défaut reste celle du YAML. Cette valeur n’est pas recopiée. Elle est `[SECRET MASQUÉ]`. Le code qui consomme ces propriétés n’a pas été ouvert pour cette note.
 

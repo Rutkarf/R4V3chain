@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Décrire les qualités mesurables du démonstrateur DartChain (plateforme, sécurité de session, limite de débit, santé, CORS) à partir de la configuration et du code. Les diagrammes 21 à 40 sont des vues complémentaires. Ils ne font pas partie des 14 diagrammes UML officiels.
+Décrire les qualités mesurables du démonstrateur R4V3chain (plateforme, sécurité de session, limite de débit, santé, CORS) à partir de la configuration et du code. Les diagrammes 21 à 40 sont des vues complémentaires. Ils ne font pas partie des 14 diagrammes UML officiels.
 
 Aucune promesse de niveau de service (disponibilité, délai de reprise, débit contractuel) n’est ajoutée : le dépôt n’en formule pas.
 
@@ -12,20 +12,20 @@ Moyen. Partiellement confirmé par `pom.xml`, `application.yaml`, `SecurityConfi
 
 ## Sources analysées
 
-Arbre canon `/home/azertyuiop/dev/dartchain`, HEAD `0690e34`. Fichiers ouverts pour cette vue :
+Arbre canon `/home/azertyuiop/dev/r4v3chain`, HEAD `0690e34`. Fichiers ouverts pour cette vue :
 
-- `apps/dartchain-backend/pom.xml` (`java.version` 21, JaCoCo `0.8.13`, `jacoco.minimum.line-ratio` `0.65`)
-- `apps/dartchain-backend/src/main/resources/application.yaml` (rate limit, TTL JWT, CORS, seuils ops, mode de persistance)
-- `apps/dartchain-backend/src/main/java/io/dartchain/backend/shared/config/CorsConfig.java`
-- `apps/dartchain-backend/src/main/java/io/dartchain/backend/config/RateLimitProperties.java` et `auth/security/RateLimitFilter.java`
-- `apps/dartchain-backend/src/main/java/io/dartchain/backend/auth/security/InMemoryRateLimitCounterStore.java`
-- `apps/dartchain-backend/src/main/java/io/dartchain/backend/persistence/JpaRateLimitCounterStore.java`
+- `apps/r4v3chain-backend/pom.xml` (`java.version` 21, JaCoCo `0.8.13`, `jacoco.minimum.line-ratio` `0.65`)
+- `apps/r4v3chain-backend/src/main/resources/application.yaml` (rate limit, TTL JWT, CORS, seuils ops, mode de persistance)
+- `apps/r4v3chain-backend/src/main/java/io/r4v3chain/backend/shared/config/CorsConfig.java`
+- `apps/r4v3chain-backend/src/main/java/io/r4v3chain/backend/config/RateLimitProperties.java` et `auth/security/RateLimitFilter.java`
+- `apps/r4v3chain-backend/src/main/java/io/r4v3chain/backend/auth/security/InMemoryRateLimitCounterStore.java`
+- `apps/r4v3chain-backend/src/main/java/io/r4v3chain/backend/persistence/JpaRateLimitCounterStore.java`
 - `docker-compose.yml` (healthchecks), Dockerfiles backend et frontend
-- `infra/nginx/nginx.prod.conf` et `apps/dartchain-frontend/Dart/nginx.conf` (refus `metrics` et `prometheus`)
+- `infra/nginx/nginx.prod.conf` et `apps/r4v3chain-frontend/R4V3/nginx.conf` (refus `metrics` et `prometheus`)
 
-Arbres voisins cités pour mémoire, non utilisés comme source : `dartchainPreSeed` (même commit, écart local de tri dans `JpaAuthAuditStore.snapshot()`), `dartchainReview` (site compagnon, hors chaîne).
+Arbres voisins cités pour mémoire, non utilisés comme source : `r4v3chainPreSeed` (même commit, écart local de tri dans `JpaAuthAuditStore.snapshot()`), `R4V3chainReview` (site compagnon, hors chaîne).
 
-Les valeurs des propriétés `dartchain.auth.jwt-secret` et `dartchain.admin.seed-sha256` ne sont pas recopiées : [SECRET MASQUÉ].
+Les valeurs des propriétés `r4v3chain.auth.jwt-secret` et `r4v3chain.admin.seed-sha256` ne sont pas recopiées : [SECRET MASQUÉ].
 
 ## Éléments représentés
 
@@ -70,19 +70,19 @@ Légende : un cadre « mesures » regroupe ce que le dépôt chiffre. Le cadre �
 
 Le backend se compile et s’exécute sur Java 21 (`<java.version>21</java.version>`, image `eclipse-temurin:21`). Spring Boot parent est 3.5.14. Ce chiffre décrit la plateforme, pas un temps de réponse.
 
-`SecurityConfig` désactive CSRF et fixe la politique de session à `STATELESS`. L’authentification porteuse passe par `BearerTokenAuthenticationFilter` et `NativeJwtService`. Le YAML fixe `dartchain.auth.access-token-ttl-seconds` à 3600 et `refresh-token-ttl-seconds` à 604800. `legacy-session-enabled` vaut `false`. Le nom de la propriété secrète est `dartchain.auth.jwt-secret` (variable `DARTCHAIN_JWT_SECRET`) ; la valeur est [SECRET MASQUÉ].
+`SecurityConfig` désactive CSRF et fixe la politique de session à `STATELESS`. L’authentification porteuse passe par `BearerTokenAuthenticationFilter` et `NativeJwtService`. Le YAML fixe `r4v3chain.auth.access-token-ttl-seconds` à 3600 et `refresh-token-ttl-seconds` à 604800. `legacy-session-enabled` vaut `false`. Le nom de la propriété secrète est `r4v3chain.auth.jwt-secret` (variable `R4V3CHAIN_JWT_SECRET`) ; la valeur est [SECRET MASQUÉ].
 
-La limite de débit n’est pas globale. `application.yaml` pose `dartchain.rate-limit.max-requests: 60` et `window-ms: 60000`. `RateLimitFilter` n’incrémente le compteur que si `isLimitedPath` reconnaît l’URI : liste `RateLimitProperties` plus le motif `/api/pending-transactions/{id}/mine`. Le compteur est `InMemoryRateLimitCounterStore` quand `dartchain.persistence.mode` vaut `memory` (défaut, `matchIfMissing`), et `JpaRateLimitCounterStore` sur la table `rate_limit_buckets` en mode `postgres`. Le champ Java `RateLimitProperties.maxRequests` vaut 20 si le YAML ne se lie pas ; le fichier chargé par l’application fixe 60.
+La limite de débit n’est pas globale. `application.yaml` pose `r4v3chain.rate-limit.max-requests: 60` et `window-ms: 60000`. `RateLimitFilter` n’incrémente le compteur que si `isLimitedPath` reconnaît l’URI : liste `RateLimitProperties` plus le motif `/api/pending-transactions/{id}/mine`. Le compteur est `InMemoryRateLimitCounterStore` quand `r4v3chain.persistence.mode` vaut `memory` (défaut, `matchIfMissing`), et `JpaRateLimitCounterStore` sur la table `rate_limit_buckets` en mode `postgres`. Le champ Java `RateLimitProperties.maxRequests` vaut 20 si le YAML ne se lie pas ; le fichier chargé par l’application fixe 60.
 
 JaCoCo est un garde-fou de build : plugin `0.8.13`, propriété `jacoco.minimum.line-ratio` à `0.65`. Le commentaire du POM indique une baseline d’environ 65 % avec les entités JPA exclues. Ce n’est pas un objectif de performance en production.
 
-Les healthchecks sont concrets. Le compose appelle `curl` sur `http://localhost:8080/actuator/health` puis, en repli, `/api/health`. Le Dockerfile backend vérifie `/api/health`. Le frontend nginx vérifie `wget` sur `http://127.0.0.1/`. L’actuator expose `health` et `info`. `dartchain.ops.restrict-actuator` vaut `false`. Le nginx de prod et le nginx d’image frontend répondent 403 sur `/actuator/metrics` et `/actuator/prometheus`.
+Les healthchecks sont concrets. Le compose appelle `curl` sur `http://localhost:8080/actuator/health` puis, en repli, `/api/health`. Le Dockerfile backend vérifie `/api/health`. Le frontend nginx vérifie `wget` sur `http://127.0.0.1/`. L’actuator expose `health` et `info`. `r4v3chain.ops.restrict-actuator` vaut `false`. Le nginx de prod et le nginx d’image frontend répondent 403 sur `/actuator/metrics` et `/actuator/prometheus`.
 
 Les motifs CORS effectifs, lus dans `CorsConfig` et recopiés dans le YAML, sont :
 
 - `http://localhost:*`, `http://127.0.0.1:*`, `https://localhost:*`, `https://127.0.0.1:*`
-- `https://dartchain.pages.dev`, `https://*.dartchain.pages.dev`, `https://*.pages.dev`
-- `https://dartzvz01-tagname.onrender.com`, `https://*.onrender.com`
+- `https://r4v3chain.pages.dev`, `https://*.r4v3chain.pages.dev`, `https://*.pages.dev`
+- `https://r4v3zvz01-tagname.onrender.com`, `https://*.onrender.com`
 
 Méthodes autorisées : GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD. En-têtes autorisés et exposés : `*`. `maxAge` : 3600 secondes. Le même tableau est passé aux quatre WebSockets.
 
@@ -90,7 +90,7 @@ Les seuils ops (`mempool-alert-threshold` 50, `http-error-alert-threshold` 10, `
 
 ## Correspondance avec le code
 
-- Plateforme : `apps/dartchain-backend/pom.xml`, entrée `DartchainBackendApplication`.
+- Plateforme : `apps/r4v3chain-backend/pom.xml`, entrée `R4v3chainBackendApplication`.
 - Session et filtres : `SecurityConfig` place `BearerTokenAuthenticationFilter` et `RateLimitFilter` avant `UsernamePasswordAuthenticationFilter`. Autres filtres nommés : `ActuatorAccessFilter`, `RequestCorrelationFilter`, `RequestTimingFilter`, `SecurityHeadersFilter`, `LegacyApiDeprecationFilter`.
 - CORS : `CorsConfig.buildCorsConfiguration` lit `CorsProperties`, défaut `DEFAULT_ALLOWED_ORIGIN_PATTERNS`.
 - Débit : `RateLimitFilter` + stores mémoire ou `rate_limit_buckets`.

@@ -13,9 +13,9 @@ Il n’y a pas de service Redis. Il n’y a pas de service Kafka. Ils ne sont pa
 ## Sources analysées
 
 - `docker-compose.yml` (en-tête de profils, services, volumes, healthchecks)
-- `apps/dartchain-backend/Dockerfile`
-- `apps/dartchain-frontend/Dart/Dockerfile`
-- `apps/dartchain-frontend/Dart/nginx.conf`
+- `apps/r4v3chain-backend/Dockerfile`
+- `apps/r4v3chain-frontend/R4V3/Dockerfile`
+- `apps/r4v3chain-frontend/R4V3/nginx.conf`
 - `infra/nginx/nginx.prod.conf` (monté par `frontend-prod`)
 
 Mots de passe, JWT, jeton actuator : variables d’environnement seulement, valeurs [SECRET MASQUÉ].
@@ -88,7 +88,7 @@ Le fichier annonce un compose unique. Commandes écrites en commentaire :
 | `prod` | `postgres-prod`, `backend-a`, `backend-b`, `frontend-prod` | idem ; nginx prod monté en volume | frontend `${APP_PORT:-8080}:80` |
 | `p2p` | `postgres-a`, `postgres-b`, `backend-p2p-a`, `backend-p2p-b` | Dockerfiles backend | `${P2P_NODE_A_PORT:-8081}:8080` et `${P2P_NODE_B_PORT:-8082}:8080` |
 
-Volumes nommés : `dartchain_pg_data`, `dartchain_pg_dev_data`, `dartchain_pg_local_data`, `dartchain_staging_pg_data`, `dartchain_pg_prod_data`, `dartchain_pg_a`, `dartchain_pg_b`.
+Volumes nommés : `r4v3chain_pg_data`, `r4v3chain_pg_dev_data`, `r4v3chain_pg_local_data`, `r4v3chain_staging_pg_data`, `r4v3chain_pg_prod_data`, `r4v3chain_pg_a`, `r4v3chain_pg_b`.
 
 Healthchecks :
 
@@ -98,7 +98,7 @@ Healthchecks :
 
 `depends_on` avec `condition: service_healthy` relie frontend → backend → postgres dans les profils qui ont les trois, et chaque backend p2p à sa base.
 
-Variables communes des backends « prod-like » (`x-backend-env-prod`) : `PORT=8080`, `SPRING_PROFILES_ACTIVE=postgres,prod`, `DARTCHAIN_PERSISTENCE_MODE=postgres`, `DATABASE_URL` vers l’hôte `postgres` (surchargé pour `backend-a` / `backend-b` vers `postgres-prod`). Les secrets sont exigés par interpolation (`POSTGRES_PASSWORD`, `DARTCHAIN_JWT_SECRET`, `DARTCHAIN_ACTUATOR_TOKEN`) : [SECRET MASQUÉ]. OAuth forcé `OAUTH_DEV_MOCK_ENABLED=false` dans cette ancre. `backend-dev` active le mock OAuth par défaut dans le fichier (`OAUTH_DEV_MOCK_ENABLED` défaut `true`) et le profil Spring `postgres` sans `prod`.
+Variables communes des backends « prod-like » (`x-backend-env-prod`) : `PORT=8080`, `SPRING_PROFILES_ACTIVE=postgres,prod`, `R4V3CHAIN_PERSISTENCE_MODE=postgres`, `DATABASE_URL` vers l’hôte `postgres` (surchargé pour `backend-a` / `backend-b` vers `postgres-prod`). Les secrets sont exigés par interpolation (`POSTGRES_PASSWORD`, `R4V3CHAIN_JWT_SECRET`, `R4V3CHAIN_ACTUATOR_TOKEN`) : [SECRET MASQUÉ]. OAuth forcé `OAUTH_DEV_MOCK_ENABLED=false` dans cette ancre. `backend-dev` active le mock OAuth par défaut dans le fichier (`OAUTH_DEV_MOCK_ENABLED` défaut `true`) et le profil Spring `postgres` sans `prod`.
 
 Dockerfile backend : build Maven `./mvnw package -DskipTests` sur Temurin 21 JDK, runtime JRE 21, `curl`, user `appuser`, jar `/app/app.jar`, healthcheck `/api/health`.
 
@@ -108,9 +108,9 @@ Dockerfile frontend : `npm ci --legacy-peer-deps`, `npm run build:docker`, puis 
 
 ## Correspondance avec le code
 
-Fichier unique : `/home/azertyuiop/dev/dartchain/docker-compose.yml`. Pas d’autre `docker-compose*.yml` trouvé. Pas de service dont le nom ou l’image contient `redis`.
+Fichier unique : `/home/azertyuiop/dev/r4v3chain/docker-compose.yml`. Pas d’autre `docker-compose*.yml` trouvé. Pas de service dont le nom ou l’image contient `redis`.
 
-`.github/workflows/ci.yml`, job `docker`, construit `dartchain-backend:ci` et `dartchain-frontend:ci`. Ce sont des tags de pipeline, pas des services du compose.
+`.github/workflows/ci.yml`, job `docker`, construit `r4v3chain-backend:ci` et `r4v3chain-frontend:ci`. Ce sont des tags de pipeline, pas des services du compose.
 
 ## Hypothèses
 

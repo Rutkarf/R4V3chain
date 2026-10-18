@@ -34,7 +34,7 @@ Entités volontairement hors de ce MCD, bien qu’elles aient une table : jeton 
 @startuml
 hide circle
 skinparam linetype ortho
-title MCD DartChain — entités métier
+title MCD R4V3chain — entités métier
 
 entity User {
   identifiant

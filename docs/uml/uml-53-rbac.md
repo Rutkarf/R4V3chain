@@ -10,12 +10,12 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- `io.dartchain.backend.auth.model.UserRole`
+- `io.r4v3chain.backend.auth.model.UserRole`
 - `AuthenticatedUser`
 - `RoleAuthorizationService`
 - `UserEntity.role` et migration V11 (`role VARCHAR(16) NOT NULL DEFAULT 'USER'`)
 - `AdminUnlockService` et `SecurityConfig` (`POST /api/v1/admin/unlock` permitAll)
-- `application.yaml` : `dartchain.admin.seed-sha256` (défaut présent, valeur non recopiée)
+- `application.yaml` : `r4v3chain.admin.seed-sha256` (défaut présent, valeur non recopiée)
 
 ## Éléments représentés
 
@@ -23,7 +23,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 - Commentaire `GUEST` : visiteur non authentifié, non persisté, pas une valeur d’enum.
 - Autorité Spring `ROLE_USER` ou `ROLE_ADMIN`.
 - Comparaison `isAtLeast`.
-- Seed d’unlock : jeton séparé, propriété `DARTCHAIN_ADMIN_SEED_SHA256`, qui ne modifie pas `users.role`.
+- Seed d’unlock : jeton séparé, propriété `R4V3CHAIN_ADMIN_SEED_SHA256`, qui ne modifie pas `users.role`.
 
 ## Diagramme
 
@@ -85,7 +85,7 @@ Le panneau admin ne s’ouvre pas en présentant `ROLE_ADMIN`. `AdminUnlockServi
 | Préfixe | `"ROLE_" + role.name()` dans `AuthenticatedUser` |
 | Défaut persisté | `UserEntity.role = "USER"` et V11 `DEFAULT 'USER'` |
 | Mutation minage | `RoleAuthorizationService.authorizeMutation`, action `blockchain.mine` |
-| Seed | `AdminUnlockService`, propriété `dartchain.admin.seed-sha256` |
+| Seed | `AdminUnlockService`, propriété `r4v3chain.admin.seed-sha256` |
 | Porte HTTP de la seed | `SecurityConfig`, POST `/api/v1/admin/unlock` |
 
 Le seuil d’alerte `rbac-denied-alert-threshold` (défaut 20 dans `application.yaml`) compte des refus pour l’observabilité. Il ne crée pas un troisième rôle.

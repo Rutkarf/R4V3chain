@@ -180,7 +180,7 @@ Les constantes `API_ROUTES.blockchainStats` et `blockchainValid` valent `/blockc
 
 - `GET /blocks/{hash}` est appelé par `blockchain-api.service.ts`. `BlockController` ne déclare pas `GET /{hash}`.
 - `GET /transactions/pending` est appelé par le même service. Le backend expose `GET /api/pending-transactions` et `POST /api/transactions`, pas `GET /api/transactions/pending`.
-- `LegacyApiDeprecationFilter` (`io.dartchain.backend.api`) n’émet pas le 404. Il pose `Deprecation`, `Sunset: 2027-01-01` et `Link` quand `GET /api/stats` est déjà en 404, ou des en-têtes de dépréciation sur `GET /api/blocks` en 2xx.
+- `LegacyApiDeprecationFilter` (`io.r4v3chain.backend.api`) n’émet pas le 404. Il pose `Deprecation`, `Sunset: 2027-01-01` et `Link` quand `GET /api/stats` est déjà en 404, ou des en-têtes de dépréciation sur `GET /api/blocks` en 2xx.
 - Double lecture stats : `/stats` (legacy, commenté 404 côté `ApiRoutes`) et `/blockchain/stats`.
 - Replis `/blocks` vers `/blockchain/blocks` : le client tente deux générations.
 - `POST /api/wallets/create` est connu du serveur (sécurité) et inconnu des services frontend lus. Le client fait `/wallets/create-client`.

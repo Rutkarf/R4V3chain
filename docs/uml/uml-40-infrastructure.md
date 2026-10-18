@@ -13,16 +13,16 @@ Terraform : **non identifié**. Aucun fichier `.tf` n’entre dans cette vue par
 ## Sources analysées
 
 - `infra/nginx/nginx.prod.conf`
-- `apps/dartchain-frontend/Dart/nginx.conf`
-- `apps/dartchain-backend/Dockerfile`
-- `apps/dartchain-frontend/Dart/Dockerfile`
+- `apps/r4v3chain-frontend/R4V3/nginx.conf`
+- `apps/r4v3chain-backend/Dockerfile`
+- `apps/r4v3chain-frontend/R4V3/Dockerfile`
 - `wrangler.toml`
 - `deploy/render.yaml`
 - `docker-compose.yml` (montage du nginx prod, profils)
 - Mémo : `.github/workflows/ci.yml`, `.github/workflows/cloudflare-deploy.yml`, `deploy/soc-readme.md`
 - Recherche : pas d’occurrence Terraform ni Kafka dans les sources parcourues
 
-Secrets générés par le blueprint (`generateValue` sur `DARTCHAIN_JWT_SECRET` et `DARTCHAIN_ACTUATOR_TOKEN`) : [SECRET MASQUÉ].
+Secrets générés par le blueprint (`generateValue` sur `R4V3CHAIN_JWT_SECRET` et `R4V3CHAIN_ACTUATOR_TOKEN`) : [SECRET MASQUÉ].
 
 ## Éléments représentés
 
@@ -41,9 +41,9 @@ flowchart TB
     CI[workflows ci et cloudflare-deploy]
   end
   subgraph decrit [Cibles decrites non contactees ici]
-    PAGES[Cloudflare Pages nom dartchain]
-    RENDER[Service Render dartchain-backend]
-    RDB[(Base dartchain-db)]
+    PAGES[Cloudflare Pages nom r4v3chain]
+    RENDER[Service Render r4v3chain-backend]
+    RDB[(Base r4v3chain-db)]
   end
   CI --> DFBE
   CI --> DFFE
@@ -63,7 +63,7 @@ Légende : Terraform est hors dépôt. Le nginx prod vise les hôtes Compose `ba
 `infra/nginx/nginx.prod.conf` écoute le port 80, `server_name _`, racine `/usr/share/nginx/html`.
 
 - `location /` : `try_files` vers `index.html` (SPA).
-- `location /api/` : `proxy_pass` vers l’upstream `dartchain_backend`.
+- `location /api/` : `proxy_pass` vers l’upstream `r4v3chain_backend`.
 - `location = /actuator/health` et `= /actuator/info` : proxy explicite.
 - `location` regex `metrics` et `prometheus` : `return 403`.
 - `location /actuator/` : proxy du reste.
@@ -81,17 +81,17 @@ Frontend : Node 22 alpine, `npm ci --legacy-peer-deps`, `npm run build:docker`, 
 
 ### Wrangler
 
-`name = "dartchain"`. `compatibility_date = "2025-07-16"`. Assets : `./apps/dartchain-frontend/Dart/dist/browser`. `not_found_handling = "single-page-application"`. Commentaires du fichier : build `bash scripts/cloudflare-build.sh`, deploy `npx wrangler deploy`. Le workflow `.github/workflows/cloudflare-deploy.yml` est en `workflow_dispatch` : build `scripts/cloudflare-build.sh`, puis `scripts/cloudflare-deploy.sh`. Le site cité par le README est https://dartchain.pages.dev. Non contacté ici.
+`name = "r4v3chain"`. `compatibility_date = "2025-07-16"`. Assets : `./apps/r4v3chain-frontend/R4V3/dist/browser`. `not_found_handling = "single-page-application"`. Commentaires du fichier : build `bash scripts/cloudflare-build.sh`, deploy `npx wrangler deploy`. Le workflow `.github/workflows/cloudflare-deploy.yml` est en `workflow_dispatch` : build `scripts/cloudflare-build.sh`, puis `scripts/cloudflare-deploy.sh`. Le site cité par le README est https://r4v3chain.pages.dev. Non contacté ici.
 
 ### Render
 
-`deploy/render.yaml` est un blueprint : base `dartchain-db` plan free, user `dartchain`, service web `dartchain-backend` plan free, région `frankfurt`, runtime image `docker.io/DOCKERHUB_USER/dartchain-backend:1.0.0`, `healthCheckPath: /api/health`. Variables lues : `PORT=8080`, `SPRING_PROFILES_ACTIVE=postgres,prod`, `DARTCHAIN_PERSISTENCE_MODE=postgres`, `DARTCHAIN_PRODUCT_FAUCET_ENABLED=true`, `JAVA_TOOL_OPTIONS=-Xmx384m`, champs `DATABASE_*` pris sur la base, secrets en `generateValue`, `DARTCHAIN_CORS_EXTRA` exemple `https://YOUR-PROJECT.pages.dev`. `DOCKERHUB_USER` et `YOUR-PROJECT` sont des placeholders du fichier.
+`deploy/render.yaml` est un blueprint : base `r4v3chain-db` plan free, user `r4v3chain`, service web `r4v3chain-backend` plan free, région `frankfurt`, runtime image `docker.io/DOCKERHUB_USER/r4v3chain-backend:1.0.0`, `healthCheckPath: /api/health`. Variables lues : `PORT=8080`, `SPRING_PROFILES_ACTIVE=postgres,prod`, `R4V3CHAIN_PERSISTENCE_MODE=postgres`, `R4V3CHAIN_PRODUCT_FAUCET_ENABLED=true`, `JAVA_TOOL_OPTIONS=-Xmx384m`, champs `DATABASE_*` pris sur la base, secrets en `generateValue`, `R4V3CHAIN_CORS_EXTRA` exemple `https://YOUR-PROJECT.pages.dev`. `DOCKERHUB_USER` et `YOUR-PROJECT` sont des placeholders du fichier.
 
 `deploy/soc-readme.md` est la doc SOC citée. Elle n’ajoute pas, dans cette fiche, de ressource qui n’aurait pas été lue.
 
 ### CI comme infra de build
 
-`.github/workflows/ci.yml` : job backend `./mvnw -q verify` sous Java 21 Temurin, job frontend `npm ci`, `npm test`, `verify:a11y`, build, `build:cloudflare` avec `BACKEND_URL` Render, job docker images `dartchain-backend:ci` et `dartchain-frontend:ci`. Déclencheurs push `main` et `pull_request`. Ce workflow construit ; il n’est pas un hébergeur.
+`.github/workflows/ci.yml` : job backend `./mvnw -q verify` sous Java 21 Temurin, job frontend `npm ci`, `npm test`, `verify:a11y`, build, `build:cloudflare` avec `BACKEND_URL` Render, job docker images `r4v3chain-backend:ci` et `r4v3chain-frontend:ci`. Déclencheurs push `main` et `pull_request`. Ce workflow construit ; il n’est pas un hébergeur.
 
 ### Terraform
 
@@ -104,7 +104,7 @@ Redis et Kafka : non identifiés dans ces artefacts (vue 39).
 | Besoin | Fichier |
 | --- | --- |
 | Deux JVM derrière un edge | `nginx.prod.conf` + services `backend-a` / `backend-b` |
-| Une JVM | `Dart/nginx.conf` hôte `backend` |
+| Une JVM | `R4V3/nginx.conf` hôte `backend` |
 | SPA hébergée | `wrangler.toml` |
 | API hébergée + Postgres managé | `deploy/render.yaml` |
 | Image reproductible | les deux Dockerfiles |
@@ -130,5 +130,5 @@ CORS côté JVM autorise déjà `https://*.pages.dev` et `https://*.onrender.com
 
 - Garder Terraform hors des schémas tant qu’aucun `.tf` n’existe. Si un jour il est ajouté, cette fiche devra citer le répertoire réel.
 - Remplacer les placeholders Render avant usage, sans committer les secrets générés.
-- Traiter `nginx.prod.conf` comme la définition d’edge à deux nœuds, et `Dart/nginx.conf` comme celle de l’image simple.
+- Traiter `nginx.prod.conf` comme la définition d’edge à deux nœuds, et `R4V3/nginx.conf` comme celle de l’image simple.
 - Marquer Pages et Render « décrit par les fichiers » dans les runbooks tant qu’un healthcheck externe n’est pas archivé.

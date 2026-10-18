@@ -1,4 +1,4 @@
-# Déploiement prod = Cloudflare Pages (build Git natif sur push main → Rutkarf/dartchain).
+# Déploiement prod = Cloudflare Pages (build Git natif sur push main → Rutkarf/r4v3chain).
 # Ce workflow ne sert qu'à un upload manuel via wrangler pages deploy.
 name: Cloudflare Pages Deploy (manual)
 
@@ -16,10 +16,10 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: apps/dartchain-frontend/Dart/package-lock.json
+          cache-dependency-path: apps/r4v3chain-frontend/R4V3/package-lock.json
       - name: Build frontend
         env:
-          BACKEND_URL: ${{ vars.BACKEND_URL || 'https://dartchain-backend-1-0-0.onrender.com' }}
+          BACKEND_URL: ${{ vars.BACKEND_URL || 'https://r4v3chain-backend-1-0-0.onrender.com' }}
           SHOWCASE_ENABLED: ${{ vars.SHOWCASE_ENABLED || 'true' }}
         run: bash scripts/cloudflare-build.sh
       - name: Deploy to Cloudflare

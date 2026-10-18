@@ -108,4 +108,4 @@ Le store FAQ par défaut en mémoire est `JsonFaqQuestionStore` (`FAQ_QUESTIONS_
 
 - Introduire un enum `PendingTransactionStatus` le jour où `REJECTED` doit être une vraie transition, et refuser les autres chaînes à la compilation.
 - Restreindre `updateStatus` à une matrice (par exemple `PINNED` vers `ACTIVE` ou `ARCHIVED` seulement) si l'admin ne doit pas réouvrir sans trace.
-- Persister `FaqQuestion` en JPA si le mode postgres est le déploiement Render (`DARTCHAIN_PERSISTENCE_MODE=postgres` dans `deploy/render.yaml`).
+- Persister `FaqQuestion` en JPA si le mode postgres est le déploiement Render (`R4V3CHAIN_PERSISTENCE_MODE=postgres` dans `deploy/render.yaml`).

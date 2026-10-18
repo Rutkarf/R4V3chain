@@ -13,16 +13,16 @@ Cette session n’a pas ouvert le réseau. Tout déploiement live est **décrit 
 ## Sources analysées
 
 - `docker-compose.yml` (profils et images)
-- `apps/dartchain-backend/Dockerfile` (`eclipse-temurin:21-jre`, port 8080)
-- `apps/dartchain-frontend/Dart/Dockerfile` (`node:22-alpine` puis `nginx:1.27-alpine`, port 80)
-- `apps/dartchain-frontend/Dart/nginx.conf` (upstream `backend:8080`)
+- `apps/r4v3chain-backend/Dockerfile` (`eclipse-temurin:21-jre`, port 8080)
+- `apps/r4v3chain-frontend/R4V3/Dockerfile` (`node:22-alpine` puis `nginx:1.27-alpine`, port 80)
+- `apps/r4v3chain-frontend/R4V3/nginx.conf` (upstream `backend:8080`)
 - `infra/nginx/nginx.prod.conf` (upstream `backend-a` / `backend-b`)
 - `wrangler.toml` (Pages, `dist/browser`)
-- `deploy/render.yaml` (service `dartchain-backend`, base `dartchain-db`, région `frankfurt`, health `/api/health`)
-- `environment.prod.ts` et `environment.cloudflare.ts` : `wss://dartchain-backend-1-0-0.onrender.com/ws/live` et `/ws/chat`
-- README : https://dartchain.pages.dev et https://dartchain-backend-1-0-0.onrender.com
+- `deploy/render.yaml` (service `r4v3chain-backend`, base `r4v3chain-db`, région `frankfurt`, health `/api/health`)
+- `environment.prod.ts` et `environment.cloudflare.ts` : `wss://r4v3chain-backend-1-0-0.onrender.com/ws/live` et `/ws/chat`
+- README : https://r4v3chain.pages.dev et https://r4v3chain-backend-1-0-0.onrender.com
 
-Secrets des variables `DARTCHAIN_JWT_SECRET`, `DATABASE_PASSWORD`, `DARTCHAIN_ACTUATOR_TOKEN`, `DARTCHAIN_ADMIN_SEED_SHA256` : [SECRET MASQUÉ].
+Secrets des variables `R4V3CHAIN_JWT_SECRET`, `DATABASE_PASSWORD`, `R4V3CHAIN_ACTUATOR_TOKEN`, `R4V3CHAIN_ADMIN_SEED_SHA256` : [SECRET MASQUÉ].
 
 ## Éléments représentés
 
@@ -40,9 +40,9 @@ flowchart TB
     BR --> NGX --> JVM --> PG
   end
   subgraph heberge [Decrit par les fichiers pas execute ici]
-    CF[Cloudflare Pages dartchain.pages.dev]
+    CF[Cloudflare Pages r4v3chain.pages.dev]
     REN[Render image backend region frankfurt]
-    RDB[(Render postgres dartchain-db)]
+    RDB[(Render postgres r4v3chain-db)]
     CF -->|URL API et wss dans environment.prod.ts| REN --> RDB
   end
 ```
@@ -56,17 +56,17 @@ Légende : le cadre du haut est ce que `docker compose` construirait. Le cadre d
 **nginx.** Deux fichiers :
 
 - Image frontend par défaut : `nginx.conf` proxy `/api/`, `/ws/`, `/actuator/health`, `/actuator/info` vers `http://backend:8080`. Les autres chemins : `try_files` vers `index.html`.
-- Profil Compose `prod` : `frontend-prod` monte `infra/nginx/nginx.prod.conf`. L’upstream `dartchain_backend` est `least_conn` vers `backend-a:8080` et `backend-b:8080`. Même découpage `/api/`, `/ws/`, actuator. `metrics` et `prometheus` : 403.
+- Profil Compose `prod` : `frontend-prod` monte `infra/nginx/nginx.prod.conf`. L’upstream `r4v3chain_backend` est `least_conn` vers `backend-a:8080` et `backend-b:8080`. Même découpage `/api/`, `/ws/`, actuator. `metrics` et `prometheus` : 403.
 
 Le service `frontend` du profil `default` publie `${APP_PORT:-8080}:80`.
 
-**JVM.** Dockerfile runtime `eclipse-temurin:21-jre`, utilisateur `appuser` uid 10001, `EXPOSE 8080`, healthcheck `curl` sur `/api/health`. Entrée `DartchainBackendApplication`. En Compose, les backends attendent Postgres healthy puis exposent `/actuator/health` ou `/api/health`.
+**JVM.** Dockerfile runtime `eclipse-temurin:21-jre`, utilisateur `appuser` uid 10001, `EXPOSE 8080`, healthcheck `curl` sur `/api/health`. Entrée `R4v3chainBackendApplication`. En Compose, les backends attendent Postgres healthy puis exposent `/actuator/health` ou `/api/health`.
 
-**PostgreSQL.** Image `postgres:16-alpine`. Volume nommé du profil default : `dartchain_pg_data`. Base et utilisateur par variables `POSTGRES_DB` / `POSTGRES_USER` (défaut de nom `dartchain`). Mot de passe : [SECRET MASQUÉ]. Le process backend n’embarque pas Postgres ; il s’y connecte par `DATABASE_URL` quand le mode est `postgres`.
+**PostgreSQL.** Image `postgres:16-alpine`. Volume nommé du profil default : `r4v3chain_pg_data`. Base et utilisateur par variables `POSTGRES_DB` / `POSTGRES_USER` (défaut de nom `r4v3chain`). Mot de passe : [SECRET MASQUÉ]. Le process backend n’embarque pas Postgres ; il s’y connecte par `DATABASE_URL` quand le mode est `postgres`.
 
-**Cloudflare Pages.** `wrangler.toml` : nom `dartchain`, `compatibility_date` `2025-07-16`, assets `./apps/dartchain-frontend/Dart/dist/browser`, `not_found_handling = "single-page-application"`. Le workflow `cloudflare-deploy.yml` est `workflow_dispatch` et appelle `scripts/cloudflare-deploy.sh`. Le nom de site cité par le README est https://dartchain.pages.dev. CORS autorise `https://dartchain.pages.dev`, `https://*.dartchain.pages.dev`, `https://*.pages.dev`.
+**Cloudflare Pages.** `wrangler.toml` : nom `r4v3chain`, `compatibility_date` `2025-07-16`, assets `./apps/r4v3chain-frontend/R4V3/dist/browser`, `not_found_handling = "single-page-application"`. Le workflow `cloudflare-deploy.yml` est `workflow_dispatch` et appelle `scripts/cloudflare-deploy.sh`. Le nom de site cité par le README est https://r4v3chain.pages.dev. CORS autorise `https://r4v3chain.pages.dev`, `https://*.r4v3chain.pages.dev`, `https://*.pages.dev`.
 
-**Render.** `deploy/render.yaml` décrit un web service `dartchain-backend`, runtime image, plan free, région `frankfurt`, health ` /api/health`, profils `postgres,prod`, `DARTCHAIN_PERSISTENCE_MODE=postgres`, image `docker.io/DOCKERHUB_USER/dartchain-backend:1.0.0` (l’utilisateur Docker Hub est un placeholder du fichier). Base `dartchain-db`, plan free, nom logique `dartchain`. `DARTCHAIN_JWT_SECRET` et `DARTCHAIN_ACTUATOR_TOKEN` sont `generateValue: true` : valeurs [SECRET MASQUÉ]. Les environnements Angular prod et Cloudflare pointent `wss://dartchain-backend-1-0-0.onrender.com`. CORS contient aussi `https://dartzvz01-tagname.onrender.com` et `https://*.onrender.com`.
+**Render.** `deploy/render.yaml` décrit un web service `r4v3chain-backend`, runtime image, plan free, région `frankfurt`, health ` /api/health`, profils `postgres,prod`, `R4V3CHAIN_PERSISTENCE_MODE=postgres`, image `docker.io/DOCKERHUB_USER/r4v3chain-backend:1.0.0` (l’utilisateur Docker Hub est un placeholder du fichier). Base `r4v3chain-db`, plan free, nom logique `r4v3chain`. `R4V3CHAIN_JWT_SECRET` et `R4V3CHAIN_ACTUATOR_TOKEN` sont `generateValue: true` : valeurs [SECRET MASQUÉ]. Les environnements Angular prod et Cloudflare pointent `wss://r4v3chain-backend-1-0-0.onrender.com`. CORS contient aussi `https://r4v3zvz01-tagname.onrender.com` et `https://*.onrender.com`.
 
 Javadoc de déploiement : `deploy/soc-readme.md` est une note de conformité du dossier `deploy`. Cette vue n’en tire aucun hôte supplémentaire.
 
@@ -77,7 +77,7 @@ Aucun Terraform, aucun Redis, aucun Kafka dans cette topologie (vues 39 et 40).
 | Nœud | Fichier qui le décrit |
 | --- | --- |
 | Navigateur / SPA | `src/app`, `environment*.ts` |
-| nginx edge Docker | `Dart/nginx.conf`, `infra/nginx/nginx.prod.conf` |
+| nginx edge Docker | `R4V3/nginx.conf`, `infra/nginx/nginx.prod.conf` |
 | JVM | `Dockerfile` backend, `pom.xml` Java 21 |
 | Postgres local Compose | `docker-compose.yml` services `postgres*` |
 | Pages | `wrangler.toml` |
@@ -85,7 +85,7 @@ Aucun Terraform, aucun Redis, aucun Kafka dans cette topologie (vues 39 et 40).
 
 ## Hypothèses
 
-- L’URL Render du README et celle des fichiers `environment.prod.ts` désignent le même service que le blueprint. Le blueprint parle d’un nom `dartchain-backend` et d’une image ; l’hôte `onrender.com` exact dépend du compte Render. On recopie les chaînes présentes dans le dépôt sans les résoudre en DNS.
+- L’URL Render du README et celle des fichiers `environment.prod.ts` désignent le même service que le blueprint. Le blueprint parle d’un nom `r4v3chain-backend` et d’une image ; l’hôte `onrender.com` exact dépend du compte Render. On recopie les chaînes présentes dans le dépôt sans les résoudre en DNS.
 - `frontend` default n’a pas d’upstream double. Seul le profil `prod` a `backend-a` et `backend-b`.
 - Le port 4200 n’existe pas dans l’image nginx. Il appartient au script `ng serve`.
 

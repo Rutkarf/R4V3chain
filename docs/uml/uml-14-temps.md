@@ -10,13 +10,13 @@ Partiellement confirmé.
 
 ## Sources analysées
 
-- `application.yaml` : `dartchain.auth.access-token-ttl-seconds` 3600, `refresh-token-ttl-seconds` 604800, `dartchain.rate-limit.max-requests` 60, `window-ms` 60000.
+- `application.yaml` : `r4v3chain.auth.access-token-ttl-seconds` 3600, `refresh-token-ttl-seconds` 604800, `r4v3chain.rate-limit.max-requests` 60, `window-ms` 60000.
 - Arène : `spawn-shield-duration-seconds` 8, `respawn-delay-seconds` 8, `kill-cooldown-seconds` 5, `new-player-protection-duration-seconds` 60.
-- `dartchain.admin.unlock-ttl-seconds` via `${DARTCHAIN_ADMIN_UNLOCK_TTL:3600}`.
+- `r4v3chain.admin.unlock-ttl-seconds` via `${R4V3CHAIN_ADMIN_UNLOCK_TTL:3600}`.
 - `FaucetConfig` : `faucet.cooldown-seconds` défaut 10.
-- `dartchain.wigle.cache-ttl-ms` 300000.
-- `dartchain.ops.slow-request-threshold-ms` défaut 2000.
-- `auth.session.ttl-seconds` défaut 604800, avec `dartchain.auth.legacy-session-enabled: false`.
+- `r4v3chain.wigle.cache-ttl-ms` 300000.
+- `r4v3chain.ops.slow-request-threshold-ms` défaut 2000.
+- `auth.session.ttl-seconds` défaut 604800, avec `r4v3chain.auth.legacy-session-enabled: false`.
 - `NativeJwtService` : `exp = now + accessTokenTtlSeconds`.
 - `RateLimitBucketEntity` : `windowStartMs`, `requestCount`.
 
@@ -82,19 +82,19 @@ protect is termine
 
 | Propriété | Valeur lue | Rôle |
 | --- | --- | --- |
-| `dartchain.admin.unlock-ttl-seconds` | 3600 s par défaut d'environnement | vie du jeton `X-Admin-Unlock-Token` |
+| `r4v3chain.admin.unlock-ttl-seconds` | 3600 s par défaut d'environnement | vie du jeton `X-Admin-Unlock-Token` |
 | `faucet.cooldown-seconds` | 10 s si la propriété est absente | `nextEligibleAt = now + cooldown` |
-| `dartchain.wigle.cache-ttl-ms` | 300000 ms | cache WiGLE |
-| `dartchain.ops.slow-request-threshold-ms` | 2000 ms par défaut | seuil ops, pas un timeout HTTP |
+| `r4v3chain.wigle.cache-ttl-ms` | 300000 ms | cache WiGLE |
+| `r4v3chain.ops.slow-request-threshold-ms` | 2000 ms par défaut | seuil ops, pas un timeout HTTP |
 | `auth.session.ttl-seconds` | 604800 s | session legacy, drapeau `legacy-session-enabled` à false |
 
 ## Explication
 
-`NativeJwtService.createAccessToken` fixe `exp` à l'instant courant plus `AuthProperties.getAccessTokenTtlSeconds()`. La valeur YAML est 3600 secondes. `parseAndValidate` refuse le jeton quand `exp` est inférieur ou égal à l'epoch courant. Le refresh n'est pas un JWT : `RefreshTokenStore.create` pose une ligne `auth_refresh_tokens` dont l'expiration suit `refresh-token-ttl-seconds` (604800, soit 7 jours). Cette fiche n'a pas rouvert le store pour recopier la formule ; la durée, elle, est dans le YAML chargé par les propriétés d'auth. Le secret de signature reste [SECRET MASQUÉ] (`dartchain.auth.jwt-secret`).
+`NativeJwtService.createAccessToken` fixe `exp` à l'instant courant plus `AuthProperties.getAccessTokenTtlSeconds()`. La valeur YAML est 3600 secondes. `parseAndValidate` refuse le jeton quand `exp` est inférieur ou égal à l'epoch courant. Le refresh n'est pas un JWT : `RefreshTokenStore.create` pose une ligne `auth_refresh_tokens` dont l'expiration suit `refresh-token-ttl-seconds` (604800, soit 7 jours). Cette fiche n'a pas rouvert le store pour recopier la formule ; la durée, elle, est dans le YAML chargé par les propriétés d'auth. Le secret de signature reste [SECRET MASQUÉ] (`r4v3chain.auth.jwt-secret`).
 
 Le rate limit est un quota, pas une pause. `max-requests` 60 et `window-ms` 60000 alimentent `RateLimitFilter` et la table `rate_limit_buckets` (`bucketKey`, `windowStartMs`, `requestCount`, `updatedAt`). À la fin de la fenêtre, le compteur repart. Le diagramme marque 60 secondes comme changement de fenêtre. Il ne dessine pas les 60 requêtes : ce sont des événements discrets sans horodatage imposé.
 
-L'arène a quatre durées distinctes, toutes en secondes dans `dartchain.metaverse.arena` :
+L'arène a quatre durées distinctes, toutes en secondes dans `r4v3chain.metaverse.arena` :
 
 - `spawn-shield-duration-seconds` : 8
 - `respawn-delay-seconds` : 8
@@ -103,7 +103,7 @@ L'arène a quatre durées distinctes, toutes en secondes dans `dartchain.metaver
 
 `enabled: true` indique que l'arène est allumée. Les daily caps 200, le loot-rate et l'anti-farming sont des seuils de quantité. Les mettre sur une ligne de temps inventerait une horloge. `ArenaSocketHandler` et `ArenaController` portent l'état joueur (`alive`, `eliminated`, `disconnected`) sans que cette fiche leur associe une de ces quatre durées message par message : les propriétés existent, le branchement exact dans chaque méthode de combat n'est pas redessiné.
 
-L'unlock admin dure par défaut 3600 s (`AdminUnlockService` ajoute `unlockTtlSeconds * 1000` à l'horloge). Ce n'est pas le TTL du JWT. Le cooldown faucet de 10 secondes est le défaut de `@Value`, pas la valeur d'un claim déjà enregistré : le claim stocke `nextEligibleAt` en epoch millisecondes. Le cache WiGLE est de 300000 ms, et le mock est actif (`dartchain.wigle.mock-enabled: true`), donc ce TTL ne s'applique au réseau WiGLE que lorsque le mock est coupé. Le seuil 2000 ms classe une requête comme lente pour les ops. Il n'annule pas la requête. La session legacy a le même ordre de grandeur que le refresh (604800 s) mais `legacy-session-enabled` est faux : `AuthTokenResolver` ne consulte pas `SessionStore` dans le chemin nominal.
+L'unlock admin dure par défaut 3600 s (`AdminUnlockService` ajoute `unlockTtlSeconds * 1000` à l'horloge). Ce n'est pas le TTL du JWT. Le cooldown faucet de 10 secondes est le défaut de `@Value`, pas la valeur d'un claim déjà enregistré : le claim stocke `nextEligibleAt` en epoch millisecondes. Le cache WiGLE est de 300000 ms, et le mock est actif (`r4v3chain.wigle.mock-enabled: true`), donc ce TTL ne s'applique au réseau WiGLE que lorsque le mock est coupé. Le seuil 2000 ms classe une requête comme lente pour les ops. Il n'annule pas la requête. La session legacy a le même ordre de grandeur que le refresh (604800 s) mais `legacy-session-enabled` est faux : `AuthTokenResolver` ne consulte pas `SessionStore` dans le chemin nominal.
 
 Non représenté, faute de durée lue : temps de minage (`BlockchainService.mine` boucle sur le nonce sans timeout), tours de quêtes (`dayKey`, `weekKey` sont des clés, pas des `Duration`), intervalle de healthcheck Docker (10 s dans le compose : c'est une sonde d'infra, pas un timing métier ; il est cité seulement ici pour ne pas le mélanger aux TTL), synchronisation Star Conquest (aucune durée serveur identifiée, flag frontend faux).
 
@@ -111,14 +111,14 @@ Non représenté, faute de durée lue : temps de minage (`BlockchainService.mine
 
 | Durée | Clé |
 | --- | --- |
-| 3600 s | `dartchain.auth.access-token-ttl-seconds` |
-| 604800 s | `dartchain.auth.refresh-token-ttl-seconds` |
-| 60 / 60000 ms | `dartchain.rate-limit.max-requests`, `window-ms` |
+| 3600 s | `r4v3chain.auth.access-token-ttl-seconds` |
+| 604800 s | `r4v3chain.auth.refresh-token-ttl-seconds` |
+| 60 / 60000 ms | `r4v3chain.rate-limit.max-requests`, `window-ms` |
 | 8 s, 8 s, 5 s, 60 s | clés `spawn-shield-duration-seconds`, `respawn-delay-seconds`, `kill-cooldown-seconds`, `new-player-protection-duration-seconds` |
-| 3600 s | `dartchain.admin.unlock-ttl-seconds` |
+| 3600 s | `r4v3chain.admin.unlock-ttl-seconds` |
 | 10 s | `faucet.cooldown-seconds` dans `FaucetConfig` |
-| 300000 ms | `dartchain.wigle.cache-ttl-ms` |
-| 2000 ms | `dartchain.ops.slow-request-threshold-ms` |
+| 300000 ms | `r4v3chain.wigle.cache-ttl-ms` |
+| 2000 ms | `r4v3chain.ops.slow-request-threshold-ms` |
 | 604800 s inactifs | `auth.session.ttl-seconds` et `legacy-session-enabled: false` |
 
 ## Hypothèses

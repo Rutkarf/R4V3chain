@@ -10,14 +10,14 @@ Moyen. Mécanismes confirmés dans le code. Aucun déploiement Prometheus ou Gra
 
 ## Sources analysées
 
-- `application.yaml` bloc `management` et `dartchain.ops`
+- `application.yaml` bloc `management` et `r4v3chain.ops`
 - `application-staging.yaml`, `application-prod.yaml` (exposition actuator)
 - `RequestTimingFilter`, `RequestCorrelationFilter`
 - `OpsMetricsService`, `OpsController`, `OpsV1Controller`
 - `HealthController`, `HealthV1Controller`, `PersistenceModeInfoContributor`
 - `docker-compose.yml` healthchecks
 - `deploy/render.yaml` healthCheckPath `/api/health`
-- `apps/dartchain-backend/pom.xml` JaCoCo, ratio `0.65`
+- `apps/r4v3chain-backend/pom.xml` JaCoCo, ratio `0.65`
 - Job CI backend `./mvnw -q verify`
 
 ## Éléments représentés
@@ -46,7 +46,7 @@ flowchart TB
   app --> ops
   ops --> snap["/api/ops/snapshot\n/api/v1/ops/snapshot"]
 
-  subgraph seuils [Seuils dartchain.ops — pas une alerte externe]
+  subgraph seuils [Seuils r4v3chain.ops — pas une alerte externe]
     m[mempool 50]
     h[erreurs HTTP 10]
     s[requête lente 2000 ms]
@@ -67,17 +67,17 @@ flowchart TB
 
 ## Explication
 
-Le fichier de base expose les endpoints actuator `health,info`. L’accès health est `unrestricted` dans ce fichier, et `SecurityConfig` laisse `/actuator/health`, `/actuator/health/**` et `/actuator/info` en `permitAll`. `dartchain.ops.restrict-actuator` vaut `false` ici, `true` en staging et en prod, où le jeton se nomme `DARTCHAIN_ACTUATOR_TOKEN` (valeur non recopiée). Le profil staging élargit l’exposition à `health,info,metrics,prometheus`. Le profil prod l’élargit à `health,info,metrics`. Le mot `prometheus` est l’identifiant d’un endpoint Spring. `OpsMetricsService` publie `externalStack` = `none` et `observabilityModel` = `native-json`. Aucun conteneur Grafana, aucune datasource Prometheus et aucun dashboard n’ont été identifiés dans Compose ni dans `deploy/render.yaml`. Cette fiche ne les ajoute pas.
+Le fichier de base expose les endpoints actuator `health,info`. L’accès health est `unrestricted` dans ce fichier, et `SecurityConfig` laisse `/actuator/health`, `/actuator/health/**` et `/actuator/info` en `permitAll`. `r4v3chain.ops.restrict-actuator` vaut `false` ici, `true` en staging et en prod, où le jeton se nomme `R4V3CHAIN_ACTUATOR_TOKEN` (valeur non recopiée). Le profil staging élargit l’exposition à `health,info,metrics,prometheus`. Le profil prod l’élargit à `health,info,metrics`. Le mot `prometheus` est l’identifiant d’un endpoint Spring. `OpsMetricsService` publie `externalStack` = `none` et `observabilityModel` = `native-json`. Aucun conteneur Grafana, aucune datasource Prometheus et aucun dashboard n’ont été identifiés dans Compose ni dans `deploy/render.yaml`. Cette fiche ne les ajoute pas.
 
 `RequestCorrelationFilter` lit l’en-tête `X-Request-Id`. S’il est absent ou vide, il génère douze caractères hexadécimaux issus d’un UUID, le place dans le MDC sous `requestId`, et le renvoie dans la réponse. `GlobalExceptionHandler` et le layout de log JSON s’en servent. `HealthV1Controller` rappelle le nom de cet en-tête.
 
-`RequestTimingFilter` est enregistré par `RequestTimingFilterConfig` et alimente `ApplicationMetricsCollector`. Le seuil de requête lente est `dartchain.ops.slow-request-threshold-ms`, défaut 2000. Les autres seuils lus dans `application.yaml` sont `mempool-alert-threshold` 50, `http-error-alert-threshold` 10 et `rbac-denied-alert-threshold` 20. `OpsMetricsService.buildAlerts` compare ces nombres à des compteurs du processus et ajoute des `OpsAlertResponse` de codes `MEMPOOL_HIGH`, `P2P_DISCONNECTED`, `CHAIN_INVALID` et l’alerte d’erreurs HTTP. Ce sont des objets dans la réponse de snapshot (`/api/ops/snapshot` et `/api/v1/ops/snapshot`). Aucun envoi vers un service d’astreinte n’est décrit dans ce service. Les seuils restent de la configuration.
+`RequestTimingFilter` est enregistré par `RequestTimingFilterConfig` et alimente `ApplicationMetricsCollector`. Le seuil de requête lente est `r4v3chain.ops.slow-request-threshold-ms`, défaut 2000. Les autres seuils lus dans `application.yaml` sont `mempool-alert-threshold` 50, `http-error-alert-threshold` 10 et `rbac-denied-alert-threshold` 20. `OpsMetricsService.buildAlerts` compare ces nombres à des compteurs du processus et ajoute des `OpsAlertResponse` de codes `MEMPOOL_HIGH`, `P2P_DISCONNECTED`, `CHAIN_INVALID` et l’alerte d’erreurs HTTP. Ce sont des objets dans la réponse de snapshot (`/api/ops/snapshot` et `/api/v1/ops/snapshot`). Aucun envoi vers un service d’astreinte n’est décrit dans ce service. Les seuils restent de la configuration.
 
 Compose vérifie Postgres par `pg_isready`. Le healthcheck backend partagé interroge `http://localhost:8080/actuator/health` puis `http://localhost:8080/api/health`. Le frontend default interroge la racine HTTP du conteneur. Render utilise `healthCheckPath: /api/health`. `HealthController` et `HealthV1Controller` incluent le mode de persistance. `PersistenceModeInfoContributor` le republie sur actuator info.
 
 JaCoCo est le plugin `jacoco-maven-plugin` du module backend. Le ratio de lignes minimal est `${jacoco.minimum.line-ratio}` égal à `0.65`. Le job CI `backend` lance `./mvnw -q verify`, ce qui exécute cette barre. Ce n’est pas un tableau de bord de production.
 
-Le format de log indiqué par les métadonnées d’ops est JSON en prod et staging (`loggingFormat` = `json-en-prod-staging`). `application-staging.yaml` met le logger `io.dartchain` en DEBUG ; le profil prod le met en INFO.
+Le format de log indiqué par les métadonnées d’ops est JSON en prod et staging (`loggingFormat` = `json-en-prod-staging`). `application-staging.yaml` met le logger `io.r4v3chain` en DEBUG ; le profil prod le met en INFO.
 
 ## Correspondance avec le code
 
@@ -87,7 +87,7 @@ Le format de log indiqué par les métadonnées d’ops est JSON en prod et stag
 | Health API | `HealthController`, `HealthV1Controller` |
 | Corrélation | `RequestCorrelationFilter.REQUEST_ID_HEADER` = `X-Request-Id` |
 | Durée | `RequestTimingFilter` |
-| Seuils | propriétés `dartchain.ops.*-threshold` |
+| Seuils | propriétés `r4v3chain.ops.*-threshold` |
 | Alertes internes | `OpsMetricsService.buildAlerts` |
 | Snapshot | `/api/ops/snapshot`, `/api/v1/ops/snapshot` |
 | Compose | ancre `x-backend-healthcheck`, `pg_isready` |

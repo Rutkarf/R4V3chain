@@ -10,7 +10,7 @@ Moyen. Partiellement confirmé : le branchement des stores est lu dans le code ;
 
 ## Sources analysées
 
-- `application.yaml` : `dartchain.persistence.mode` défaut `memory`, chemins `*_PATH`
+- `application.yaml` : `r4v3chain.persistence.mode` défaut `memory`, chemins `*_PATH`
 - `application-postgres.yaml` : Flyway `enabled: true`, `ddl-auto: validate`
 - Annotations `@ConditionalOnProperty` des stores JSON, JPA et mémoire
 - `InMemoryFaqQuestionStore`, `JsonFaqQuestionStore`
@@ -57,9 +57,9 @@ stateDiagram-v2
 
 ## Explication
 
-Au démarrage, la propriété `dartchain.persistence.mode` vaut `memory` si `DARTCHAIN_PERSISTENCE_MODE` n’est pas fournie. Les classes dont la condition est `memory` avec `matchIfMissing = true` deviennent les stores actifs. Elles lisent et écrivent les fichiers nommés par les propriétés de chemin. Un redémarrage retrouve les comptes, la chaîne, le chat ou les quêtes seulement si ces fichiers sont encore là. Un conteneur sans volume sur `data/` repart donc d’un état vide ou des fichiers copiés dans l’image. Ce n’est pas une base en mémoire pure pour ces agrégats : le support est le fichier. Les sessions et jetons de rafraîchissement du mode mémoire, eux, passent par `InMemorySessionStore` et `InMemoryRefreshTokenStore`, donc par la RAM du processus.
+Au démarrage, la propriété `r4v3chain.persistence.mode` vaut `memory` si `R4V3CHAIN_PERSISTENCE_MODE` n’est pas fournie. Les classes dont la condition est `memory` avec `matchIfMissing = true` deviennent les stores actifs. Elles lisent et écrivent les fichiers nommés par les propriétés de chemin. Un redémarrage retrouve les comptes, la chaîne, le chat ou les quêtes seulement si ces fichiers sont encore là. Un conteneur sans volume sur `data/` repart donc d’un état vide ou des fichiers copiés dans l’image. Ce n’est pas une base en mémoire pure pour ces agrégats : le support est le fichier. Les sessions et jetons de rafraîchissement du mode mémoire, eux, passent par `InMemorySessionStore` et `InMemoryRefreshTokenStore`, donc par la RAM du processus.
 
-En mode `postgres`, Flyway applique V1 à V14 si la base est vide ou en retard, puis Hibernate valide le schéma sans le modifier (`ddl-auto: validate`). Les stores `Jpa*` prennent le relais. Un redémarrage conserve les lignes tant que le volume Postgres existe. Compose nomme au moins `dartchain_pg_data` pour le profil `default`. Les autres profils ont leurs volumes (`dartchain_pg_dev_data` a été lu pour `postgres-dev`).
+En mode `postgres`, Flyway applique V1 à V14 si la base est vide ou en retard, puis Hibernate valide le schéma sans le modifier (`ddl-auto: validate`). Les stores `Jpa*` prennent le relais. Un redémarrage conserve les lignes tant que le volume Postgres existe. Compose nomme au moins `r4v3chain_pg_data` pour le profil `default`. Les autres profils ont leurs volumes (`r4v3chain_pg_dev_data` a été lu pour `postgres-dev`).
 
 La FAQ ne suit pas ce basculement. `JsonFaqQuestionStore` est le store du mode mémoire. `InMemoryFaqQuestionStore` est sélectionné lorsque le mode vaut `postgres`. Les questions tiennent dans une liste en RAM. Il n’y a pas de table `faq_questions`. Au redémarrage d’un backend en profil postgres, la FAQ repart vide alors que `users` ou `blocks` restent en base. C’est une anomalie confirmée par les annotations et par l’inventaire des migrations.
 

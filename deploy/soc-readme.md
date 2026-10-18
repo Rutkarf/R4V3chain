@@ -1,4 +1,4 @@
-# SOC 1 & SOC 2 (Type 1 / Type 2) — DartChain
+# SOC 1 & SOC 2 (Type 1 / Type 2) — R4V3chain
 
 > **Ce dépôt ne délivre pas de certification AICPA.**  
 > Les fichiers ci-dessous cartographient la couverture **technique** pour préparer un audit.
@@ -16,7 +16,7 @@
 2. API :
    - `POST /api/v1/admin/unlock` `{ "seed": "…" }` → `unlockToken`
    - `GET /api/v1/admin/export?format=json|txt|csv` + header `X-Admin-Unlock-Token`
-3. Config serveur : `DARTCHAIN_ADMIN_SEED_SHA256` (hash, jamais la phrase).
+3. Config serveur : `R4V3CHAIN_ADMIN_SEED_SHA256` (hash, jamais la phrase).
 4. Exports : users (sans hashes), auth audit, faucet, blocks, pending, ops, contrôles SOC.
 
 ## Vérifs

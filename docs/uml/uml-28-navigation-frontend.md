@@ -10,7 +10,7 @@ Moyen. `routes = []` est confirmé par le code. Le graphe d’onglets est dédui
 
 ## Sources analysées
 
-- `apps/dartchain-frontend/Dart/src/app/app.routes.ts`
+- `apps/r4v3chain-frontend/R4V3/src/app/app.routes.ts`
 - `app.ts` : `activeShowcaseTab`, `activeBottomTab`, `onShowcaseTabChange`, `onBottomTabChange`
 - `showcase/models/showcase-tab.model.ts`
 - `dock/services/dock-navigation.service.ts`

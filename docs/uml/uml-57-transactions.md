@@ -10,7 +10,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- `io.dartchain.backend.blockchain.model.Transaction`
+- `io.r4v3chain.backend.blockchain.model.Transaction`
 - `PendingTransaction`
 - `PendingTransactionEntity` et `V6__blockchain.sql`
 - `BlockchainService.minePendingTransactions` et `mine`
@@ -18,7 +18,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 - `PendingTransactionController`, `PendingTransactionServiceImpl.minePendingTransaction`
 - `TransactionController` POST `/api/transactions`
 - `TransactionValidationService`
-- `application.yaml` : `dartchain.security.strict-pending-signatures: true`
+- `application.yaml` : `r4v3chain.security.strict-pending-signatures: true`
 
 ## Éléments représentés
 
@@ -60,7 +60,7 @@ sequenceDiagram
 
 Deux entrées de minage coexistent. `BlockchainService.minePendingTransactions(minerAddress)` construit un bloc à partir du pool ; `BlockchainController` l’expose en POST `/api/blockchain/mine` (corps `MineRequest.minerAddress`) et POST `/api/blockchain/mine/{minerAddress}`. Les deux passent par `RoleAuthorizationService.authorizeMutation` (action `blockchain.mine`) et `AuthService.ensureWalletOwnership`. `PendingTransactionServiceImpl.minePendingTransaction(String id)` mine une transaction identifiée, exposée par `PendingTransactionController`. `BlockchainService` contient aussi `mineBlock(String data)` et une méthode privée `mine(Block)` qui ajuste nonce et hash. Le diagramme retient le chemin mempool vers bloc, qui est celui du contrôleur principal.
 
-`dartchain.security.strict-pending-signatures` vaut `true`. `TransactionValidationService` documente un mode permissif déprécié lorsque le drapeau est `false` (commentaire de phase N). Avec le défaut lu, une transaction en attente doit porter une signature acceptée par ce service. La colonne SQL `signature` peut néanmoins être nulle : la contrainte stricte est applicative, pas un `NOT NULL` de V6. `system_reward` permet à une transaction marquée récompense système de suivre une autre règle de signature ; le détail de cette exception n’est pas recopié au-delà du booléen et du drapeau. Le booléen n’est pas un journal d’événements (fiche 59).
+`r4v3chain.security.strict-pending-signatures` vaut `true`. `TransactionValidationService` documente un mode permissif déprécié lorsque le drapeau est `false` (commentaire de phase N). Avec le défaut lu, une transaction en attente doit porter une signature acceptée par ce service. La colonne SQL `signature` peut néanmoins être nulle : la contrainte stricte est applicative, pas un `NOT NULL` de V6. `system_reward` permet à une transaction marquée récompense système de suivre une autre règle de signature ; le détail de cette exception n’est pas recopié au-delà du booléen et du drapeau. Le booléen n’est pas un journal d’événements (fiche 59).
 
 `TransactionController` publie `POST /api/transactions` sous le préfixe `/api`. Cette écriture n’est pas dans la liste `permitAll` de `SecurityConfig` : elle tombe sous `.anyRequest().authenticated()`, en plus de la validation métier.
 

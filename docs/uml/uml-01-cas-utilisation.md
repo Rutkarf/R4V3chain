@@ -11,9 +11,9 @@ Confirmé par le code.
 ## Sources analysées
 
 - `SecurityConfig` : `permitAll` et `anyRequest().authenticated()`.
-- Contrôleurs sous `io.dartchain.backend` (42 classes `*Controller`).
+- Contrôleurs sous `io.r4v3chain.backend` (42 classes `*Controller`).
 - `UserRole`, `ChatService.ANONYMOUS_AUTHOR`, `WebSocketConfig`, `AdminUnlockService`, `ProductFeatureService`.
-- Les arbres `dartchainPreSeed` et `dartchainReview` ne sont pas la source de ce diagramme.
+- Les arbres `r4v3chainPreSeed` et `R4V3chainReview` ne sont pas la source de ce diagramme.
 
 ## Éléments représentés
 
@@ -113,7 +113,7 @@ Le faucet est un cas authentifié. `FaucetController.claim` appelle `productFeat
 
 Le showcase regroupe news, FAQ communautaire, chat, launch projects, chart, bannière et graphe. Le changement de statut FAQ (`PATCH /api/showcase/faq/questions/{id}/status`) est réservé à `UserRole.ADMIN` dans `CommunityFaqService.updateStatus`. Le métavers couvre Overpass (`POST /api/metaverse/overpass`, public), les placements et leurs inquiries, WiGLE, l'arène (`/api/metaverse/arena` et `/ws/metaverse-arena`), le trail M4T3R et les rewards. Les personnages sont `GET /api/v1/characters/me` et `GET /api/v1/characters/{userId}`.
 
-L'admin applicatif est `AdminV1Controller` : `GET /status`, `POST /unlock`, `POST /lock`, `GET /export`. `POST /unlock` est `permitAll` et compare un SHA-256 de seed à la propriété `dartchain.admin.seed-sha256`. La valeur n'est pas recopiée ici : [SECRET MASQUÉ]. Le jeton rendu voyage dans l'en-tête `X-Admin-Unlock-Token`. Ce n'est pas une autorité Spring.
+L'admin applicatif est `AdminV1Controller` : `GET /status`, `POST /unlock`, `POST /lock`, `GET /export`. `POST /unlock` est `permitAll` et compare un SHA-256 de seed à la propriété `r4v3chain.admin.seed-sha256`. La valeur n'est pas recopiée ici : [SECRET MASQUÉ]. Le jeton rendu voyage dans l'en-tête `X-Admin-Unlock-Token`. Ce n'est pas une autorité Spring.
 
 Les jobs A5 ne sont pas des utilisateurs de la SPA. Le profil `seed`, l'import de données et `TestnetSettlementService` tournent dans le processus backend. Les pairs A4 sont des nœuds : HTTP `/api/peers` et socket `/ws/peers`.
 

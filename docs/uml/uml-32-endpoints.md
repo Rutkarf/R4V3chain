@@ -12,7 +12,7 @@ Les méthodes HTTP de chaque action ne sont pas toutes recopiées : le préfixe 
 
 ## Sources analysées
 
-- Tous les `*Controller.java` sous `apps/dartchain-backend/src/main/java`
+- Tous les `*Controller.java` sous `apps/r4v3chain-backend/src/main/java`
 - `config/ApiRoutes.java`
 - `shared/config/WebSocketConfig.java`
 - `wallet/infrastructure/web/WalletController.java` (mappings `/create-client` et `/verify` seulement)

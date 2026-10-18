@@ -6,11 +6,11 @@ Regrouper le backend par packages réels et par les 42 contrôleurs, sans énum�
 
 ## Statut
 
-Élevé. Confirmé par le listing `io.dartchain.backend` et par les annotations `@RequestMapping` des contrôleurs.
+Élevé. Confirmé par le listing `io.r4v3chain.backend` et par les annotations `@RequestMapping` des contrôleurs.
 
 ## Sources analysées
 
-- `apps/dartchain-backend/src/main/java/io/dartchain/backend/` et `DartchainBackendApplication.java`
+- `apps/r4v3chain-backend/src/main/java/io/r4v3chain/backend/` et `R4v3chainBackendApplication.java`
 - Contrôleurs `*Controller.java` (42 annotations `@RestController` relevées)
 - `config/ApiRoutes.java` pour les préfixes v1
 - Packages internes observés en échantillon : `application`, `infrastructure/web`, `model`, `dto`, `persistence`
@@ -25,7 +25,7 @@ Le backend compte environ 423 classes sous `src/main/java` et 94 fichiers sous `
 
 ```mermaid
 flowchart TB
-  app[DartchainBackendApplication]
+  app[R4v3chainBackendApplication]
   app --> web[Couche HTTP controleurs]
   web --> admin[admin]
   web --> api[api contrat v1]
@@ -50,7 +50,7 @@ Légende : les boîtes du milieu sont des regroupements de packages, pas de nouv
 
 ## Explication
 
-Packages présents directement sous `io.dartchain.backend` :
+Packages présents directement sous `io.r4v3chain.backend` :
 
 `admin`, `api`, `auth`, `blockchain`, `chain`, `character`, `config`, `exchange`, `explorer`, `faucet`, `live`, `m4t3r`, `metaverse`, `ops`, `p2p`, `peer`, `peers`, `persistence`, `product`, `quests`, `shared`, `showcase`, `tools`, `utils`, `wallet`, `web`.
 
@@ -135,7 +135,7 @@ Aucun fichier `.sol` n’est dans le produit. Les « contrats » métier sont de
 
 ## Correspondance avec le code
 
-Entrée : `io.dartchain.backend.DartchainBackendApplication`. Build : `apps/dartchain-backend/pom.xml`, parent Spring Boot `3.5.14`, artefact `dartchain-backend` version `1.0.0`.
+Entrée : `io.r4v3chain.backend.R4v3chainBackendApplication`. Build : `apps/r4v3chain-backend/pom.xml`, parent Spring Boot `3.5.14`, artefact `r4v3chain-backend` version `1.0.0`.
 
 Les contrôleurs d’un domaine suivent en général `…/infrastructure/web/`. Les services suivent `…/application/`. Les types métier suivent `…/model/`. Exemples lus : `faucet`, `blockchain`, `auth`, `admin`, `wallet`, `showcase`.
 

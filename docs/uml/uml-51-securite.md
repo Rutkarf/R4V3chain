@@ -10,12 +10,12 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- `io.dartchain.backend.shared.config.SecurityConfig`
+- `io.r4v3chain.backend.shared.config.SecurityConfig`
 - `BearerTokenAuthenticationFilter`, `RateLimitFilter`
 - `SecurityHeadersFilter`
 - `ActuatorAccessFilter`, `RequestCorrelationFilter`, `RequestTimingFilter`, `LegacyApiDeprecationFilter` (présence confirmée)
 - `application.yaml` : rate limit, `restrict-actuator`, `strict-pending-signatures`
-- `apps/dartchain-backend/pom.xml` : artefact BouncyCastle `bcprov-jdk18on`
+- `apps/r4v3chain-backend/pom.xml` : artefact BouncyCastle `bcprov-jdk18on`
 - `WebSocketConfig`
 
 Aucun secret n’est recopié.
@@ -91,9 +91,9 @@ Tout le reste est `authenticated`. Les mutations de minage, par exemple, ne sont
 
 Le rate limit configuré est `max-requests: 60` et `window-ms: 60000`. En mode postgres le compteur est la table `rate_limit_buckets` ; en mode mémoire c’est `InMemoryRateLimitCounterStore`.
 
-`dartchain.ops.restrict-actuator` vaut `false` dans `application.yaml` et `true` dans les profils staging et prod. L’exposition actuator de base est `health,info`. Le profil staging ajoute `metrics,prometheus` ; le profil prod ajoute `metrics`. Ce n’est pas un serveur Prometheus déployé (fiche 60).
+`r4v3chain.ops.restrict-actuator` vaut `false` dans `application.yaml` et `true` dans les profils staging et prod. L’exposition actuator de base est `health,info`. Le profil staging ajoute `metrics,prometheus` ; le profil prod ajoute `metrics`. Ce n’est pas un serveur Prometheus déployé (fiche 60).
 
-`dartchain.security.strict-pending-signatures` vaut `true`. `TransactionValidationService` mentionne un mode permissif conservé lorsque ce drapeau est faux. Le défaut lu est le mode strict.
+`r4v3chain.security.strict-pending-signatures` vaut `true`. `TransactionValidationService` mentionne un mode permissif conservé lorsque ce drapeau est faux. Le défaut lu est le mode strict.
 
 BouncyCastle : l’artefact `org.bouncycastle:bcprov-jdk18on` est déclaré dans le `pom.xml` (version lue dans `pom.xml` : 1.84). Cette fiche s’arrête à « dépendance déclarée ». Elle ne décrit pas d’algorithme.
 
@@ -107,13 +107,13 @@ Les WebSockets sont `permitAll` au niveau HTTP, et `WebSocketConfig` ajoute `Web
 | CSRF off | `.csrf(AbstractHttpConfigurer::disable)` |
 | Sans état | `SessionCreationPolicy.STATELESS` |
 | Bearer | `BearerTokenAuthenticationFilter` |
-| Débit | `RateLimitFilter`, `dartchain.rate-limit` |
+| Débit | `RateLimitFilter`, `r4v3chain.rate-limit` |
 | En-têtes | `SecurityHeadersFilter` |
-| Actuator | `ActuatorAccessFilter`, `dartchain.ops.restrict-actuator` |
+| Actuator | `ActuatorAccessFilter`, `r4v3chain.ops.restrict-actuator` |
 | Corrélation | `RequestCorrelationFilter` |
 | Durée | `RequestTimingFilter` |
 | Alias legacy | `LegacyApiDeprecationFilter` |
-| Signatures mempool | `dartchain.security.strict-pending-signatures` |
+| Signatures mempool | `r4v3chain.security.strict-pending-signatures` |
 | Bibliothèque crypto | dépendance déclarée `bcprov-jdk18on` |
 
 `password-min-length: 6` est une règle auth, pas un filtre servlet. `allow-server-wallet-create: false` coexiste avec le `permitAll` de `POST /api/wallets/create`.

@@ -4,57 +4,58 @@
 # Avant déploiement :
 # 1. Pousser l'image : voir deploy/docker-hub.env.example
 # 2. Remplacer DOCKERHUB_USER ci-dessous
-# 3. Après le 1er déploiement, définir DARTCHAIN_CORS_EXTRA avec l'URL *.pages.dev
+# 3. Après le 1er déploiement, définir R4V3CHAIN_CORS_EXTRA avec l'URL *.pages.dev
 
 databases:
-  - name: dartchain-db
+  - name: r4v3chain-db
     plan: free
-    databaseName: dartchain
-    user: dartchain
+    databaseName: r4v3chain
+    user: r4v3chain
 
 services:
   - type: web
-    name: dartchain-backend
+    name: r4v3chain-backend
     runtime: image
     plan: free
     region: frankfurt
     image:
-      url: docker.io/DOCKERHUB_USER/dartchain-backend:1.0.0
+      # Image Hub actuelle (cutover → r4v3chain-backend : voir INFRA-MIGRATION.md)
+      url: docker.io/DOCKERHUB_USER/r4v3chain-backend:1.0.0
     healthCheckPath: /api/health
     envVars:
       - key: PORT
         value: "8080"
       - key: SPRING_PROFILES_ACTIVE
         value: postgres,prod
-      - key: DARTCHAIN_PERSISTENCE_MODE
+      - key: R4V3CHAIN_PERSISTENCE_MODE
         value: postgres
-      - key: DARTCHAIN_PRODUCT_FAUCET_ENABLED
+      - key: R4V3CHAIN_PRODUCT_FAUCET_ENABLED
         value: "true"
       - key: JAVA_TOOL_OPTIONS
         value: -Xmx384m
       - key: DATABASE_HOST
         fromDatabase:
-          name: dartchain-db
+          name: r4v3chain-db
           property: host
       - key: DATABASE_PORT
         fromDatabase:
-          name: dartchain-db
+          name: r4v3chain-db
           property: port
       - key: DATABASE_NAME
         fromDatabase:
-          name: dartchain-db
+          name: r4v3chain-db
           property: database
       - key: DATABASE_USERNAME
         fromDatabase:
-          name: dartchain-db
+          name: r4v3chain-db
           property: user
       - key: DATABASE_PASSWORD
         fromDatabase:
-          name: dartchain-db
+          name: r4v3chain-db
           property: password
-      - key: DARTCHAIN_JWT_SECRET
+      - key: R4V3CHAIN_JWT_SECRET
         generateValue: true
-      - key: DARTCHAIN_ACTUATOR_TOKEN
+      - key: R4V3CHAIN_ACTUATOR_TOKEN
         generateValue: true
-      - key: DARTCHAIN_CORS_EXTRA
+      - key: R4V3CHAIN_CORS_EXTRA
         value: https://YOUR-PROJECT.pages.dev

@@ -1,7 +1,7 @@
-# SOC 1 — carte de contrôles (DartChain)
+# SOC 1 — carte de contrôles (R4V3chain)
 
 > SOC 1 (SSAE 18) porte sur les **contrôles internes relatifs au reporting financier (ICFR)** chez un service organization.  
-> DartChain démo n’est pas un SO financier ; cette carte documente les contrôles ledger / accès utiles si un auditeur élargit le périmètre.
+> R4V3chain démo n’est pas un SO financier ; cette carte documente les contrôles ledger / accès utiles si un auditeur élargit le périmètre.
 
 | Critère (extrait) | Contrôle | Preuve |
 |---|---|---|

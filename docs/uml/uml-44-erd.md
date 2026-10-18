@@ -10,7 +10,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- Entités de `io.dartchain.backend.persistence.entity`
+- Entités de `io.r4v3chain.backend.persistence.entity`
 - `V1__auth.sql`, `V2__quests.sql`, `V6__blockchain.sql`, `V7__exchange_ledger.sql`, `V11__auth_ab.sql`, `V12__ad_persistence.sql`, `V14__oauth_identities.sql`, et les autres migrations V3–V5, V8–V10, V13 pour les colonnes ajoutées
 - Recherche `@ManyToOne` / `@OneToMany` : aucune occurrence dans le backend
 

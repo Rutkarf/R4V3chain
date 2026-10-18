@@ -10,12 +10,12 @@ Confirmé par le code.
 
 ## Sources analysées
 
-- `DartchainBackendApplication`, package `io.dartchain.backend`.
-- Frontend `apps/dartchain-frontend/Dart`, `app.routes.ts`, `environment.ts`.
+- `R4v3chainBackendApplication`, package `io.r4v3chain.backend`.
+- Frontend `apps/r4v3chain-frontend/R4V3`, `app.routes.ts`, `environment.ts`.
 - `WebSocketConfig` : `/ws/peers`, `/ws/live`, `/ws/chat`, `/ws/metaverse-arena`.
 - `SecurityConfig`, filtres servlet.
 - `docker-compose.yml`, `infra/nginx/nginx.prod.conf`, `wrangler.toml`, `deploy/render.yaml`.
-- Propriété `dartchain.persistence.mode`.
+- Propriété `r4v3chain.persistence.mode`.
 
 ## Éléments représentés
 
@@ -33,9 +33,9 @@ Confirmé par le code.
 skinparam shadowing false
 skinparam componentStyle rectangle
 actor "Navigateur" as user
-component "SPA Angular\napps/dartchain-frontend/Dart" as spa
+component "SPA Angular\napps/r4v3chain-frontend/R4V3" as spa
 component "nginx\nfrontend ou nginx.prod.conf" as nginx
-component "Spring Boot\nDartchainBackendApplication" as api
+component "Spring Boot\nR4v3chainBackendApplication" as api
 component "SecurityFilterChain\nBearer + RateLimit" as sec
 component "Controleurs REST\n42 *Controller" as rest
 component "WebSocketConfig" as wsc
@@ -71,31 +71,31 @@ rest --> oauth : OAuthV1Controller
 
 ## Explication
 
-Le frontend est une SPA d'une seule page. `export const routes: Routes = [];` dans `app.routes.ts`. Le README le confirme. L'interface est le shell `app.html` : navbar, showcase, dock, graphe, `app-three-floor`. Les services HTTP (`auth.service.ts`, `blockchain-api.service.ts`, `faucet.service.ts`, `quests-api.service.ts`, et les autres services du dossier `src/app`) appellent l'API. En production Pages, `wrangler.toml` publie `dist/browser` sous le nom `dartchain`, avec repli SPA. L'API citée par le README est `https://dartchain-backend-1-0-0.onrender.com`. Le blueprint `deploy/render.yaml` nomme le service web `dartchain-backend` et la base `dartchain-db`.
+Le frontend est une SPA d'une seule page. `export const routes: Routes = [];` dans `app.routes.ts`. Le README le confirme. L'interface est le shell `app.html` : navbar, showcase, dock, graphe, `app-three-floor`. Les services HTTP (`auth.service.ts`, `blockchain-api.service.ts`, `faucet.service.ts`, `quests-api.service.ts`, et les autres services du dossier `src/app`) appellent l'API. En production Pages, `wrangler.toml` publie `dist/browser` sous le nom `r4v3chain`, avec repli SPA. L'API citée par le README est `https://r4v3chain-backend-1-0-0.onrender.com`. Le blueprint `deploy/render.yaml` nomme le service web `r4v3chain-backend` et la base `r4v3chain-db`.
 
-Nginx est le frontal HTTP du conteneur frontend. `apps/dartchain-frontend/Dart/nginx.conf` proxifie `/api/`, `/ws/` et l'actuator vers `backend:8080`, et répond 403 sur `/actuator/metrics` et `/actuator/prometheus`. `infra/nginx/nginx.prod.conf` est le profil prod compose : l'upstream `dartchain_backend` pointe vers `backend-a:8080` et `backend-b:8080` (`least_conn`), et les locations `/api/`, `/ws/`, `/actuator/` sont proxifiées. La location `/` sert les fichiers statiques (`try_files` vers `index.html`).
+Nginx est le frontal HTTP du conteneur frontend. `apps/r4v3chain-frontend/R4V3/nginx.conf` proxifie `/api/`, `/ws/` et l'actuator vers `backend:8080`, et répond 403 sur `/actuator/metrics` et `/actuator/prometheus`. `infra/nginx/nginx.prod.conf` est le profil prod compose : l'upstream `r4v3chain_backend` pointe vers `backend-a:8080` et `backend-b:8080` (`least_conn`), et les locations `/api/`, `/ws/`, `/actuator/` sont proxifiées. La location `/` sert les fichiers statiques (`try_files` vers `index.html`).
 
 Le backend est un seul processus Spring. `SecurityConfig` construit la `SecurityFilterChain` (CSRF désactivé, sessions `STATELESS`, CORS). Deux filtres y sont ajoutés devant `UsernamePasswordAuthenticationFilter` : `BearerTokenAuthenticationFilter` et `RateLimitFilter`. D'autres filtres sont des filtres servlet, pas des `addFilterBefore` de cette chaîne : `SecurityHeadersFilter`, `LegacyApiDeprecationFilter`, `RequestCorrelationFilter`, `RequestTimingFilter`, `ActuatorAccessFilter`. Ils font partie du même processus, pas de la même chaîne Spring Security. La fiche 11 détaille cette coupe.
 
 `WebSocketConfig` enregistre quatre handlers, chacun avec `WebSocketAuthHandshakeInterceptor`. Les chemins `/ws/**` sont `permitAll` au niveau HTTP. L'intercepteur de handshake peut quand même lire un JWT. `LiveSocketHandler.afterConnectionEstablished` demande un snapshot à `LiveUpdateBroadcastService.sendSnapshot`.
 
-La persistance est un choix de profil. Défaut `memory` (`DARTCHAIN_PERSISTENCE_MODE`). Les chemins JSON sont des noms de propriétés : `BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`. Le mode `postgres` utilise le driver PostgreSQL, Flyway (`V1` à `V14`) et les entités JPA. Render force `postgres,prod` et `DARTCHAIN_PERSISTENCE_MODE=postgres`.
+La persistance est un choix de profil. Défaut `memory` (`R4V3CHAIN_PERSISTENCE_MODE`). Les chemins JSON sont des noms de propriétés : `BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`. Le mode `postgres` utilise le driver PostgreSQL, Flyway (`V1` à `V14`) et les entités JPA. Render force `postgres,prod` et `R4V3CHAIN_PERSISTENCE_MODE=postgres`.
 
-Les composants externes ne sont pas embarqués. `OverpassProxyController` proxifie Overpass. `CryptoRatesProxyService` interroge CoinGecko et GeckoTerminal. WiGLE est mocké par défaut (`dartchain.wigle.mock-enabled: true`). Les fournisseurs OAuth existent dans la config et sont désactivés. Leurs secrets ne sont pas recopiés : [SECRET MASQUÉ].
+Les composants externes ne sont pas embarqués. `OverpassProxyController` proxifie Overpass. `CryptoRatesProxyService` interroge CoinGecko et GeckoTerminal. WiGLE est mocké par défaut (`r4v3chain.wigle.mock-enabled: true`). Les fournisseurs OAuth existent dans la config et sont désactivés. Leurs secrets ne sont pas recopiés : [SECRET MASQUÉ].
 
 ## Correspondance avec le code
 
 | Composant | Emplacement |
 | --- | --- |
-| SPA | `apps/dartchain-frontend/Dart` |
-| Entrée backend | `DartchainBackendApplication` |
+| SPA | `apps/r4v3chain-frontend/R4V3` |
+| Entrée backend | `R4v3chainBackendApplication` |
 | Sécurité | `shared/config/SecurityConfig.java` |
 | WebSocket | `shared/config/WebSocketConfig.java` |
 | Handlers | `PeerSocketHandler`, `LiveSocketHandler`, `ChatSocketHandler`, `ArenaSocketHandler` |
 | Nginx prod | `infra/nginx/nginx.prod.conf` |
 | Compose | `docker-compose.yml` |
-| Pages | `wrangler.toml` (`name = "dartchain"`) |
-| Render | `deploy/render.yaml` (`dartchain-backend`, `dartchain-db`) |
+| Pages | `wrangler.toml` (`name = "r4v3chain"`) |
+| Render | `deploy/render.yaml` (`r4v3chain-backend`, `r4v3chain-db`) |
 
 Images : frontend `node:22-alpine` puis `nginx:1.27-alpine`, backend `eclipse-temurin:21`, Postgres `postgres:16-alpine`.
 

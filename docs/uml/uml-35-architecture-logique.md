@@ -12,7 +12,7 @@ Le code ne nomme pas un dossier unique `domain`. Le domaine vécu est le package
 
 ## Sources analysées
 
-Arborescence sous `io.dartchain.backend` pour `admin`, `auth`, `blockchain`, `faucet`, `showcase`, `wallet`, `persistence`, `shared`. Contrôleurs et services cités dans les vues 23 et 31. Frontend : dossiers `src/app` comme couche de présentation unique (pas de routeur).
+Arborescence sous `io.r4v3chain.backend` pour `admin`, `auth`, `blockchain`, `faucet`, `showcase`, `wallet`, `persistence`, `shared`. Contrôleurs et services cités dans les vues 23 et 31. Frontend : dossiers `src/app` comme couche de présentation unique (pas de routeur).
 
 ## Éléments représentés
 

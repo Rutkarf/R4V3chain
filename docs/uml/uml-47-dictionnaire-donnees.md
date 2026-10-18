@@ -10,7 +10,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- Entités `io.dartchain.backend.persistence.entity`
+- Entités `io.r4v3chain.backend.persistence.entity`
 - Migrations V1 à V14 lues intégralement
 - Mémo de faits : liste des champs, sans annotations `nullable`
 
@@ -47,7 +47,7 @@ end note
 
 Le dictionnaire sert de légende aux fiches 44, 46 et 48. Il ne duplique pas les diagrammes de cardinalité. Une colonne marquée « SQL NOT NULL » l’est parce que le script Flyway lu le dit. L’absence de mention dans ce dictionnaire ne signifie pas que la colonne est facultative côté JPA : il faut lire le `@Column` de l’entité.
 
-Unités métier rappelées par `chain_config` (insert V12) : chain-id `3377`, réseau « DartChain Native », jeton `R4V3`, schéma d’adresse par défaut `evm-compatible`, version de payload `DCv1`. La micro-unité M4T3R est un vocabulaire produit ; elle n’est pas une colonne de `chain_config`.
+Unités métier rappelées par `chain_config` (insert V12) : chain-id `3377`, réseau « R4V3chain Native », jeton `R4V3`, schéma d’adresse par défaut `evm-compatible`, version de payload `DCv1`. La micro-unité M4T3R est un vocabulaire produit ; elle n’est pas une colonne de `chain_config`.
 
 ### users — `UserEntity`
 
@@ -92,7 +92,7 @@ Mêmes colonnes et types que `auth_sessions`. FK identique dans V11. Le TTL conf
 | Colonne | Champ | Type Java | Contrainte SQL lue | Rôle |
 | --- | --- | --- | --- | --- |
 | `id` | `id` | `UUID` | PK | Identité locale |
-| `user_id` | `userId` | `UUID` | NOT NULL, FK CASCADE | Compte DartChain |
+| `user_id` | `userId` | `UUID` | NOT NULL, FK CASCADE | Compte R4V3chain |
 | `provider` | `provider` | `String` | NOT NULL, VARCHAR(32) | Fournisseur |
 | `provider_subject` | `providerSubject` | `String` | NOT NULL, VARCHAR(255), UQ avec provider | Sujet distant |
 | `created_at` | `createdAt` | `Instant` | NOT NULL, défaut NOW() | Lien créé |

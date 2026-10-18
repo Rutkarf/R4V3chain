@@ -1,10 +1,12 @@
-# Cloudflare — frontend Angular SPA (dartchain.pages.dev)
+# Cloudflare — frontend Angular SPA
+# Projet Wrangler actuel : r4v3chain → https://r4v3chain.pages.dev
+# Bascule R4V3chain : voir deploy/INFRA-MIGRATION.md
 # Build CI / Pages Git : bash scripts/cloudflare-build.sh
 # Deploy CI / Pages Git : npx wrangler deploy
 
-name = "dartchain"
+name = "r4v3chain"
 compatibility_date = "2025-07-16"
 
 [assets]
-directory = "./apps/dartchain-frontend/Dart/dist/browser"
+directory = "./apps/r4v3chain-frontend/R4V3/dist/browser"
 not_found_handling = "single-page-application"

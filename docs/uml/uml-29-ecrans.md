@@ -10,7 +10,7 @@ Moyen. La liste des dossiers est confirmée par le répertoire. Leur lecture com
 
 ## Sources analysées
 
-- Listing de `apps/dartchain-frontend/Dart/src/app/`
+- Listing de `apps/r4v3chain-frontend/R4V3/src/app/`
 - `app.html` pour les zones réellement montées
 - `components/depth-rail/` (cinq fichiers)
 - `environments/environment.ts` : `starConquestEnabled: false`
@@ -85,7 +85,7 @@ Les dossiers `exchange` et le composant `app-graph` couvrent le marché affiché
 
 ## Correspondance avec le code
 
-- Liste : dossiers de `apps/dartchain-frontend/Dart/src/app`.
+- Liste : dossiers de `apps/r4v3chain-frontend/R4V3/src/app`.
 - Montage : `app.html`.
 - Flag : `export const environment = buildEnvironment({ starConquestEnabled: false, ... })`.
 - Routes : tableau vide, donc aucun dossier n’est une page.

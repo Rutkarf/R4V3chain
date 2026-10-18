@@ -62,7 +62,7 @@ La notation `ref` est textuelle dans les actions : PlantUML ne charge pas les fi
 
 ## Explication
 
-La vue d'ensemble sert à voir l'ordre des grands morceaux sans répéter chaque appel. Dans DartChain, ces morceaux ne sont pas un seul workflow obligatoire. Un visiteur peut ouvrir `/ws/live` sans avoir miné, et il peut miner sans garder le socket. Le `fork` du diagramme exprime cette indépendance. Le point commun est le processus `DartchainBackendApplication`.
+La vue d'ensemble sert à voir l'ordre des grands morceaux sans répéter chaque appel. Dans R4V3chain, ces morceaux ne sont pas un seul workflow obligatoire. Un visiteur peut ouvrir `/ws/live` sans avoir miné, et il peut miner sans garder le socket. Le `fork` du diagramme exprime cette indépendance. Le point commun est le processus `R4v3chainBackendApplication`.
 
 L'interaction auth commence par `POST /api/v1/auth/login` (`permitAll`). `AuthService.login` vérifie le compte et le mot de passe, puis `buildAuthResponse` appelle `NativeJwtService.createAccessToken` et `RefreshTokenStore.create`. Une requête suivante porte `Authorization: Bearer`. `BearerTokenAuthenticationFilter.doFilterInternal` appelle `AuthTokenResolver.resolveAccount`, qui appelle `parseAndValidate` si le jeton a trois segments. Le détail des alternatives 401 est dans la fiche 04. `POST /api/auth/login` est la même interaction côté `AuthService`, sans route `refresh` sur `AuthController`.
 

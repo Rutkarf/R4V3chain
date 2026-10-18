@@ -1,534 +1,362 @@
-# DartChain
+<div align="center">
 
-[![CI](https://github.com/Rutkarf/dartchain/actions/workflows/ci.yml/badge.svg)](https://github.com/Rutkarf/dartchain/actions/workflows/ci.yml)
-[![Live](https://img.shields.io/badge/live-dartchain.pages.dev-1B4DFF)](https://dartchain.pages.dev)
-[![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)](#prérequis)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?logo=springboot&logoColor=white)](#architecture)
-[![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)](#architecture)
-[![Node](https://img.shields.io/badge/Node-22-339933?logo=nodedotjs&logoColor=white)](#prérequis)
+```
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║     ██████╗ ██╗  ██╗██╗   ██╗██████╗  ██████╗██╗  ██╗       ║
+║     ██╔══██╗██║  ██║██║   ██║╚════██╗██╔════╝██║  ██║       ║
+║     ██████╔╝███████║██║   ██║ █████╔╝██║     ███████║       ║
+║     ██╔══██╗╚════██║╚██╗ ██╔╝ ╚═══██╗██║     ██╔══██║       ║
+║     ██║  ██║     ██║ ╚████╔╝ ██████╔╝╚██████╗██║  ██║       ║
+║     ╚═╝  ╚═╝     ╚═╝  ╚═══╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝       ║
+║                                                              ║
+║            ◈  PEER ACCOUNTING PROTOCOL  ◈                    ║
+║         R4V3  ·  M4T3R  ·  CAN0PY  ·  SIGNAL                 ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
 
-Démo full-stack d’une **chaîne native** (token **R4V3**, micro-unité **M4T3R**), d’un **wallet / faucet / swap**, et d’un **jumeau 3D du Vieux-Port de Marseille** (OpenStreetMap + Three.js), le tout dans un shell compact 250×550.
+# R4V3chain
+
+**Protocole de comptabilité peer-to-peer** — transferer de la valeur **sans institution** pour autoriser chaque paiement.
+
+[![Demo](https://img.shields.io/badge/◈_DEMO-r4v3chain.pages.dev-0A1220?style=for-the-badge&labelColor=2ec4d6)](https://r4v3chain.pages.dev)
+[![API](https://img.shields.io/badge/API-health-235789?style=for-the-badge&logo=springboot&logoColor=white)](https://r4v3chain-backend-1-0-0.onrender.com/api/health)
+[![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](#-07--stack)
+[![Angular](https://img.shields.io/badge/Angular-21-DD0031?style=for-the-badge&logo=angular&logoColor=white)](#-07--stack)
+[![Spring](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](#-07--stack)
+
+```
+◆ Don't Sell Ur R4V3  ◆  Dreamz In Glitch , H0LD The Sawt  ◆
+```
 
 | | |
-|---|---|
-| **Démo** | [https://dartchain.pages.dev](https://dartchain.pages.dev) |
-| **API prod** | [https://dartchain-backend-1-0-0.onrender.com](https://dartchain-backend-1-0-0.onrender.com) — health : [`/api/health`](https://dartchain-backend-1-0-0.onrender.com/api/health) |
-| **Dépôt GitHub** | [Rutkarf/dartchain](https://github.com/Rutkarf/dartchain) |
-| **Image backend** | [`docker.io/rutkarf/dartchain-backend:1.0.0`](https://hub.docker.com/r/rutkarf/dartchain-backend) |
+|:--|:--|
+| **◈ Vitre démo** | [r4v3chain.pages.dev](https://r4v3chain.pages.dev) |
+| **◈ API** | [`/api/health`](https://r4v3chain-backend-1-0-0.onrender.com/api/health) |
+| **◈ Opérateur** | RJHBZ · SAS R4V3chain |
+| **◈ Canon** | White Paper 0.1.0 · Roadmap N1 · FAITS 001 |
+| **◈ Signal** | **31 / 01 / 2027** · France · Tag LORA + Tag ionosphérique |
 
-> **Ce n’est pas une crypto réelle.** Aucun mainnet, aucun custodian, aucun achat. Tokens de démonstration uniquement. Les données Marseille sont des footprints OSM (précision ~2–5 m), pas un levé IGN.
+> **Ce n’est pas une crypto réelle.** Pas de mainnet, pas de custodian, pas d’achat, **aucun yield garanti**.  
+> Jetons de démonstration uniquement. Peg intention ≠ valuation démo. Document **non audité** · **pas une offre de titres**.
 
----
-
-## Table des matières
-
-1. [Présentation](#présentation)
-2. [Fonctionnalités (live)](#fonctionnalités-live)
-3. [Feuille de route](#feuille-de-route)
-4. [Architecture](#architecture)
-5. [Prérequis](#prérequis)
-6. [Cloner le dépôt](#cloner-le-dépôt)
-7. [Lancer en local](#lancer-en-local)
-8. [Docker Compose](#docker-compose)
-9. [Variables d’environnement](#variables-denvironnement)
-10. [Structure du monorepo](#structure-du-monorepo)
-11. [Scripts utiles](#scripts-utiles)
-12. [Tests et CI](#tests-et-ci)
-13. [Déploiement](#déploiement)
-14. [Attribution](#attribution)
-15. [Licence et avertissements](#licence-et-avertissements)
+</div>
 
 ---
 
-## Présentation
+## ◈ Sommaire
 
-DartChain est un **monorepo** :
-
-- **Frontend** — SPA Angular 21 + Three.js (`apps/dartchain-frontend/Dart`). Une seule page, sans routes : navbar, swap, showcase, dock, chart, overlay Star Conquest, et le sol 3D Marseille (*floor peek*).
-- **Backend** — API Spring Boot 3.5 / Java 21 (`apps/dartchain-backend`). Blockchain démo (blocs, mempool, mine), wallet, faucet, swap, peers P2P, quêtes, showcase, WebSockets, placements, rewards M4T3R.
-
-Chaîne démo : **chain-id 3377**, réseau *DartChain Native*, token natif **R4V3**. Persistance locale : mémoire ou **PostgreSQL 16**.
-
----
-
-## Fonctionnalités (live)
-
-Inventaire aligné sur [dartchain.pages.dev](https://dartchain.pages.dev) et ce dépôt (août 2026).
-
-### Ville 3D — MetaVerseBB (Marseille)
-
-- Spawn Vieux-Port / Ombrière (Quai des Belges), projection locale `marseille-local-v1`
-- Footprints OSM, extrusions, eau du port, collisions, streaming par chunks
-- Marche clavier + joysticks **MOVE** / **VIEW**, caméra 3ᵉ personne
-- Avatar CharacterAnon (mesh FBX/STL, stub NFT)
-- Champ **M4T3R** au sol : cellules, trails, FX de ramassage, traces de pas
-- HUD placements RDC (hit-volumes, inquiry API)
-- Overlay cyberpunk (néons / hologrammes, qualités medium+)
-- Atmosphère, fog, LOD bâtiments, gouverneur de perf (jusqu’à *ultra-low*)
-- Debug F9 (stats M4T3R) et F11 (géo)
-
-### Shell produit
-
-- Viewport cible **250×550**, i18n **FR / EN**, focus trap clavier
-- **Navbar** : ticker live, recherche explorer, sélecteur de projet (launch), état réseau (latence, WebSocket)
-- **Auth** : inscription / connexion (JWT), boutons OAuth (Google, GitHub, Discord, Meta, Apple, Microsoft, X) — souvent non configurés hors prod
-- **Swap** LaunchLab : quote verrouillée 30 s, label slippage 0,5 %, confirm HUD
-- **Chart** token (collapse indépendant)
-
-### Showcase
-
-| Onglet | Contenu |
-|--------|---------|
-| **TOUS** | Fil d’actualités + drawers |
-| **R4V3** | Hub token, piliers, FAQ communauté, whitepaper |
-| **CHAT** | Chat temps réel (WebSocket) |
-| **LABZ** | Launchpad (projets, whitepaper, CTA swap) |
-| **D.A.O** | Votes / preview gouvernance |
-| **MARCHÉ** | Carnet et tokens |
-
-### Dock
-
-| Onglet | Contenu |
-|--------|---------|
-| **Wallet** | Création, solde R4V3, envoi / réception / mine, explorer d’adresse, clés masquées + reveal, copie d’adresse |
-| **Faucet** | Claim testnet m4t3r (compte + wallet), cooldown, historique, export JSON |
-| **Transactions** | Mempool + compositeur |
-| **Chaîne** | Liste / graphe, filtres, export, détail hash/nonce |
-| **Quêtes** | Quotidiennes, auto, mission, coffre hebdo, XP, claim R4V3 |
-| **Peers** | Connexion `ws://` / `wss://`, favoris, latence, sync |
-| **Admin** | Observabilité native (jauges, latence HTTP, événements) — visible uniquement si `isAdmin()` |
-
-### Star Conquest
-
-35 quêtes, 5 galaxies, scanner des étoiles occluses, panneau holographique. La progression se fait par **actions produit** (swap, faucet, login…), pas par un claim magique sur l’étoile. Persistance actuelle : `localStorage`. Univers live : **Ruche** (agent swarm).
-
-### API backend (aperçu)
-
-`/api/health`, `/api/auth`, `/api/blockchain`, `/api/blocks`, `/api/swap`, `/api/crypto-rates`, `/api/quests`, `/api/peers`, `/api/ops`, `/api/m4t3r`, `/api/showcase/*`, `/api/metaverse/overpass`, WebSockets `/ws/live` et `/ws/chat`. Contrats v1 sous `/api/v1/…`.
+| | | |
+|:--|:--|:--|
+| [01 · Vision](#-01--vision--problème) | [02 · Tokenomics](#-02--tokenomics--faits-dossier) | [03 · Protocole](#-03--protocole--os-du-paper) |
+| [04 · Phases](#-04--phases-signal--city) | [05 · Roadmap](#-05--roadmap-n1--jalons) | [06 · Démo](#-06--démo-produit-ce-repo) |
+| [07 · Stack](#-07--stack) | [08 · Quick start](#-08--quick-start) | [09 · Structure](#-09--structure-du-monorepo) |
+| [10 · Disclaimer](#-10--disclaimer--serment) | | |
 
 ---
 
-## Feuille de route
-
-Issu des boards produit et du code — pas d’annonces marketing.
-
-**En cours**
-
-- Sélecteur de slippage mémorisé (le label 0,5 % est déjà en production)
-- Soft-cache des taux de change (anti-spam réseau)
-
-**Bloqué / dépendances**
-
-- Prévisualisation du hash de transaction avant envoi
-- Synchronisation Spring des quêtes Star Conquest (aujourd’hui `localStorage` uniquement)
-- Mint NFT avatar (API stub, mesh local en secours)
-- Géodonnées IGN / BD TOPO (contrainte de licence)
-- Ombrière à l’échelle publiée 46×22 m (le mesh gameplay fait 18,4×12,2 m ; un resize casserait spawn et collisions)
-
-**Préparés dans le code, non branchés en live**
-
-- Autres univers Star Conquest (Nébuleuse, Cortex, Orbital P2P, Grille M4T3R, Zodiac, Aurore)
-- Overlay nuit / réflexions humides Marseille
-- Scène ladder-climb / R4V3 (présente, non montée dans le shell)
-- OAuth réellement provisionné côté serveur
-- Administration des FAQ via API
-- Jumeau plus dense (districts, hologrammes, calibration OSM derrière flags)
-
-Hors scope : mainnet, custody, token réel.
-
----
-
-## Architecture
+## ◈ 01 — Vision & problème
 
 ```
-  Navigateur (Angular 21 + Three.js)
-  dartchain.pages.dev  |  localhost:4200
-           │
-           │  /api  /ws  (proxy en local)
-           ▼
-  Spring Boot 3.5 / Java 21
-  localhost:8080  |  Render
-           │
-           ▼
-  PostgreSQL 16   (ou mémoire si DARTCHAIN_PERSISTENCE_MODE=memory)
+┌─ TRANSMISSION ─────────────────────────────────────────────┐
+│  Le commerce numérique s’appuie encore sur des institutions │
+│  qui valident, annulent et médiatisent.                     │
+│  → coûts · friction · exclusion                             │
+│                                                             │
+│  Sans anti-double-dépense, un expéditeur peut créditer      │
+│  deux destinataires avec le même solde.                     │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-**Frontend** — chaque domaine sous `src/app/{domaine}/` contient typiquement :
+**R4V3chain** propose :
 
-- `components/` — UI du domaine
-- `services/` — logique métier injectable
-- `models/` — types et DTOs locaux
+| Pilier | Rôle |
+|:-------|:-----|
+| ◆ **État ordonné** | Comptes + nonces + `apply(S, tx)` atomique |
+| ◆ **Frais lisibles** | Grille **CAN0PY** — anti-spam, pas de gas opaque |
+| ◆ **Bootstrap explicite** | Phase Signal : centralisation **assumée et déclarée** |
+| ◆ **Faits dossier** | Burn créateur · capital SAS · peg **intention** |
 
-**Transversal (`core/`)** : i18n, config produit, utils Three.js, `shell-feedback.service`.
+> *Chez les Extracteurs le gas danse pour extraire. Ici le prix du passage est fixe.*
 
-| Domaine | Rôle |
-|---------|------|
-| `world-map/` | Carte Marseille OSM / Three.js, M4T3R, placements |
-| `metaverse/` | Floor 3D (`app-three-floor`), character, caméra, joysticks |
-| `navbar/` | Barre supérieure, searchbar, ticker, brand crypto, statut réseau |
-| `blockchain/` | Blocs, transactions, API client |
-| `exchange/` | Swap, taux crypto, chart |
-| `showcase/` | Launchpad, news, chart, DAO, chat, R4V3, marché |
-| `dock/` | Panneaux dock bas |
-| `wallet/`, `faucet/`, `quests/`, `peers/`, `auth/` | Surfaces dock / drawers |
-| `star-conquest/` | Quest graph, particle background, services SC |
-| `r4v3-scene/` | Scènes R4V3 + ladder-climb (démo) |
-| `components/` | Composants **partagés** uniquement (badges 3D, error-banner…) |
+**Cinq Portes** (canon) : Token · Poussière · Feu · Mur · Vitre
 
-Alias TypeScript : `@world-map/*`, `@blockchain/*`, `@navbar/*`, `@metaverse/*`, `@star-conquest/*`, etc. (`tsconfig.json`).
-
-**Backend** — packages `io.dartchain.backend.{domaine}/` :
-
-- `application/` — services
-- `dto/`, `model/`
-- `infrastructure/web/` — contrôleurs REST
-
-Plus de packages globaux `controller/`, `service/`, `dto/` à la racine.
-
----
-
-## Prérequis
-
-Outils à installer **avant** de cloner et de lancer les deux stacks.
-
-| Outil | Version | Usage |
-|-------|---------|--------|
-| **Git** | 2.x | Clone, branches |
-| **Node.js** | **22** (voir `.node-version`) | Frontend Angular, scripts npm backend |
-| **npm** | **9.2+** (`packageManager` frontend : `npm@9.2.0`) | Dépendances JS |
-| **JDK** | **21** (Temurin recommandé) | Spring Boot — le wrapper Maven `./mvnw` suffit, Maven global optionnel |
-| **Docker** + **Compose v2** | Engine 24+ | PostgreSQL 16, stacks `dev` / `default` / `prod` |
-| **curl** / **ss** | — | Scripts ops `apps/dartchain-backend/bin/` |
-
-Recommandé, pas obligatoire :
-
-| Outil | Usage |
-|-------|--------|
-| **pg_isready** (client PostgreSQL) | Détection plus rapide de Postgres local |
-| **Google Chrome** ou Chromium | DevTools + WebGL (la carte 3D exige un GPU / WebGL) |
-| **IDE** | IntelliJ / VS Code / Cursor — Lombok activé pour le backend |
-
-Vérification rapide :
-
-```bash
-git --version
-node -v          # v22.x
-npm -v           # 9.2+
-java -version    # 21
-docker --version
-docker compose version
 ```
-
-Mémoire indicative : ~4 Go RAM pour le couple `ng serve` + Spring + Postgres. WebGL requis pour Marseille / Star Conquest.
-
----
-
-## Cloner le dépôt
-
-Dépôt de production (branch `main` → Cloudflare Pages) :
-
-```bash
-git clone https://github.com/Rutkarf/dartchain.git
-cd dartchain
-```
-
-SSH :
-
-```bash
-git clone git@github.com:Rutkarf/dartchain.git
-cd dartchain
-```
-
-Fork de travail fréquent en local (`origin`) + dépôt Pages (`upstream`) :
-
-```bash
-git clone https://github.com/FrakturKorp/dartchain-.git
-cd dartchain-
-git remote add upstream https://github.com/Rutkarf/dartchain.git
-```
-
-Après un push sur le fork, synchroniser Pages :
-
-```bash
-git push upstream main
+FAITS 001  ⟩  White Paper  ⟩  posts
+     ▲
+ divergence = correction obligatoire
 ```
 
 ---
 
-## Lancer en local
+## ◈ 02 — Tokenomics & faits dossier
 
-### Démarrage rapide
+| Clé | Valeur |
+|:----|:-------|
+| ◆ Token | **R4V3** |
+| ◆ Subunit / frais | **M4T3R** (26 decimals) |
+| ◆ Frais tx | **CAN0PY** `fee(n) = 1 + 10 × ⌊(n−1)/10⌋` M4T3R |
+| ◆ 1ʳᵉ mine | **1 M4T3R** |
+| ◆ ChronoBoost | 26 → 8 decimals · −1d / cycle 31 Jan · → 8 (= BTC) |
+| ◆ Split fees | **49 / 49 / 1 / 1** |
+| ◆ Burn créateur | **2,6 % / an** (bag créateur · OUVERT) |
+| ◆ Peg dossier | Intention **1 CHF ≈ 1 R4V3** — **≠ garantie** |
+| ◆ Peg démo | Ludique UI — **≠ offre** |
+| ◆ Capital SAS | **10 000 CHF** |
+| ◆ Vesting | Aucun |
+| ◆ Emission cachée | **Interdite** |
 
-```bash
-# Postgres + backend
-cd apps/dartchain-backend && npm start
+### Règle dure CAN0PY
 
-# Frontend (autre terminal)
-cd apps/dartchain-frontend/Dart && npm start
+```
+fee(n) = 1 + 10 × floor((n − 1) / 10)   [M4T3R]
+───────────────────────────────────────
+n = 1       →  1 M4T3R
+n = 2…10    →  1 M4T3R
+n = 11…20   → 11 M4T3R
+…
+Toute tx valide paie exactement ce quantum.
 ```
 
-Stack Docker : `cd apps/dartchain-backend && npm run dev:stack`
+### Transaction formelle
 
-Deux processus : **backend (port 8080)** + **frontend (port 4200)**. Le frontend proxifie `/api` et `/ws` vers `127.0.0.1:8080` (`proxy.conf.json`) — pas de CORS en développement.
-
-### 1. Backend (Spring Boot + PostgreSQL)
-
-```bash
-cd apps/dartchain-backend
-npm start
 ```
+tx = (from, to, value, nonce, fee=CAN0PY, sig)
 
-`npm start` exécute `bin/run-with-postgres.sh` :
-
-1. démarre un conteneur `postgres:16` si rien n’écoute sur `localhost:5432` (user/db/mot de passe `dartchain`) ;
-2. lance `./mvnw spring-boot:run` avec le profil `postgres`.
-
-API : [http://localhost:8080](http://localhost:8080) — health : [http://localhost:8080/api/health](http://localhost:8080/api/health).
-
-Sans npm (équivalent) :
-
-```bash
-cd apps/dartchain-backend
-./bin/postgres-up.sh
-./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
-```
-
-Mémoire seule (sans Postgres) :
-
-```bash
-cd apps/dartchain-backend
-./mvnw spring-boot:run
-```
-
-### 2. Frontend (Angular)
-
-Dans un **second terminal** :
-
-```bash
-cd apps/dartchain-frontend/Dart
-npm ci
-npm start
-```
-
-UI : [http://localhost:4200](http://localhost:4200) (`ng serve`, configuration `development`, host `localhost`).
-
-`npm ci` n’est nécessaire qu’à la première install ou après un changement de lockfile.
-
-### Ordre et ports
-
-| Service | URL | Port |
-|---------|-----|------|
-| Frontend | http://localhost:4200 | 4200 |
-| Backend | http://localhost:8080 | 8080 |
-| PostgreSQL | `localhost:5432` | 5432 |
-| Overpass (dev) | proxifié `/overpass` → `lz4.overpass-api.de` | — |
-
-Si le 8080 est déjà pris, `run-with-postgres.sh` tente de libérer le port (conteneur Docker ou PID local). Sinon : `PORT=8081 npm start` côté backend.
-
-### Stack Docker « tout-en-un » (dev hybride)
-
-Postgres + backend en conteneurs, UI via `ng serve` :
-
-```bash
-cd apps/dartchain-backend
-npm run dev:stack
-# autre terminal
-cd apps/dartchain-frontend/Dart && npm start
-```
-
-Détaché : `npm run dev:start-detached` / `npm run dev:stop-detached`.
-
-Données :
-
-```bash
-cd apps/dartchain-backend
-npm run data:seed      # JSON local, profil Spring seed
-npm run data:import    # JSON → Postgres (profils postgres + data-import)
+valid iff:
+  ✓ champs + fee CAN0PY + sig(from)
+  ✓ nonce == nonce[from] + 1
+  ✓ balance[from] ≥ value + fee
+sinon → rejet · S inchangé
 ```
 
 ---
 
-## Docker Compose
+## ◈ 03 — Protocole · os du paper
 
-Fichier unique à la racine : `docker-compose.yml` (profils).
+| Module | Essence |
+|:-------|:--------|
+| ◆ Blocs | `prev_hash` · Merkle · timestamp · producteurs |
+| ◆ Consensus | Fork choice = poids maximal (Phase City) |
+| ◆ Network | Gossip best-effort · sync chaîne canonique |
+| ◆ État | `S' = apply(S, tx) \| reject` |
+| ◆ Privacy | Pseudonymat public — **pas** d’anonymat magique |
+| ◆ Light clients | Headers + preuve Merkle (SPV-like) |
+| ◆ Incentive | Fee pressure + burn créateur · pas d’émission inventée |
 
-```bash
-# Postgres + backend + frontend (nginx :8080)
-docker compose --profile default up --build
-
-# Postgres + backend, UI en ng serve (ports 5432 / 8080)
-docker compose --profile dev up --build -d
-
-# Postgres seul (Spring lancé à la main)
-docker compose --profile db-local up -d
-
-# Staging (frontend :9080)
-docker compose --profile staging up --build
-
-# Production HA (2 backends + nginx)
-# Prérequis : cd apps/dartchain-backend && npm run secrets:generate
-docker compose --profile prod up --build -d
-
-# Deux nœuds P2P (8081 / 8082)
-docker compose --profile p2p up --build -d
-```
-
-Images locales :
-
-```bash
-docker build -t dartchain-backend:local apps/dartchain-backend
-docker build -t dartchain-frontend:local apps/dartchain-frontend/Dart
-```
+**Héritage** : horodatage / Merkle / anti-double-spend (BTC) · vision machine d’état (ETH).  
+**Différenciateur** : comptes + frais fixes M4T3R + bootstrap documenté.
 
 ---
 
-## Variables d’environnement
+## ◈ 04 — Phases Signal → City
 
-Un fichier `.env` à la **racine du monorepo** est chargé par les scripts `bin/dev-env.sh`.
+```
+     SIGNAL                          CITY
+  ┌────────────┐               ┌──────────────────┐
+  │ Bootstrap  │  ──────────▶  │ Multi-nœuds      │
+  │ RJHBZ      │               │ poids honnête    │
+  │ déclaré    │               │ > attaquants     │
+  └────────────┘               └──────────────────┘
+        ▲                              ▲
+   vitre démo                    replication
+   (ce repo)                     P2P / BFT path
+```
 
-### Backend (dev local — défauts déjà fournis)
+| Phase | Signification |
+|:------|:--------------|
+| ◈ **Signal** | Validateur(s) documentés par RJHBZ — risque élevé **annoncé** |
+| ◈ **City** | Majority of honest weight · sans tiers bancaire pour trancher les soldes |
 
-| Variable | Défaut local | Rôle |
-|----------|--------------|------|
-| `PORT` | `8080` | Port HTTP |
-| `SPRING_PROFILES_ACTIVE` | `postgres` | Profils Spring |
-| `DARTCHAIN_PERSISTENCE_MODE` | `postgres` | `memory` ou `postgres` |
-| `DATABASE_URL` | `jdbc:postgresql://localhost:5432/dartchain` | JDBC |
-| `DATABASE_USERNAME` / `DATABASE_PASSWORD` | `dartchain` / `dartchain` | Identifiants |
-| `DARTCHAIN_JWT_SECRET` | secret de dev (32+ car.) | JWT — **changer en prod** |
-| `DARTCHAIN_ACTUATOR_TOKEN` | token de dev | Actuator restreint en prod |
-| `DARTCHAIN_BOOTSTRAP_ADMIN` | vide | Username admin bootstrap |
-| `OAUTH_*` | désactivé | Providers OAuth |
+---
 
-Production : générer les secrets avec `cd apps/dartchain-backend && npm run secrets:generate`. Ne jamais committer `.env` ni les secrets Render.
+## ◈ 05 — Roadmap N1 · jalons
 
-Exemples : [`deploy/render.env.example`](deploy/render.env.example), [`deploy/cloudflare.env.example`](deploy/cloudflare.env.example), [`deploy/docker-hub.env.example`](deploy/docker-hub.env.example).
+<div align="center">
+
+**H0LL0W NATI0N** · MESH PATH · ladder ×26 · 100 phases  
+Premier signal public ▸ **31 janvier 2027**
+
+</div>
+
+### Cap (canon)
+
+| | |
+|:--|:--|
+| ◆ Cibles | **10 000 nœuds** · jusqu’à **1 000 000 wallets** |
+| ◆ Planif. | jusqu’à **26 000 000 CHF** cumulés (seuil lore — **pas** un jackpot) |
+| ◆ DIY | 10 NODES · CIRCUIT H0LL0W · SAWT |
+| ◆ Interdit | Garantir un bénéfice |
+
+### Livre des treize (jalons 01 → 13)
+
+| # | Jalon |
+|--:|:------|
+| 01 | Inventaire dépôts / ruines du code |
+| 02 | Registre monétaire + ChronoBoost spécifié |
+| 03 | Mempool Squad demo (wss) |
+| 04 | SAWT Tag LORA lab |
+| 05 | Tag ionosphérique / EME doc |
+| 06 | ESL prototype #1 |
+| 07 | Mine ONMineur prototype #1 |
+| 08 | Testnet sans valeur |
+| 09 | Initiation ONG 1 centime |
+| 10 | Charte ASCII + Luluw |
+| 11 | CIRCUIT H0LL0W pilote |
+| 12 | Pentest / résilience |
+| 13 | Répétition générale signal 31/01 |
+
+### Jalons 14 → 26
+
+| # | Jalon |
+|--:|:------|
+| 14 | **Premier signal public 31/01/2027** (LORA + iono) |
+| 15 | Ouverture C1TAD3L.Z0NES #1 |
+| 16 | Mainnet utilitaire (go/no-go) |
+| 17 | ChronoBoost #1 (2028) |
+| 18 | Apps lore (RES1LIENCE / B00K ME B1TCH) |
+| 19 | Moon Bounce mesuré |
+| 20 | Checkpoint 10 000 nœuds |
+| 21 | PEG architecture auditable |
+| 22 | Pack kit-korp scale |
+| 23 | Quêtes éclipse live |
+| 24 | Market / ressources 26 M |
+| 25 | CyberSpace Star Conquest |
+| 26 | Miroir document / ERA path |
+
+```
+Épitaphe si échec :
+« nous avons tenu le signal sans vendre le rêve. »
+```
+
+### Axes organisation
+
+| Axe | Entité |
+|:----|:-------|
+| 1 | SASU PI R4V3 — PI · PEG · ChronoBoost |
+| 2 | RES1LIENCE — paiements |
+| 3 | B00K ME B1TCH — social / resa |
+| 4 | **SAS R4V3chain** — hardware + chaîne + demos |
+| 5 | ONG H0LL0W R4V3 NATI0N — culture · initiation |
+
+---
+
+## ◈ 06 — Démo produit (ce repo)
+
+Vitre full-stack — shell **250×550** :
+
+| Zone | Contenu |
+|:-----|:--------|
+| ◆ **MetaVerseBB** | Jumeau 3D Marseille (OSM + Three.js) · champ M4T3R |
+| ◆ **Wallet / Faucet** | Création, claim testnet, explorer |
+| ◆ **Chaîne** | Blocs · mempool · peers P2P |
+| ◆ **Swap / LaunchLab** | Quote pédagogique |
+| ◆ **Showcase** | Hub R4V3 · chat · DAO preview · market |
+| ◆ **Quêtes** | Progression démo · XP |
+
+```
+Navigateur ──/api /ws──▶ Spring Boot ──▶ Postgres | memory
+ localhost:4200              :8080
+ Pages · Render
+```
+
+Chaîne démo : **chain-id 3377** · réseau *R4V3chain Native* · token **R4V3**.
+
+---
+
+## ◈ 07 — Stack
+
+| Couche | Tech |
+|:-------|:-----|
+| ◆ Frontend | Angular 21 · Three.js · projet `R4V3` |
+| ◆ Backend | Spring Boot 3.5 · Java 21 · `io.r4v3chain` |
+| ◆ Data | Memory (dev) · PostgreSQL 16 |
+| ◆ Realtime | WebSockets live / chat / peers / arena |
+| ◆ Ops | Docker Compose · CI · Cloudflare · Render |
+
+Env : préfixe **`R4V3CHAIN_*`** · Spring **`r4v3chain.*`**
+
+---
+
+## ◈ 08 — Quick start
+
+### Prérequis
+
+`Node 22+` · `Java 21+` · Docker optionnel
 
 ### Frontend
 
-En **dev**, les URLs passent par le proxy (`apiUrl: '/api'`).  
-En **Cloudflare**, `tools/prepare-cloudflare-env.mjs` injecte :
-
-| Variable | Exemple prod |
-|----------|----------------|
-| `BACKEND_URL` | `https://dartchain-backend-1-0-0.onrender.com` |
-| `SHOWCASE_ENABLED` | `true` |
-
----
-
-## Structure du monorepo
-
-```
-.
-├── apps/
-│   ├── dartchain-backend/          # API Java + bin/ (ops local)
-│   │   ├── bin/                    # postgres, smoke, secrets, backup
-│   │   ├── src/main/java/io/dartchain/backend/
-│   │   ├── src/main/resources/     # application.yaml + profils
-│   │   ├── pom.xml
-│   │   └── Dockerfile
-│   └── dartchain-frontend/Dart/    # SPA Angular
-│       ├── src/app/{domaine}/
-│       ├── src/environments/
-│       ├── tools/                  # build Cloudflare, GeoJSON Marseille
-│       ├── proxy.conf.json
-│       └── Dockerfile
-├── deploy/                         # Exemples Render, Cloudflare, Docker Hub
-├── scripts/                        # cloudflare-build.sh / cloudflare-deploy.sh
-├── docker-compose.yml
-├── .github/workflows/              # ci.yml + deploy Pages manuel
-└── .node-version                   # 22
+```bash
+cd apps/r4v3chain-frontend/R4V3
+npm install
+npm start
+# → http://localhost:4200
 ```
 
----
-
-## Scripts utiles
-
-### Backend (`apps/dartchain-backend`)
-
-| Commande | Effet |
-|----------|--------|
-| `npm start` | Postgres + Spring Boot (premier plan) |
-| `npm run dev:stack` | Stack Docker hybride |
-| `npm run postgres:up` | Conteneur Postgres seul |
-| `npm run smoke` | Smoke API (MockMvc) |
-| `npm run smoke:live` | Smoke HTTP contre une stack déjà up |
-| `npm run verify:api` | Contrat API v1 |
-| `npm run verify:release` | `./mvnw verify` (tests + JaCoCo ≥ 65 %) |
-| `npm run data:seed` | Seed JSON local (profil Spring `seed`) |
-| `npm run data:import` | Import JSON → Postgres (profils `postgres` + `data-import`) |
-| `npm run secrets:generate` | Secrets prod |
-| `npm run db:shell` / `db:backup` | Ops Postgres |
-
-Détail des scripts shell : [`apps/dartchain-backend/bin/README.md`](apps/dartchain-backend/bin/README.md).
-
-### Frontend (`apps/dartchain-frontend/Dart`)
-
-| Commande | Effet |
-|----------|--------|
-| `npm start` | `ng serve` → http://localhost:4200 |
-| `npm test` | Vitest |
-| `npm run test:coverage` | Couverture |
-| `npm run verify:a11y` | Contrat accessibilité |
-| `npm run verify:quality` | Tests + a11y |
-| `npm run build` | Build Angular |
-| `npm run build:cloudflare` | Build prod Pages |
-| `npm run build:geojson` | GeoJSON Marseille |
-| `npm run verify:release` | Verify backend + couverture front |
-
----
-
-## Tests et CI
+### Backend (memory)
 
 ```bash
-# Frontend — tests Vitest + contrat a11y
-cd apps/dartchain-frontend/Dart
-npm test -- --no-watch --coverage=false
-npm run verify:a11y
-npm run build
-
-# Backend — tests + gate JaCoCo (verify, floor 65 %)
-cd apps/dartchain-backend
-./mvnw verify
+cd apps/r4v3chain-backend
+export R4V3CHAIN_PERSISTENCE_MODE=memory
+export R4V3CHAIN_JWT_SECRET=dev-local-jwt-secret-for-cursor-development-only-32
+./mvnw spring-boot:run
+# → http://localhost:8080/api/health
 ```
 
-Workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (push `main` et pull requests) :
+### Compose
 
-1. Backend : Temurin 21 + `./mvnw verify`
-2. Frontend : Node 22 + `npm ci`, tests, a11y, `ng build`, smoke `build:cloudflare`
-3. Docker : build des deux images
-
-Déploiement Pages manuel (workflow_dispatch) : [`.github/workflows/cloudflare-deploy.yml`](.github/workflows/cloudflare-deploy.yml).
-
----
-
-## Déploiement
-
-| Cible | Rôle | Notes |
-|-------|------|--------|
-| **Cloudflare Pages** | Frontend prod | [dartchain.pages.dev](https://dartchain.pages.dev) — branch `main` de `Rutkarf/dartchain`, Node 22, `bash scripts/cloudflare-build.sh` |
-| **Render** | Backend + Postgres | Image `docker.io/rutkarf/dartchain-backend:1.0.0`, health `/api/health` — voir [`apps/dartchain-backend/render-docker.md`](apps/dartchain-backend/render-docker.md) |
-
-CORS autorise `localhost`, `https://dartchain.pages.dev` et `*.pages.dev` / `*.onrender.com`. Ajouter une origine via `DARTCHAIN_CORS_EXTRA`.
+```bash
+cd apps/r4v3chain-backend
+npm run secrets:generate
+docker compose --profile dev up --build -d
+```
 
 ---
 
-## Attribution
+## ◈ 09 — Structure du monorepo
 
-Bâtiments et voirie : © contributeurs [OpenStreetMap](https://www.openstreetmap.org/copyright), licence **ODbL**.  
-Nœuds cadastre OSM : « cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ».
+```
+R4V3chain/
+├── apps/
+│   ├── r4v3chain-frontend/R4V3/   ◈ Angular SPA
+│   └── r4v3chain-backend/         ◈ Spring API
+├── deploy/                        ◈ Render · Cloudflare · INFRA
+├── docs/                          ◈ brand · UML
+├── infra/nginx/
+├── docker-compose.yml
+└── README.md
+```
 
-Aucune approbation de la Ville de Marseille, de l’IGN ou d’un commerce représenté. Détail : [`apps/dartchain-frontend/Dart/src/app/world-map/marseille-twin/marseille-data-provenance.md`](apps/dartchain-frontend/Dart/src/app/world-map/marseille-twin/marseille-data-provenance.md).
+Hub pédagogique compagnon → **[R4V3chainReview](https://github.com/Rutkarf/R4V3chainReview)**
 
 ---
 
-## Licence et avertissements
+## ◈ 10 — Disclaimer & serment
 
-Aucun fichier `LICENSE` n’est publié dans ce dépôt : traiter le code comme **propriétaire** jusqu’à mention contraire.
+```
+┌─ SERMENT ──────────────────────────────────────────────────┐
+│  Je n’achète pas un trône. Je tiens un signal.             │
+│  Je distingue rêve et réserve, glitch et preuve.           │
+│  Je ne garantis aucun bénéfice.                            │
+│  Je défends le PEG tant que le bag créateur respire        │
+│  (−2,6 % / an redistribués dans la Nation).                │
+└────────────────────────────────────────────────────────────┘
+```
 
-- Tokens **R4V3 / M4T3R** : démonstration uniquement, sans valeur.
-- Ne pas exposer de clés privées, JWT ou secrets d’actuator.
-- Ne pas utiliser le faucet / le mineur comme infrastructure financière.
-- Issues et PR : rester dans le périmètre démo (pas d’intégration de géodonnées propriétaires, pas de mainnet).
+- Document de travail **non audité**
+- **Pas** une offre de titres
+- Données Marseille = footprints OSM (ODbL), pas un levé IGN
+- Attribution OSM : © contributeurs [OpenStreetMap](https://www.openstreetmap.org/copyright)
 
-Ops shell live : [`apps/dartchain-backend/bin/README.md`](apps/dartchain-backend/bin/README.md).
+<div align="center">
+
+```
+◈  Wake the tag. Hold the signal. Don't sell the dream short.  ◈
+```
+
+**v0.1.0** · RJHBZ · SAS R4V3chain · Pre-Seal
+
+[Website](https://r4v3chain.pages.dev) · [Review hub](https://github.com/Rutkarf/R4V3chainReview) · [Issues](https://github.com/Rutkarf/R4V3chain/issues)
+
+</div>

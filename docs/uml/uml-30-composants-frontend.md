@@ -10,7 +10,7 @@ Cartographier les dossiers réels de `src/app` et les services HTTP qui appellen
 
 ## Sources analysées
 
-- `apps/dartchain-frontend/Dart/src/app/` (18 dossiers)
+- `apps/r4v3chain-frontend/R4V3/src/app/` (18 dossiers)
 - `app.routes.ts`, `app.html`, `environment.ts` (`apiUrl: '/api'`)
 - Services relus pour leurs URL : voir la vue 33. Ici ils sont nommés et rattachés à leur dossier.
 
@@ -48,7 +48,7 @@ Légende : chaque boîte est un dossier présent sous `src/app`. `depth-rail` es
 
 ## Explication
 
-Le frontend vit dans `apps/dartchain-frontend/Dart`. Angular `^21.2.7`. La SPA n’a pas de routes métier. Les dossiers sont des zones et des services (vue 29).
+Le frontend vit dans `apps/r4v3chain-frontend/R4V3`. Angular `^21.2.7`. La SPA n’a pas de routes métier. Les dossiers sont des zones et des services (vue 29).
 
 Services HTTP confirmés (fichier exact) :
 
@@ -84,7 +84,7 @@ D’autres classes du dossier `metaverse/arena/services/` (`arena-combat`, `aren
 
 ## Correspondance avec le code
 
-Racine Angular : `apps/dartchain-frontend/Dart`. Build docker : `npm run build:docker`. Build Cloudflare : `npm run build:cloudflare`. Node lu dans `.node-version` : `22`. `packageManager` : `npm@9.2.0`.
+Racine Angular : `apps/r4v3chain-frontend/R4V3`. Build docker : `npm run build:docker`. Build Cloudflare : `npm run build:cloudflare`. Node lu dans `.node-version` : `22`. `packageManager` : `npm@9.2.0`.
 
 Proxy navigateur : `environment.ts` commente que le dev passe par le proxy Angular vers des URL relatives `/api`, ce qui évite CORS. Les motifs nginx sont en vue 36. Aucune URL de proxy inventée.
 

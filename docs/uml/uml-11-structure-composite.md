@@ -107,7 +107,7 @@ Ces deux filtres sont des parties de la chaîne. L'ordre relatif entre Bearer et
 | Parties branchées | `BearerTokenAuthenticationFilter`, `RateLimitFilter` |
 | Hors chaîne | `SecurityHeadersFilter`, `LegacyApiDeprecationFilter`, `RequestCorrelationFilter`, `RequestTimingFilter`, `ActuatorAccessFilter` |
 
-`UsernamePasswordAuthenticationFilter` est la classe ancre Spring Security. Le projet ne la sous-classe pas. Le login DartChain ne passe pas par un formulaire username/password de Spring : il passe par `AuthV1Controller`.
+`UsernamePasswordAuthenticationFilter` est la classe ancre Spring Security. Le projet ne la sous-classe pas. Le login R4V3chain ne passe pas par un formulaire username/password de Spring : il passe par `AuthV1Controller`.
 
 ## Hypothèses
 

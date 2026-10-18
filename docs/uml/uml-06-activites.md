@@ -16,7 +16,7 @@ Partiellement confirmé.
 - `FaucetClaimEntity` / modèle `FaucetClaim` : `walletAddress`, `amount`, `claimedAt`, `nextEligibleAt`, `txHash`, `clientId`.
 - `FaucetConfig` : `@Value("${faucet.cooldown-seconds:10}")`.
 - `BlockchainService.enqueueSystemCredit`.
-- Propriété produit `dartchain.product.faucet-enabled` (défaut `true` dans `application.yaml`).
+- Propriété produit `r4v3chain.product.faucet-enabled` (défaut `true` dans `application.yaml`).
 
 ## Éléments représentés
 
@@ -99,7 +99,7 @@ partition "GET /api/faucet/claims" {
 
 ## Explication
 
-Chaque méthode de `FaucetController` commence par `productFeatures.requireFaucet()`. C'est la garde « faucet-enabled » visible dans le contrôleur. `ProductFeatureService.requireFaucet` ne consulte pas `ProductProperties.isFaucetEnabled()` : le commentaire dit que le faucet est toujours actif. Le drapeau `dartchain.product.faucet-enabled: true` existe, et le frontend masque l'onglet si `product.faucetEnabled` est faux, mais le backend ne refuse pas le claim sur ce drapeau. La fiche le marque donc comme partiellement confirmé : l'appel de garde est réel, son effet métier ne l'est pas.
+Chaque méthode de `FaucetController` commence par `productFeatures.requireFaucet()`. C'est la garde « faucet-enabled » visible dans le contrôleur. `ProductFeatureService.requireFaucet` ne consulte pas `ProductProperties.isFaucetEnabled()` : le commentaire dit que le faucet est toujours actif. Le drapeau `r4v3chain.product.faucet-enabled: true` existe, et le frontend masque l'onglet si `product.faucetEnabled` est faux, mais le backend ne refuse pas le claim sur ce drapeau. La fiche le marque donc comme partiellement confirmé : l'appel de garde est réel, son effet métier ne l'est pas.
 
 `claim` exige ensuite un compte (`requireAuthenticatedAccount`). `POST /api/faucet/claim` n'est pas dans la liste `permitAll`. Il tombe sous `anyRequest().authenticated()`. Le corps `FaucetClaimRequest` porte `walletAddress`, `amount` et `clientId`. `ensureWalletOwnership` refuse un wallet qui n'est pas celui du compte.
 

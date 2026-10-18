@@ -9,7 +9,7 @@ SOC 2 **Type 2** évalue si les contrôles décrits en Type 1 **fonctionnent** s
 | Evidence access | Export `authAudit` + users (rôles) via panel admin seed |
 | Evidence change | Historique git / CI artifacts |
 | Evidence monitoring | Ops snapshot + `make smoke:live` / alertes |
-| Evidence secrets | Hash seed uniquement (`DARTCHAIN_ADMIN_SEED_SHA256`) |
+| Evidence secrets | Hash seed uniquement (`R4V3CHAIN_ADMIN_SEED_SHA256`) |
 
 ## Hors code (obligatoire)
 

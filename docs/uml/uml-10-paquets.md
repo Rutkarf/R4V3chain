@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Ce fichier décrit le diagramme de paquets, type officiel UML 2.5. Il recense les packages Java `io.dartchain.backend.*` et les dossiers de `apps/dartchain-frontend/Dart/src/app`. Le diagramme montre la contenance. Il ne prétend pas lister chaque dépendance Maven ou chaque import TypeScript.
+Ce fichier décrit le diagramme de paquets, type officiel UML 2.5. Il recense les packages Java `io.r4v3chain.backend.*` et les dossiers de `apps/r4v3chain-frontend/R4V3/src/app`. Le diagramme montre la contenance. Il ne prétend pas lister chaque dépendance Maven ou chaque import TypeScript.
 
 ## Statut
 
@@ -10,9 +10,9 @@ Confirmé par le code.
 
 ## Sources analysées
 
-- Arborescence des contrôleurs (tous sous `io.dartchain.backend.<domaine>.infrastructure.web` ou voisin).
+- Arborescence des contrôleurs (tous sous `io.r4v3chain.backend.<domaine>.infrastructure.web` ou voisin).
 - `app.routes.ts` à la racine de `src/app`.
-- Dossier local non commité `apps/dartchain-frontend/Dart/src/app/components/depth-rail/`.
+- Dossier local non commité `apps/r4v3chain-frontend/R4V3/src/app/components/depth-rail/`.
 
 ## Éléments représentés
 
@@ -27,7 +27,7 @@ Dossiers frontend : `admin`, `auth`, `blockchain`, `components`, `core`, `dock`,
 ```plantuml
 @startuml
 skinparam shadowing false
-package "io.dartchain.backend" {
+package "io.r4v3chain.backend" {
   package admin
   package api
   package auth
@@ -136,18 +136,18 @@ Les services HTTP du frontend ne forment pas tous un dossier `services` unique. 
 
 | Paquet | Rôle confirmé |
 | --- | --- |
-| `io.dartchain.backend.auth` | JWT, rôles, contrôleurs `/api/auth` et `/api/v1/auth` |
-| `io.dartchain.backend.blockchain` | `Block`, pool, mine |
-| `io.dartchain.backend.persistence` | 17 tables JPA |
-| `io.dartchain.backend.p2p` | `PeerSocketHandler` |
-| `io.dartchain.backend.peers` | `PeerController` `/api/peers` |
-| `io.dartchain.backend.showcase` | FAQ, news, chat, launch, chart |
-| `io.dartchain.backend.metaverse` | Overpass, placements, WiGLE, arène |
+| `io.r4v3chain.backend.auth` | JWT, rôles, contrôleurs `/api/auth` et `/api/v1/auth` |
+| `io.r4v3chain.backend.blockchain` | `Block`, pool, mine |
+| `io.r4v3chain.backend.persistence` | 17 tables JPA |
+| `io.r4v3chain.backend.p2p` | `PeerSocketHandler` |
+| `io.r4v3chain.backend.peers` | `PeerController` `/api/peers` |
+| `io.r4v3chain.backend.showcase` | FAQ, news, chat, launch, chart |
+| `io.r4v3chain.backend.metaverse` | Overpass, placements, WiGLE, arène |
 | `src/app/dock` | barre basse de la SPA |
 | `src/app/showcase` | hub haut |
 | `src/app/wallet` | panneau wallet du dock |
 
-Le frontend TypeScript est en `apps/dartchain-frontend/Dart`. Le backend Java est en `apps/dartchain-backend/src/main/java`.
+Le frontend TypeScript est en `apps/r4v3chain-frontend/R4V3`. Le backend Java est en `apps/r4v3chain-backend/src/main/java`.
 
 ## Hypothèses
 

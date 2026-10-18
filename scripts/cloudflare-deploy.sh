@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DIST="${ROOT}/apps/dartchain-frontend/Dart/dist/browser"
+DIST="${ROOT}/apps/r4v3chain-frontend/R4V3/dist/browser"
 
 cd "${ROOT}"
 
@@ -13,7 +13,7 @@ if [[ ! -f "${DIST}/index.html" ]]; then
   exit 1
 fi
 
-echo "==> Cloudflare deploy (name=dartchain)"
+echo "==> Cloudflare deploy (name=r4v3chain)"
 echo "    assets: ${DIST}"
 
 npx wrangler deploy

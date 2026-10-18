@@ -10,21 +10,21 @@ Confirmé par le code pour les composants, les modes de persistance, les profils
 
 ## Sources analysées
 
-- `/home/azertyuiop/dev/dartchain/README.md` (sections Architecture, Docker Compose, Déploiement)
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-backend/src/main/resources/application.yaml`
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-backend/bin/dev-env.sh`
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-frontend/Dart/src/app/app.routes.ts`
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-frontend/Dart/src/environments/environment.ts`
-- Migrations Flyway `V1` à `V14` sous `apps/dartchain-backend/src/main/resources/db/migration/`
+- `/home/azertyuiop/dev/r4v3chain/README.md` (sections Architecture, Docker Compose, Déploiement)
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-backend/src/main/resources/application.yaml`
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-backend/bin/dev-env.sh`
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-frontend/R4V3/src/app/app.routes.ts`
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-frontend/R4V3/src/environments/environment.ts`
+- Migrations Flyway `V1` à `V14` sous `apps/r4v3chain-backend/src/main/resources/db/migration/`
 
 ## Éléments représentés
 
 - SPA Angular, `export const routes: Routes = []`
-- Backend `io.dartchain.backend`, entrée `DartchainBackendApplication`
+- Backend `io.r4v3chain.backend`, entrée `R4v3chainBackendApplication`
 - Mode `memory` (JSON) et mode `postgres` (PostgreSQL 16, Flyway)
 - FAQ : store JSON ou store RAM selon le mode
 - Nginx local et `infra/nginx/nginx.prod.conf` (`backend-a`, `backend-b`)
-- Cloudflare Pages (`wrangler.toml`, name `dartchain`) et API Render
+- Cloudflare Pages (`wrangler.toml`, name `r4v3chain`) et API Render
 - Profils Compose default, dev, db-local, staging, prod, p2p
 - Sorties Overpass, taux crypto, WiGLE, OAuth
 
@@ -36,7 +36,7 @@ flowchart TB
     SPA[SPA Angular routes vides]
   end
   subgraph public [Deploiement cite par le README]
-    Pages[Cloudflare Pages dartchain.pages.dev]
+    Pages[Cloudflare Pages r4v3chain.pages.dev]
     Render[API Render]
   end
   subgraph compose [Compose profil default]
@@ -52,7 +52,7 @@ flowchart TB
   SPA --> Nginx
   Nginx -->|proxy /api /ws actuator| Boot
   Render --> Boot
-  Boot -->|dartchain.persistence.mode postgres| Pg
+  Boot -->|r4v3chain.persistence.mode postgres| Pg
   Boot -->|mode memory| Mem
   Boot -->|mode postgres FAQ| FaqRam
   Boot --> Ext
@@ -64,23 +64,23 @@ Légende : Pages sert les assets statiques. Le proxy nginx du Compose est le che
 
 ### SPA sans routes
 
-`apps/dartchain-frontend/Dart/src/app/app.routes.ts` contient `export const routes: Routes = []`. Le README le confirme : une seule page, sans routes Angular. La navigation du shell (navbar, showcase, dock, floor peek) est un état de composants, pas un routeur. Le dossier `star-conquest/` existe. `environment.ts` fixe `starConquestEnabled` à false, et `app.html` ne montre l’overlay que si ce flag est vrai.
+`apps/r4v3chain-frontend/R4V3/src/app/app.routes.ts` contient `export const routes: Routes = []`. Le README le confirme : une seule page, sans routes Angular. La navigation du shell (navbar, showcase, dock, floor peek) est un état de composants, pas un routeur. Le dossier `star-conquest/` existe. `environment.ts` fixe `starConquestEnabled` à false, et `app.html` ne montre l’overlay que si ce flag est vrai.
 
 Les dossiers de `src/app` sont admin, auth, blockchain, components, core, dock, exchange, explorer, faucet, metaverse, navbar, peers, quests, r4v3-scene, showcase, star-conquest, wallet, world-map, plus `components/depth-rail/` non suivi par Git et branché sur le showcase local.
 
 ### Mode memory
 
-`application.yaml` fixe `dartchain.persistence.mode` à `${DARTCHAIN_PERSISTENCE_MODE:memory}`. Sans variable d’environnement, le défaut est `memory`. Les états vivent dans des fichiers JSON dont les propriétés sont `BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`. Les défauts pointent vers `data/*.json`. En mode `memory`, les questions FAQ passent par `JsonFaqQuestionStore`.
+`application.yaml` fixe `r4v3chain.persistence.mode` à `${R4V3CHAIN_PERSISTENCE_MODE:memory}`. Sans variable d’environnement, le défaut est `memory`. Les états vivent dans des fichiers JSON dont les propriétés sont `BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`. Les défauts pointent vers `data/*.json`. En mode `memory`, les questions FAQ passent par `JsonFaqQuestionStore`.
 
 Les stores de chaîne nommés sont `BlockchainStateStore`, `JsonBlockchainStateStore` et `JpaBlockchainStateStore`, avec `BlockchainSnapshot`.
 
 ### Mode postgres
 
-Le profil postgres et la variable `DARTCHAIN_PERSISTENCE_MODE` basculent vers PostgreSQL. `bin/dev-env.sh` exporte `DARTCHAIN_PERSISTENCE_MODE=postgres`, ce qui explique le défaut « postgres » du tableau d’environnement du README pour un lancement local par les scripts. `info.dartchain.postgres-only-profiles` vaut `prod,staging`.
+Le profil postgres et la variable `R4V3CHAIN_PERSISTENCE_MODE` basculent vers PostgreSQL. `bin/dev-env.sh` exporte `R4V3CHAIN_PERSISTENCE_MODE=postgres`, ce qui explique le défaut « postgres » du tableau d’environnement du README pour un lancement local par les scripts. `info.r4v3chain.postgres-only-profiles` vaut `prod,staging`.
 
-Flyway applique `V1__auth.sql` à `V14__oauth_identities.sql`. Les dix-sept tables sont décrites dans [04-dictionnaire-de-donnees.md](04-dictionnaire-de-donnees.md). En mode `postgres`, `InMemoryFaqQuestionStore` garde la FAQ en RAM. Il n’existe pas de table Flyway `faq_questions` dans le canon. `JpaAuthAuditStore` est conditionné par `dartchain.persistence.mode=postgres`.
+Flyway applique `V1__auth.sql` à `V14__oauth_identities.sql`. Les dix-sept tables sont décrites dans [04-dictionnaire-de-donnees.md](04-dictionnaire-de-donnees.md). En mode `postgres`, `InMemoryFaqQuestionStore` garde la FAQ en RAM. Il n’existe pas de table Flyway `faq_questions` dans le canon. `JpaAuthAuditStore` est conditionné par `r4v3chain.persistence.mode=postgres`.
 
-Image Postgres du Compose : `postgres:16-alpine`. Volume nommé au moins `dartchain_pg_data` sur le profil default.
+Image Postgres du Compose : `postgres:16-alpine`. Volume nommé au moins `r4v3chain_pg_data` sur le profil default.
 
 ### Compose
 
@@ -101,11 +101,11 @@ Le README décrit les mêmes profils : default (nginx :8080), dev (Postgres et b
 
 ### Déploiement Pages et Render
 
-`wrangler.toml` nomme le projet `dartchain` et pointe les assets vers `dist/browser`. Le workflow `.github/workflows/cloudflare-deploy.yml` est manuel (`workflow_dispatch`) et utilise wrangler Pages. Le README indique la cible https://dartchain.pages.dev, branche `main`, Node 22, script `scripts/cloudflare-build.sh`. Le build CI frontend appelle `build:cloudflare` avec `BACKEND_URL` Render.
+`wrangler.toml` nomme le projet `r4v3chain` et pointe les assets vers `dist/browser`. Le workflow `.github/workflows/cloudflare-deploy.yml` est manuel (`workflow_dispatch`) et utilise wrangler Pages. Le README indique la cible https://r4v3chain.pages.dev, branche `main`, Node 22, script `scripts/cloudflare-build.sh`. Le build CI frontend appelle `build:cloudflare` avec `BACKEND_URL` Render.
 
-`deploy/render.yaml` est le blueprint Render. L’URL d’API citée par le README est https://dartchain-backend-1-0-0.onrender.com, health `/api/health`. L’image Docker Hub citée est `docker.io/rutkarf/dartchain-backend:1.0.0`. La CI construit aussi `dartchain-backend:ci` et `dartchain-frontend:ci`.
+`deploy/render.yaml` est le blueprint Render. L’URL d’API citée par le README est https://r4v3chain-backend-1-0-0.onrender.com, health `/api/health`. L’image Docker Hub citée est `docker.io/rutkarf/r4v3chain-backend:1.0.0`. La CI construit aussi `r4v3chain-backend:ci` et `r4v3chain-frontend:ci`.
 
-CORS dans `application.yaml` : motifs `localhost`, `127.0.0.1`, `https://dartchain.pages.dev`, `https://*.dartchain.pages.dev`, `https://*.pages.dev`, `https://dartzvz01-tagname.onrender.com`, `https://*.onrender.com`. Le README indique qu’une origine supplémentaire passe par `DARTCHAIN_CORS_EXTRA`.
+CORS dans `application.yaml` : motifs `localhost`, `127.0.0.1`, `https://r4v3chain.pages.dev`, `https://*.r4v3chain.pages.dev`, `https://*.pages.dev`, `https://r4v3zvz01-tagname.onrender.com`, `https://*.onrender.com`. Le README indique qu’une origine supplémentaire passe par `R4V3CHAIN_CORS_EXTRA`.
 
 ### WebSockets et API
 
@@ -116,8 +116,8 @@ Quatre canaux : `/ws/peers`, `/ws/live`, `/ws/chat`, `/ws/metaverse-arena`. L’
 | Sujet | Fichier ou symbole |
 |-------|--------------------|
 | Routes vides | `app.routes.ts` |
-| Mode de persistance | `dartchain.persistence.mode`, `DARTCHAIN_PERSISTENCE_MODE` |
-| Défaut local script | `apps/dartchain-backend/bin/dev-env.sh` |
+| Mode de persistance | `r4v3chain.persistence.mode`, `R4V3CHAIN_PERSISTENCE_MODE` |
+| Défaut local script | `apps/r4v3chain-backend/bin/dev-env.sh` |
 | FAQ memory | `JsonFaqQuestionStore` |
 | FAQ postgres | `InMemoryFaqQuestionStore` |
 | Chaîne JPA | `JpaBlockchainStateStore` |
@@ -130,11 +130,11 @@ Les vues `uml-08-composants.md`, `uml-09-deploiement.md`, `uml-35-architecture-l
 
 ## Hypothèses
 
-Le motif d’origine `https://dartzvz01-tagname.onrender.com` est présent dans le YAML. Son rôle opérationnel n’est pas décrit dans le README. Aucune topologie interne Render au-delà du blueprint et de l’URL publique n’est affirmée.
+Le motif d’origine `https://r4v3zvz01-tagname.onrender.com` est présent dans le YAML. Son rôle opérationnel n’est pas décrit dans le README. Aucune topologie interne Render au-delà du blueprint et de l’URL publique n’est affirmée.
 
 ## Anomalies détectées
 
-Le README (aperçu API) cite `/ws/live` et `/ws/chat`. Le code enregistre aussi `/ws/peers` et `/ws/metaverse-arena`. Le défaut YAML de persistance est `memory`. Le défaut du script local et le tableau README sont `postgres`. Le nom de réseau YAML est « DartChain Native ». Le défaut Java si le YAML ne charge pas est « R4V3 Testnet ». La FAQ du mode postgres n’a pas de table. Star Conquest est dans la section live du README alors que le flag frontend est false.
+Le README (aperçu API) cite `/ws/live` et `/ws/chat`. Le code enregistre aussi `/ws/peers` et `/ws/metaverse-arena`. Le défaut YAML de persistance est `memory`. Le défaut du script local et le tableau README sont `postgres`. Le nom de réseau YAML est « R4V3chain Native ». Le défaut Java si le YAML ne charge pas est « R4V3 Testnet ». La FAQ du mode postgres n’a pas de table. Star Conquest est dans la section live du README alors que le flag frontend est false.
 
 ## Recommandations
 

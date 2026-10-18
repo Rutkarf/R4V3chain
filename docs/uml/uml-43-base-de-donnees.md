@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle fixe le moteur utilisé par le canon DartChain : PostgreSQL 16 lorsque le mode de persistance est `postgres`, fichiers JSON ou mémoire lorsque le mode est `memory`. Flyway couvre les versions V1 à V14. Aucun second SGBD n’est branché sur ce dépôt.
+Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle fixe le moteur utilisé par le canon R4V3chain : PostgreSQL 16 lorsque le mode de persistance est `postgres`, fichiers JSON ou mémoire lorsque le mode est `memory`. Flyway couvre les versions V1 à V14. Aucun second SGBD n’est branché sur ce dépôt.
 
 ## Statut
 
@@ -10,14 +10,14 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- `application.yaml` (`dartchain.persistence.mode`, défaut `memory`)
+- `application.yaml` (`r4v3chain.persistence.mode`, défaut `memory`)
 - `application-postgres.yaml` (URL JDBC PostgreSQL, Flyway, `ddl-auto: validate`)
 - `docker-compose.yml` (image `postgres:16-alpine`)
-- `apps/dartchain-backend/src/main/resources/db/migration/V1__auth.sql` à `V14__oauth_identities.sql`
-- Stores conditionnels `@ConditionalOnProperty(name = "dartchain.persistence.mode", ...)`
+- `apps/r4v3chain-backend/src/main/resources/db/migration/V1__auth.sql` à `V14__oauth_identities.sql`
+- Stores conditionnels `@ConditionalOnProperty(name = "r4v3chain.persistence.mode", ...)`
 - `InMemoryFaqQuestionStore` et `JsonFaqQuestionStore`
 
-Le site compagnon `dartchainReview` utilise H2. Il est hors source de ce diagramme : le canon ne déclare pas H2 comme base du produit.
+Le site compagnon `R4V3chainReview` utilise H2. Il est hors source de ce diagramme : le canon ne déclare pas H2 comme base du produit.
 
 ## Éléments représentés
 
@@ -32,7 +32,7 @@ Le site compagnon `dartchainReview` utilise H2. Il est hors source de ce diagram
 
 ```mermaid
 flowchart TB
-  mode{dartchain.persistence.mode}
+  mode{r4v3chain.persistence.mode}
   mode -->|memory ou absent| json[Fichiers JSON\nBLOCKCHAIN_STATE_PATH\nAUTH_USERS_PATH\net autres chemins de propriétés]
   mode -->|postgres| pg[(PostgreSQL 16)]
   pg --> flyway[Flyway V1 à V14]
@@ -78,11 +78,11 @@ V13 -down-> V14
 
 ## Explication
 
-Le canon ne choisit pas un SGBD au hasard du profil Docker. La propriété `dartchain.persistence.mode` vaut `memory` par défaut. Dans ce mode, les stores annotés `havingValue = "memory", matchIfMissing = true` écrivent des fichiers dont les chemins sont des propriétés (`BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`). Le redémarrage conserve ces données seulement si les fichiers sont encore sur le disque.
+Le canon ne choisit pas un SGBD au hasard du profil Docker. La propriété `r4v3chain.persistence.mode` vaut `memory` par défaut. Dans ce mode, les stores annotés `havingValue = "memory", matchIfMissing = true` écrivent des fichiers dont les chemins sont des propriétés (`BLOCKCHAIN_STATE_PATH`, `EXCHANGE_LEDGER_PATH`, `LAUNCH_PROJECTS_PATH`, `CHAT_MESSAGES_PATH`, `NEWS_ITEMS_PATH`, `FAQ_QUESTIONS_PATH`, `QUESTS_PROGRESS_PATH`, `FAUCET_CLAIMS_PATH`, `AUTH_USERS_PATH`, `M4T3R_REWARDS_PATH`). Le redémarrage conserve ces données seulement si les fichiers sont encore sur le disque.
 
-Le mode `postgres` active la datasource décrite dans `application-postgres.yaml`, le pool Hikari, Flyway et la validation du schéma. L’image Compose est `postgres:16-alpine`. Le blueprint Render crée une base nommée `dartchain` et injecte l’hôte via `DATABASE_HOST`. Il n’ajoute pas MySQL, H2 ni un second cluster lu par l’application.
+Le mode `postgres` active la datasource décrite dans `application-postgres.yaml`, le pool Hikari, Flyway et la validation du schéma. L’image Compose est `postgres:16-alpine`. Le blueprint Render crée une base nommée `r4v3chain` et injecte l’hôte via `DATABASE_HOST`. Il n’ajoute pas MySQL, H2 ni un second cluster lu par l’application.
 
-Les migrations lues produisent dix-sept tables applicatives : `users`, `auth_sessions`, `auth_refresh_tokens`, `auth_audit_log`, `oauth_identities`, `rate_limit_buckets`, `quest_progress`, `faucet_claims`, `blocks`, `pending_transactions`, `chain_config`, `chain_accounts`, `exchange_ledger_adjustments`, `exchange_seeded_wallets`, `launch_projects`, `chat_messages`, `news_items`. V12 s’intitule `ad_persistence` : le SQL lu crée des index, la table `chain_config` (avec les clés `chainId` 3377, `networkName` DartChain Native, `nativeToken` R4V3) et la table `chain_accounts`. Il ne crée pas de table `ads`.
+Les migrations lues produisent dix-sept tables applicatives : `users`, `auth_sessions`, `auth_refresh_tokens`, `auth_audit_log`, `oauth_identities`, `rate_limit_buckets`, `quest_progress`, `faucet_claims`, `blocks`, `pending_transactions`, `chain_config`, `chain_accounts`, `exchange_ledger_adjustments`, `exchange_seeded_wallets`, `launch_projects`, `chat_messages`, `news_items`. V12 s’intitule `ad_persistence` : le SQL lu crée des index, la table `chain_config` (avec les clés `chainId` 3377, `networkName` R4V3chain Native, `nativeToken` R4V3) et la table `chain_accounts`. Il ne crée pas de table `ads`.
 
 Flyway n’est pas activé dans `application.yaml` de base : le bloc `spring.flyway` apparaît dans `application-postgres.yaml` (`enabled: true`).
 
@@ -97,7 +97,7 @@ La FAQ déroge : `JsonFaqQuestionStore` en mode mémoire, `InMemoryFaqQuestionSt
 
 ## Hypothèses
 
-- « Pas de second SGBD » vaut pour le canon `/home/azertyuiop/dev/dartchain`. Le H2 du dépôt `dartchainReview` est un autre produit (`io.dartchain.review`).
+- « Pas de second SGBD » vaut pour le canon `/home/azertyuiop/dev/r4v3chain`. Le H2 du dépôt `R4V3chainReview` est un autre produit (`io.r4v3chain.review`).
 - Les fichiers JSON par défaut sous `data/` sont le support du mode mémoire. Un chemin surchargé par variable d’environnement reste le même mécanisme.
 
 ## Anomalies détectées

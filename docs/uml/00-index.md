@@ -10,10 +10,10 @@ Synthèse documentaire. Les faits viennent du canon au commit `0690e34` (« Try 
 
 ## Sources analysées
 
-- `/home/azertyuiop/dev/dartchain` — HEAD `0690e34`, working tree inclus
-- `/home/azertyuiop/dev/dartchain/README.md`
-- `/home/azertyuiop/dev/dartchainPreSeed/dartchain` — même commit, écart de tri d’audit
-- `/home/azertyuiop/dev/dartchainReview` — site compagnon, hors des 60 vues
+- `/home/azertyuiop/dev/r4v3chain` — HEAD `0690e34`, working tree inclus
+- `/home/azertyuiop/dev/r4v3chain/README.md`
+- `/home/azertyuiop/dev/r4v3chainPreSeed/r4v3chain` — même commit, écart de tri d’audit
+- `/home/azertyuiop/dev/R4V3chainReview` — site compagnon, hors des 60 vues
 - Notes de ce dossier : [01-analyse-projet.md](01-analyse-projet.md) à [07-elements-non-identifies.md](07-elements-non-identifies.md)
 
 Recensement canon hors caches et dépendances : 1542 fichiers (697 `.ts`, 517 `.java` dont environ 423 main et 94 test, 87 `.html`, 14 `.sql`, 29 `.md`).
@@ -24,15 +24,15 @@ Trois arbres, huit notes de socle, soixante vues. Les vues 01 à 14 sont les dia
 
 ### Périmètre
 
-Le canon est `/home/azertyuiop/dev/dartchain`. C’est la source unique des 60 diagrammes. Le working tree ajoute des modifications non commitées (showcase, audit `snapshot()`, composant `depth-rail`).
+Le canon est `/home/azertyuiop/dev/r4v3chain`. C’est la source unique des 60 diagrammes. Le working tree ajoute des modifications non commitées (showcase, audit `snapshot()`, composant `depth-rail`).
 
-`/home/azertyuiop/dev/dartchainPreSeed/dartchain` est le même dépôt et le même commit. Ce n’est pas un produit « preseed ». Il ne reçoit pas un second jeu de diagrammes. L’écart local vérifié est le tri `createdAt` dans `JpaAuthAuditStore.snapshot()`, présent dans PreSeed et absent du canon.
+`/home/azertyuiop/dev/r4v3chainPreSeed/r4v3chain` est le même dépôt et le même commit. Ce n’est pas un produit « preseed ». Il ne reçoit pas un second jeu de diagrammes. L’écart local vérifié est le tri `createdAt` dans `JpaAuthAuditStore.snapshot()`, présent dans PreSeed et absent du canon.
 
-`/home/azertyuiop/dev/dartchainReview` est un autre produit : Angular 21 port 4201, Spring `io.dartchain.review` port 8081, H2, tables `review_users` et `faq_questions`, JWT toujours `ROLE_USER`. Aucun wallet, aucun bloc, aucun `.sol`. Il est décrit dans l’analyse et dans les risques, pas dans les 60 vues de la chaîne.
+`/home/azertyuiop/dev/R4V3chainReview` est un autre produit : Angular 21 port 4201, Spring `io.r4v3chain.review` port 8081, H2, tables `review_users` et `faq_questions`, JWT toujours `ROLE_USER`. Aucun wallet, aucun bloc, aucun `.sol`. Il est décrit dans l’analyse et dans les risques, pas dans les 60 vues de la chaîne.
 
 ### Ordre de lecture
 
-Pour comprendre DartChain vite :
+Pour comprendre R4V3chain vite :
 
 1. Ce fichier, pour le périmètre et le rapport d’écarts.
 2. [03-glossaire.md](03-glossaire.md), pour R4V3, M4T3R, les rôles et MetaVerseBB.
@@ -156,10 +156,10 @@ Légende : parcours court. Les quatorze diagrammes UML officiels (01 à 14) se l
 #### Incohérences les plus importantes
 
 - `POST /api/wallets/create` est permitAll dans `SecurityConfig` et n’a pas de mapping sur `WalletController` (`/create-client`, `/verify`) ni sur `WalletV1Controller` (`/generate-evm`). `allow-server-wallet-create` est false. `allow-server-evm-wallet-create` est true.
-- Le nom de réseau YAML et la graine SQL valent « DartChain Native ». Le défaut Java `ChainProperties.networkName` vaut « R4V3 Testnet » si le YAML ne charge pas.
+- Le nom de réseau YAML et la graine SQL valent « R4V3chain Native ». Le défaut Java `ChainProperties.networkName` vaut « R4V3 Testnet » si le YAML ne charge pas.
 - En mode `postgres`, la FAQ est `InMemoryFaqQuestionStore` (RAM). Il n’y a pas de table `faq_questions` dans le canon.
 - `GET /**` est permitAll. Les lectures Spring sont publiques. L’authentification porte sur le reste des requêtes.
-- L’unlock admin (`POST /api/v1/admin/unlock`, propriété `dartchain.admin.seed-sha256`, valeur `[SECRET MASQUÉ]`) est distinct de `ROLE_ADMIN`.
+- L’unlock admin (`POST /api/v1/admin/unlock`, propriété `r4v3chain.admin.seed-sha256`, valeur `[SECRET MASQUÉ]`) est distinct de `ROLE_ADMIN`.
 - L’API est double (`/api` et `/api/v1`), avec `LegacyApiDeprecationFilter`. Aucun fichier `.sol`.
 - Star Conquest est sous « Fonctionnalités (live) » dans le README et `starConquestEnabled` vaut false.
 - `V12__ad_persistence.sql` est la phase AD : index, `chain_config`, `chain_accounts`. Ce n’est pas une table publicitaire. `addressSchemeDefault` vaut `evm-compatible` et le défaut `chain_accounts.address_scheme` vaut `evm`.
@@ -173,14 +173,14 @@ Le détail est dans [05-risques-et-incoherences.md](05-risques-et-incoherences.m
 - Dossier frontend `admin/` absent du tableau des domaines. Le dock mentionne seulement un onglet Admin si `isAdmin()`, sans le flux `POST /api/v1/admin/unlock`.
 - `infra/` (`infra/nginx/nginx.prod.conf`, upstreams `backend-a` et `backend-b`), `Makefile` et `wrangler.toml` absents de l’arbre monorepo du README.
 - Composant local `depth-rail` (`app-depth-rail`), branché sur le showcase modifié, absent du README.
-- Défaut Java « R4V3 Testnet » absent du README, qui publie « DartChain Native ».
-- FAQ tenue en RAM quand `dartchain.persistence.mode` vaut `postgres`.
+- Défaut Java « R4V3 Testnet » absent du README, qui publie « R4V3chain Native ».
+- FAQ tenue en RAM quand `r4v3chain.persistence.mode` vaut `postgres`.
 
 #### Fonctionnalités README absentes ou désactivées dans le code
 
 - Star Conquest, section live (35 quêtes, 5 galaxies, univers Ruche, `localStorage`) : le flag `starConquestEnabled` est false dans `environment.ts` et `environment.factory.ts`. `app.html` ne l’affiche que si le flag est vrai.
 - La feuille de route marque déjà comme non branchés : autres univers Star Conquest, overlay nuit, scène ladder-climb non montée, OAuth provisionné, administration des FAQ par API, jumeau plus dense. Ces lignes du README décrivent des absences. Les fournisseurs OAuth du YAML ont `enabled` false par défaut, ce qui rejoint le README (« souvent non configurés »).
-- Le tableau d’environnement local du README annonce `DARTCHAIN_PERSISTENCE_MODE=postgres`. C’est le choix de `bin/dev-env.sh`. Le défaut de `application.yaml`, si la variable est absente, reste `memory`.
+- Le tableau d’environnement local du README annonce `R4V3CHAIN_PERSISTENCE_MODE=postgres`. C’est le choix de `bin/dev-env.sh`. Le défaut de `application.yaml`, si la variable est absente, reste `memory`.
 
 #### Priorités de correction documentaire
 
@@ -197,7 +197,7 @@ Le détail est dans [05-risques-et-incoherences.md](05-risques-et-incoherences.m
 
 ## Correspondance avec le code
 
-Le canon utile est `apps/dartchain-backend` (package `io.dartchain.backend`, entrée `DartchainBackendApplication`) et `apps/dartchain-frontend/Dart`. La SPA est `app.routes.ts` (`routes` vide). La persistance est `dartchain.persistence.mode`. Les tables sont les migrations `V1` à `V14`. Le déploiement cité est `wrangler.toml`, `.github/workflows/ci.yml`, `.github/workflows/cloudflare-deploy.yml`, `deploy/render.yaml`, `docker-compose.yml`.
+Le canon utile est `apps/r4v3chain-backend` (package `io.r4v3chain.backend`, entrée `R4v3chainBackendApplication`) et `apps/r4v3chain-frontend/R4V3`. La SPA est `app.routes.ts` (`routes` vide). La persistance est `r4v3chain.persistence.mode`. Les tables sont les migrations `V1` à `V14`. Le déploiement cité est `wrangler.toml`, `.github/workflows/ci.yml`, `.github/workflows/cloudflare-deploy.yml`, `deploy/render.yaml`, `docker-compose.yml`.
 
 ## Hypothèses
 

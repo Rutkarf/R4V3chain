@@ -3,10 +3,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-FRONT="${ROOT}/apps/dartchain-frontend/Dart"
+FRONT="${ROOT}/apps/r4v3chain-frontend/R4V3"
 
 if [[ -z "${BACKEND_URL:-}" || "${BACKEND_URL}" == *"YOUR-BACKEND"* ]]; then
-  export BACKEND_URL="https://dartchain-backend-1-0-0.onrender.com"
+  export BACKEND_URL="https://r4v3chain-backend-1-0-0.onrender.com"
   echo "WARN: BACKEND_URL absent — défaut ${BACKEND_URL}" >&2
 fi
 
@@ -25,4 +25,4 @@ if [[ ! -f dist/browser/index.html ]]; then
   exit 1
 fi
 
-echo "Cloudflare build OK → apps/dartchain-frontend/Dart/dist/browser"
+echo "Cloudflare build OK → apps/r4v3chain-frontend/R4V3/dist/browser"

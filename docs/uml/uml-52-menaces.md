@@ -61,13 +61,13 @@ V --> J : M6 falsification\nde JWT si le défaut reste
 
 **M2 — Usurpation du contrat d’API.** Le même fichier autorise `POST /api/wallets/create`. `WalletController` ne déclare que `/create-client` et `/verify`. La route autorisée ne mappe aucun contrôleur. Un client qui suit l’ancienne documentation croit créer un portefeuille serveur. Le drapeau `allow-server-wallet-create` est `false` dans `application.yaml`. La menace est un écart entre la politique HTTP et le code : surface annoncée, comportement absent. Ce n’est pas, en soi, une création de clé.
 
-**M3 — Élévation de privilège.** `POST /api/v1/admin/unlock` est `permitAll`. `AdminUnlockService` compare une empreinte SHA-256 de la phrase normalisée à la propriété `dartchain.admin.seed-sha256`, alimentée par `DARTCHAIN_ADMIN_SEED_SHA256`. Un défaut est présent dans `application.yaml` ; la valeur n’est pas recopiée. Le succès produit un jeton d’unlock en mémoire, pas un JWT `ROLE_ADMIN`. La menace est l’usage de ce défaut hors poste de développement : quiconque connaît le défaut documenté dans le fichier peut déverrouiller le panneau sans être administrateur au sens de `UserRole`.
+**M3 — Élévation de privilège.** `POST /api/v1/admin/unlock` est `permitAll`. `AdminUnlockService` compare une empreinte SHA-256 de la phrase normalisée à la propriété `r4v3chain.admin.seed-sha256`, alimentée par `R4V3CHAIN_ADMIN_SEED_SHA256`. Un défaut est présent dans `application.yaml` ; la valeur n’est pas recopiée. Le succès produit un jeton d’unlock en mémoire, pas un JWT `ROLE_ADMIN`. La menace est l’usage de ce défaut hors poste de développement : quiconque connaît le défaut documenté dans le fichier peut déverrouiller le panneau sans être administrateur au sens de `UserRole`.
 
 **M4 — Usurpation via OAuth.** Les GET `/api/v1/auth/oauth/**`, le POST d’échange et le callback Apple sont `permitAll`. Les fournisseurs sont désactivés par défaut (`OAUTH_*_ENABLED` à false). La menace n’est pas un fournisseur déjà compromis dans le dépôt : aucun provisionnement réel n’a été identifié. Elle apparaît si un opérateur active un fournisseur sans secret dédié, ou si le mock du profil postgres (`dev-mock-enabled`) est laissé allumé. Le fichier qui ouvre la surface est `OAuthV1Controller` ; le fichier qui éteint les fournisseurs est `application.yaml`.
 
-**M5 — Divulgation actuator.** `application.yaml` fixe `dartchain.ops.restrict-actuator: false` et expose `health,info` avec un accès health non restreint dans le bloc `management`. Staging et prod passent `restrict-actuator` à `true`. La menace concerne le défaut, pas ces profils : sondes et info applicative (mode de persistance, version) sont lisibles. Aucune alerte externe n’est associée. Le profil staging ajoute le nom d’endpoint `prometheus` dans l’exposition actuator ; aucun produit Prometheus ou Grafana déployé n’a été identifié, et aucune CVE sur cet endpoint n’est citée.
+**M5 — Divulgation actuator.** `application.yaml` fixe `r4v3chain.ops.restrict-actuator: false` et expose `health,info` avec un accès health non restreint dans le bloc `management`. Staging et prod passent `restrict-actuator` à `true`. La menace concerne le défaut, pas ces profils : sondes et info applicative (mode de persistance, version) sont lisibles. Aucune alerte externe n’est associée. Le profil staging ajoute le nom d’endpoint `prometheus` dans l’exposition actuator ; aucun produit Prometheus ou Grafana déployé n’a été identifié, et aucune CVE sur cet endpoint n’est citée.
 
-**M6 — Falsification de jeton.** `NativeJwtService` signe les accès en HS256 avec le secret porté par `AuthProperties` / `dartchain.auth.jwt-secret`. La propriété est `${DARTCHAIN_JWT_SECRET:...}` et un défaut de développement est présent dans `application.yaml`. Il n’est pas recopié. `application-prod.yaml` exige la variable sans défaut dans le fragment lu (`${DARTCHAIN_JWT_SECRET:}`). La menace est l’emploi du défaut : un tiers qui le connaît peut fabriquer un accès accepté par le filtre Bearer. Ce n’est pas une vulnérabilité publiée ; c’est le comportement d’un HMAC dont le secret est dans le fichier de configuration de démo.
+**M6 — Falsification de jeton.** `NativeJwtService` signe les accès en HS256 avec le secret porté par `AuthProperties` / `r4v3chain.auth.jwt-secret`. La propriété est `${R4V3CHAIN_JWT_SECRET:...}` et un défaut de développement est présent dans `application.yaml`. Il n’est pas recopié. `application-prod.yaml` exige la variable sans défaut dans le fragment lu (`${R4V3CHAIN_JWT_SECRET:}`). La menace est l’emploi du défaut : un tiers qui le connaît peut fabriquer un accès accepté par le filtre Bearer. Ce n’est pas une vulnérabilité publiée ; c’est le comportement d’un HMAC dont le secret est dans le fichier de configuration de démo.
 
 Menaces écartées de cette fiche parce qu’elles ne reposent pas sur une surface relue : injection dans un contrat Solidity (aucun `.sol`), vol d’un mainnet (le README décrit une démo), CVE précises sur Spring ou sur l’image Postgres.
 
@@ -77,17 +77,17 @@ Menaces écartées de cette fiche parce qu’elles ne reposent pas sur une surfa
 | --- | --- |
 | M1 | `SecurityConfig` lignes de `authorizeHttpRequests`, matcher GET `/**` |
 | M2 | Même classe, matcher POST `/api/wallets/create` ; `WalletController` mappings `/create-client` et `/verify` seulement |
-| M3 | `AdminUnlockService.unlock`, propriété `dartchain.admin.seed-sha256` |
+| M3 | `AdminUnlockService.unlock`, propriété `r4v3chain.admin.seed-sha256` |
 | M4 | Matchers OAuth de `SecurityConfig` ; clés `oauth.*.enabled` de `application.yaml` |
-| M5 | `dartchain.ops.restrict-actuator` et bloc `management.endpoints.web.exposure` |
-| M6 | `NativeJwtService` en-tête HS256 ; clé `dartchain.auth.jwt-secret` |
+| M5 | `r4v3chain.ops.restrict-actuator` et bloc `management.endpoints.web.exposure` |
+| M6 | `NativeJwtService` en-tête HS256 ; clé `r4v3chain.auth.jwt-secret` |
 
 `RateLimitFilter` (60 / 60000 ms) réduit le déni de service applicatif mais n’est pas modélisé comme une menace propre : c’est un contrôle. Le déni de service résiduel n’est pas chiffré ici.
 
 ## Hypothèses
 
 - « Connaître le défaut » suppose que le fichier `application.yaml` est lisible par l’attaquant (dépôt ou image). Cette fiche ne vérifie pas si l’image Docker publiée embarque ce YAML tel quel.
-- Le jeton d’unlock admin est en mémoire de processus (`tokens` dans `AdminUnlockService`). Un redémarrage l’efface. L’élévation dure au plus le TTL configuré (`unlock-ttl-seconds`), dont le nom de variable est `DARTCHAIN_ADMIN_UNLOCK_TTL`. La valeur par défaut numérique 3600 est celle de la propriété de durée, pas un secret.
+- Le jeton d’unlock admin est en mémoire de processus (`tokens` dans `AdminUnlockService`). Un redémarrage l’efface. L’élévation dure au plus le TTL configuré (`unlock-ttl-seconds`), dont le nom de variable est `R4V3CHAIN_ADMIN_UNLOCK_TTL`. La valeur par défaut numérique 3600 est celle de la propriété de durée, pas un secret.
 
 ## Anomalies détectées
 

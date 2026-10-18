@@ -10,7 +10,7 @@ Déduit du projet.
 
 ## Sources analysées
 
-- `apps/dartchain-frontend/Dart/src/app/app.routes.ts` : `export const routes: Routes = [];`
+- `apps/r4v3chain-frontend/R4V3/src/app/app.routes.ts` : `export const routes: Routes = [];`
 - `app.html` : shell, navbar, showcase, dock, graphe, `app-three-floor`, scène R4V3 conditionnelle, tiroirs, `app-auth-drawer`.
 - `environment.ts` : `starConquestEnabled: false`. `app.html` n’affiche Star Conquest que si le flag est vrai.
 - `BottomDockTab` dans `dock-navigation.service.ts` : `wallet`, `faucet`, `transactions`, `chain`, `quests`, `peers`, `admin`.

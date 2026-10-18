@@ -13,12 +13,12 @@ Confirmé par le code.
 - `UserRole`, `UserEntity`, `AuthSessionEntity`, `AuthRefreshTokenEntity`, `AuthAuditLogEntity`, `OAuthIdentityEntity`.
 - `AuthService`, `AuthController`, `AuthV1Controller`, `NativeJwtService`, `BearerTokenAuthenticationFilter`, `AuthTokenResolver`, `RoleAuthorizationService`.
 - `Block`, `Transaction`, `PendingTransaction`, `BlockchainService`, `PendingTransactionService`, `PendingTransactionServiceImpl`.
-- Entités de `io.dartchain.backend.persistence.entity` (17 tables, plus la classe d'identité `ExchangeLedgerAdjustmentId`).
+- Entités de `io.r4v3chain.backend.persistence.entity` (17 tables, plus la classe d'identité `ExchangeLedgerAdjustmentId`).
 - `FaqQuestion` et `FaqQuestionStatus` sont hors de cette vue classes cœur ; ils sont dans la fiche 07.
 
 ## Éléments représentés
 
-- Package racine `io.dartchain.backend` et les packages listés dans le dépôt.
+- Package racine `io.r4v3chain.backend` et les packages listés dans le dépôt.
 - Enum `UserRole` : `USER`, `ADMIN`. GUEST est un commentaire, pas une constante.
 - Entités auth et leur double modèle mémoire `UserAccount` (utilisé par `AuthService`, distinct de `UserEntity`).
 - Modèle chaîne en mémoire et service `BlockchainService`.
@@ -31,7 +31,7 @@ Confirmé par le code.
 ```plantuml
 @startuml
 skinparam shadowing false
-package "io.dartchain.backend" {
+package "io.r4v3chain.backend" {
   package admin
   package api
   package auth
@@ -292,9 +292,9 @@ Les champs des entités auth et chaîne sont dans les sous-vues précédentes et
 
 ## Explication
 
-Deux modèles d'utilisateur coexistent. `UserAccount` est l'objet métier que `AuthService` et `RoleAuthorizationService` manipulent. `UserEntity` est la ligne JPA de la table `users`, avec `role` stocké en chaîne et défaut `USER`. En mode `dartchain.persistence.mode=memory` (défaut), les comptes peuvent vivre dans un store JSON (`AUTH_USERS_PATH`) plutôt que dans Postgres. Les classes JPA restent le contrat du mode `postgres`.
+Deux modèles d'utilisateur coexistent. `UserAccount` est l'objet métier que `AuthService` et `RoleAuthorizationService` manipulent. `UserEntity` est la ligne JPA de la table `users`, avec `role` stocké en chaîne et défaut `USER`. En mode `r4v3chain.persistence.mode=memory` (défaut), les comptes peuvent vivre dans un store JSON (`AUTH_USERS_PATH`) plutôt que dans Postgres. Les classes JPA restent le contrat du mode `postgres`.
 
-`AuthSessionEntity` correspond aux sessions legacy. `dartchain.auth.legacy-session-enabled` vaut `false`. `AuthTokenResolver.resolveAccount` n'appelle `SessionStore` que si ce drapeau est vrai et si le jeton ne ressemble pas à un JWT (trois segments séparés par des points). Le chemin nominal est `NativeJwtService.parseAndValidate`, puis `userAccountStore.findById(claims.subject())`. Le refresh token est une ligne `auth_refresh_tokens`, créée par `refreshTokenStore.create` dans `AuthService.buildAuthResponse`.
+`AuthSessionEntity` correspond aux sessions legacy. `r4v3chain.auth.legacy-session-enabled` vaut `false`. `AuthTokenResolver.resolveAccount` n'appelle `SessionStore` que si ce drapeau est vrai et si le jeton ne ressemble pas à un JWT (trois segments séparés par des points). Le chemin nominal est `NativeJwtService.parseAndValidate`, puis `userAccountStore.findById(claims.subject())`. Le refresh token est une ligne `auth_refresh_tokens`, créée par `refreshTokenStore.create` dans `AuthService.buildAuthResponse`.
 
 `Block` possède une liste `transactions`. `PendingTransaction` n'est pas un sous-type de `Transaction` : les champs d'adresse s'appellent `fromAddress` et `toAddress`, alors que `Transaction` utilise `sender` et `recipient`. Le statut est un `String` dans les deux cas. `TransactionValidationService.validateStatus` accepte `PENDING`, `MINED` et `REJECTED`. `PendingTransactionServiceImpl.addPendingTransaction` écrit `PENDING`. `minePendingTransaction` écrit `MINED`, appelle `BlockchainService.addBlock(blockData)`, puis retire la pending du pool. `addBlock` construit un `Block` dont `transactions` est une liste vide et dont le contenu utile est le champ `data`.
 
@@ -330,7 +330,7 @@ Flyway : `V1__auth.sql` à `V14__oauth_identities.sql`. `V12__ad_persistence.sql
 - `minePendingTransaction` persiste le transfert dans `Block.data` et laisse `transactions` vide. Le diagramme de composition (fiche 11) doit être lu avec cette réserve.
 - `POST /api/wallets/create` n'a pas de classe contrôleur correspondante.
 - FAQ en mode postgres : `InMemoryFaqQuestionStore`, pas une entité Flyway `faq_questions`.
-- `networkName` Java par défaut dans `ChainProperties` est « R4V3 Testnet » si le YAML ne charge pas. Le YAML canon dit « DartChain Native ».
+- `networkName` Java par défaut dans `ChainProperties` est « R4V3 Testnet » si le YAML ne charge pas. Le YAML canon dit « R4V3chain Native ».
 - Aucune association JPA `users` vers `auth_sessions`, malgré la colonne `user_id`.
 
 ## Recommandations

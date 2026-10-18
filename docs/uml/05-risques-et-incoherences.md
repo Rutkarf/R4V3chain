@@ -10,18 +10,18 @@ Confirmé pour chaque écart dont la source est citée. Les causes historiques r
 
 ## Sources analysées
 
-- `/home/azertyuiop/dev/dartchain/README.md`
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-backend/src/main/resources/application.yaml`
+- `/home/azertyuiop/dev/r4v3chain/README.md`
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-backend/src/main/resources/application.yaml`
 - `SecurityConfig`, `WalletController`, `WalletV1Controller` (tels que décrits par le mémo et les écarts déjà vus)
 - Migrations `V12__ad_persistence.sql` et `V11__auth_ab.sql`
-- `apps/dartchain-frontend/Dart/src/environments/environment.ts`
+- `apps/r4v3chain-frontend/R4V3/src/environments/environment.ts`
 - `git status` et `git diff` du canon au commit `0690e34`
-- `/home/azertyuiop/dev/dartchainPreSeed/dartchain` — même commit, diff de `JpaAuthAuditStore.java`
-- `/home/azertyuiop/dev/dartchainReview/README.md`
-- `dartchainReview/apps/frontend/README.md`, `apps/frontend/src/app/app.routes.ts`
-- `dartchainReview/apps/backend/README.md`, `apps/backend/src/main/resources/application.properties`
-- `dartchainReview/docs/ARCHITECTURE.md`
-- `dartchainReview/apps/backend/src/main/resources/db/migration/.gitkeep`
+- `/home/azertyuiop/dev/r4v3chainPreSeed/r4v3chain` — même commit, diff de `JpaAuthAuditStore.java`
+- `/home/azertyuiop/dev/R4V3chainReview/README.md`
+- `R4V3chainReview/apps/frontend/README.md`, `apps/frontend/src/app/app.routes.ts`
+- `R4V3chainReview/apps/backend/README.md`, `apps/backend/src/main/resources/application.properties`
+- `R4V3chainReview/docs/ARCHITECTURE.md`
+- `R4V3chainReview/apps/backend/src/main/resources/db/migration/.gitkeep`
 - `JwtAuthFilter.java` de Review (`ROLE_USER`)
 - Entités Review `review_users` et `faq_questions`
 
@@ -33,7 +33,7 @@ Dix écarts imposés par le mémo, les risques de configuration lus sans recopie
 
 ```mermaid
 flowchart TB
-  subgraph canon [Canon dartchain]
+  subgraph canon [Canon r4v3chain]
     W[POST wallets create sans mapping]
     N[Noms de reseau Java et YAML]
     F[FAQ postgres en RAM]
@@ -55,35 +55,35 @@ flowchart TB
 
 ### Écarts du canon
 
-1. `SecurityConfig` autorise `POST /api/wallets/create` en permitAll. `WalletController` ne mappe que `POST /create-client` et `POST /verify`. `WalletV1Controller` mappe `POST /generate-evm`. `dartchain.product.allow-server-wallet-create` est false. `dartchain.chain.allow-server-evm-wallet-create` est true. Le chemin `/api/wallets/create` est donc autorisé au niveau Spring et sans mapping de contrôleur relevé.
+1. `SecurityConfig` autorise `POST /api/wallets/create` en permitAll. `WalletController` ne mappe que `POST /create-client` et `POST /verify`. `WalletV1Controller` mappe `POST /generate-evm`. `r4v3chain.product.allow-server-wallet-create` est false. `r4v3chain.chain.allow-server-evm-wallet-create` est true. Le chemin `/api/wallets/create` est donc autorisé au niveau Spring et sans mapping de contrôleur relevé.
 
-2. Le README, section « API backend (aperçu) », cite les WebSockets `/ws/live` et `/ws/chat`. `WebSocketConfig` enregistre aussi `/ws/peers` et `/ws/metaverse-arena`. Le tableau des domaines frontend du README ne liste pas le dossier `admin/`, alors que le dock décrit un onglet Admin visible si `isAdmin()`. L’arbre « Structure du monorepo » ne cite ni `infra/`, ni `Makefile`, ni `wrangler.toml`. `infra/nginx/nginx.prod.conf` et `wrangler.toml` (name `dartchain`, assets `dist/browser`) sont présents.
+2. Le README, section « API backend (aperçu) », cite les WebSockets `/ws/live` et `/ws/chat`. `WebSocketConfig` enregistre aussi `/ws/peers` et `/ws/metaverse-arena`. Le tableau des domaines frontend du README ne liste pas le dossier `admin/`, alors que le dock décrit un onglet Admin visible si `isAdmin()`. L’arbre « Structure du monorepo » ne cite ni `infra/`, ni `Makefile`, ni `wrangler.toml`. `infra/nginx/nginx.prod.conf` et `wrangler.toml` (name `r4v3chain`, assets `dist/browser`) sont présents.
 
-3. `dartchain.chain.network-name` et la graine SQL `networkName` valent « DartChain Native ». Le défaut Java `ChainProperties.networkName` vaut « R4V3 Testnet » si le YAML ne charge pas. Le README publie « DartChain Native ».
+3. `r4v3chain.chain.network-name` et la graine SQL `networkName` valent « R4V3chain Native ». Le défaut Java `ChainProperties.networkName` vaut « R4V3 Testnet » si le YAML ne charge pas. Le README publie « R4V3chain Native ».
 
 4. En mode `postgres`, la FAQ passe par `InMemoryFaqQuestionStore` (liste en RAM). Il n’y a pas de table Flyway `faq_questions` dans le canon. En mode `memory`, le store est `JsonFaqQuestionStore`. Les statuts utilisés par `CommunityFaqService` sont `ACTIVE`, `PINNED`, `ARCHIVED`.
 
 5. `GET /**` est permitAll. Les mutations hors liste publique exigent une authentification. Au niveau Spring, les lectures HTTP GET sont publiques. L’autorisation fine des écritures porte sur le reste des routes.
 
-6. `ROLE_ADMIN` (`UserRole.ADMIN`) et le déverrouillage du panneau sont deux mécanismes. `POST /api/v1/admin/unlock` est permitAll. `AdminUnlockService` compare une empreinte SHA-256, propriété `dartchain.admin.seed-sha256`. La valeur est `[SECRET MASQUÉ]`.
+6. `ROLE_ADMIN` (`UserRole.ADMIN`) et le déverrouillage du panneau sont deux mécanismes. `POST /api/v1/admin/unlock` est permitAll. `AdminUnlockService` compare une empreinte SHA-256, propriété `r4v3chain.admin.seed-sha256`. La valeur est `[SECRET MASQUÉ]`.
 
-7. Deux familles d’URL coexistent : `/api` et `/api/v1`. `LegacyApiDeprecationFilter` existe. `ApiRoutes.LEGACY_STATS` vaut `/api/stats`. `dartchain.product.legacy-api-aliases-enabled` est false. `dartchain.auth.legacy-session-enabled` est false. `allow-legacy-private-key` est false.
+7. Deux familles d’URL coexistent : `/api` et `/api/v1`. `LegacyApiDeprecationFilter` existe. `ApiRoutes.LEGACY_STATS` vaut `/api/stats`. `r4v3chain.product.legacy-api-aliases-enabled` est false. `r4v3chain.auth.legacy-session-enabled` est false. `allow-legacy-private-key` est false.
 
 8. Aucun smart contract. Aucun fichier `.sol`. La vue 58 doit porter la phrase : « Ce diagramme n’est pas générable à partir du contenu actuel du projet. Aucun élément blockchain correspondant n’a été identifié. »
 
 9. Le README classe Star Conquest dans « Fonctionnalités (live) » : 35 quêtes, 5 galaxies, univers Ruche, persistance `localStorage`. `environment.ts` et `environment.factory.ts` ont `starConquestEnabled: false`. `app.html` n’affiche Star Conquest que si le flag est vrai. La feuille de route dit déjà que la synchro Spring des quêtes est bloquée et que les autres univers ne sont pas branchés.
 
-10. Working tree du canon, commit de tête `0690e34` « Try to be here » (2026-09-24), fichiers modifiés non commités : showcase (`showcase-panel`, `showcase-tab-showcase`, `showcase-tabs`, `showcase-window`, `app.css`), `AdminExportService`, `AuthAuditStore`, `InMemoryAuthAuditStore`, `JpaAuthAuditStore`. Non suivi : `apps/dartchain-frontend/Dart/src/app/components/depth-rail/` (cinq fichiers). Le showcase modifié importe `DepthRailComponent`. Le commit, lui, n’a pas `snapshot()` sur `JpaAuthAuditStore` : cette méthode est dans le working tree.
+10. Working tree du canon, commit de tête `0690e34` « Try to be here » (2026-09-24), fichiers modifiés non commités : showcase (`showcase-panel`, `showcase-tab-showcase`, `showcase-tabs`, `showcase-window`, `app.css`), `AdminExportService`, `AuthAuditStore`, `InMemoryAuthAuditStore`, `JpaAuthAuditStore`. Non suivi : `apps/r4v3chain-frontend/R4V3/src/app/components/depth-rail/` (cinq fichiers). Le showcase modifié importe `DepthRailComponent`. Le commit, lui, n’a pas `snapshot()` sur `JpaAuthAuditStore` : cette méthode est dans le working tree.
 
 Autres constats de configuration, sans valeur de secret :
 
 - CSRF désactivé, sessions `STATELESS`. Cohérent avec un JWT, à connaître pour la vue menaces.
-- `dartchain.auth.password-min-length` vaut 6.
-- `dartchain.ops.restrict-actuator` vaut false. Le jeton est la propriété `dartchain.ops.actuator-token` : `[SECRET MASQUÉ]`.
-- Rate limit : `dartchain.rate-limit.max-requests` 60, `window-ms` 60000.
-- `dartchain.security.strict-pending-signatures` true.
+- `r4v3chain.auth.password-min-length` vaut 6.
+- `r4v3chain.ops.restrict-actuator` vaut false. Le jeton est la propriété `r4v3chain.ops.actuator-token` : `[SECRET MASQUÉ]`.
+- Rate limit : `r4v3chain.rate-limit.max-requests` 60, `window-ms` 60000.
+- `r4v3chain.security.strict-pending-signatures` true.
 - Arène activée. Paramètres lus : loot-rate 0.10, loot-cap-per-elimination 25, minimum-faucet-balance-to-loot 1, spawn-shield 8 s, respawn 8 s, kill-cooldown 5 s, daily-loot-cap 200, daily-loss-cap 200, protection nouveau joueur 60 s, anti-farming-threshold 8.
-- WiGLE : `dartchain.wigle.mock-enabled` true. `api-name` et `api-token` : `[SECRET MASQUÉ]`.
+- WiGLE : `r4v3chain.wigle.mock-enabled` true. `api-name` et `api-token` : `[SECRET MASQUÉ]`.
 - OAuth : les sept fournisseurs ont `enabled` false par défaut. Secrets clients : `[SECRET MASQUÉ]`.
 - `m4t3r.reward.signing-key` : `[SECRET MASQUÉ]`. `mainnet-enabled` false. `testnet-enabled` false. `settlement-mode` défaut `OFFCHAIN`.
 - `chain_config` stocke `addressSchemeDefault` = `evm-compatible`. La colonne `chain_accounts.address_scheme` a le défaut `evm`.
@@ -92,7 +92,7 @@ Autres constats de configuration, sans valeur de secret :
 
 ### Écart PreSeed
 
-`/home/azertyuiop/dev/dartchainPreSeed/dartchain` est le même commit `0690e34`. Il n’y a pas de produit nommé preseed dans le code.
+`/home/azertyuiop/dev/r4v3chainPreSeed/r4v3chain` est le même commit `0690e34`. Il n’y a pas de produit nommé preseed dans le code.
 
 Les deux working trees modifient les mêmes quatre fichiers d’audit : `AdminExportService` (dépendance `AuthAuditStore` à la place de `InMemoryAuthAuditStore`), `AuthAuditStore` (méthode `snapshot()`), `InMemoryAuthAuditStore`, `JpaAuthAuditStore`. Ces quatre fichiers sont identiques entre les deux arbres, sauf `JpaAuthAuditStore.snapshot()` : PreSeed trie par `AuthAuditLogEntity.getCreatedAt` avec `Comparator.nullsLast`. Le canon ne trie pas.
 
@@ -100,18 +100,18 @@ Le working tree PreSeed vu par `git status` ne contient pas les modifications sh
 
 ### Review
 
-`/home/azertyuiop/dev/dartchainReview` est un site compagnon, pas la chaîne. Angular 21, port 4201. Spring `io.dartchain.review`, port 8081. Base H2 (`jdbc:h2:file`, `spring.jpa.hibernate.ddl-auto=update`). Tables `review_users` et `faq_questions`. `JwtAuthFilter` pose toujours l’autorité `ROLE_USER`. Aucun wallet, aucun bloc, aucun `.sol`. Le mémo compte 134 fichiers hors caches. Le dossier de migration ne contient qu’un `.gitkeep`.
+`/home/azertyuiop/dev/R4V3chainReview` est un site compagnon, pas la chaîne. Angular 21, port 4201. Spring `io.r4v3chain.review`, port 8081. Base H2 (`jdbc:h2:file`, `spring.jpa.hibernate.ddl-auto=update`). Tables `review_users` et `faq_questions`. `JwtAuthFilter` pose toujours l’autorité `ROLE_USER`. Aucun wallet, aucun bloc, aucun `.sol`. Le mémo compte 134 fichiers hors caches. Le dossier de migration ne contient qu’un `.gitkeep`.
 
 Le README racine se dit « scaffold initial » et indique qu’il n’y a pas encore de landing, de forum ni de contenu métier. `app.routes.ts` charge pourtant des pages : accueil, `comprendre`, `r4v3`, `faq`, `inscription`, `connexion`, `ressources`, `legal/risques`, `legal/mentions`, `legal/confidentialite`. Il n’y a pas de route `forum`. Le README frontend annonce une page `forum` parmi les pages prévues. `docs/ARCHITECTURE.md` place `forum/` et le package `community/` en phase 2. `package-info.java` du package `community` dit « Community / forum domain — Phase 2 ».
 
-Le README backend dit que JPA et Flyway sont désactivés jusqu’au provisionnement Postgres. `application.properties` active JPA avec `ddl-auto=update` sur H2. Les identifiants de cette datasource et `dartchain.review.jwt.secret` (variable `REVIEW_JWT_SECRET`) sont `[SECRET MASQUÉ]`.
+Le README backend dit que JPA et Flyway sont désactivés jusqu’au provisionnement Postgres. `application.properties` active JPA avec `ddl-auto=update` sur H2. Les identifiants de cette datasource et `r4v3chain.review.jwt.secret` (variable `REVIEW_JWT_SECRET`) sont `[SECRET MASQUÉ]`.
 
 ## Correspondance avec le code
 
 | Écart | Ancrage |
 |-------|---------|
 | Wallet create | `SecurityConfig`, `WalletController`, `WalletV1Controller` |
-| Réseau | `application.yaml` `dartchain.chain.network-name`, `ChainProperties.networkName`, `chain_config` |
+| Réseau | `application.yaml` `r4v3chain.chain.network-name`, `ChainProperties.networkName`, `chain_config` |
 | FAQ | `JsonFaqQuestionStore`, `InMemoryFaqQuestionStore` |
 | Star Conquest | `environment.ts`, `app.html`, README |
 | Audit | `JpaAuthAuditStore.snapshot()` |

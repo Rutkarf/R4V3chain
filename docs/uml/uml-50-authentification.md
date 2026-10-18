@@ -18,7 +18,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 - `SecurityConfig` pour les routes `permitAll`
 - `application.yaml` : TTL, `legacy-session-enabled: false`, fournisseurs OAuth `enabled: false` par défaut
 
-Aucune valeur de `DARTCHAIN_JWT_SECRET` ni de secret client OAuth n’est recopiée. Un défaut est présent dans `application.yaml` pour la propriété du secret JWT ; il n’est pas cité.
+Aucune valeur de `R4V3CHAIN_JWT_SECRET` ni de secret client OAuth n’est recopiée. Un défaut est présent dans `application.yaml` pour la propriété du secret JWT ; il n’est pas cité.
 
 ## Éléments représentés
 

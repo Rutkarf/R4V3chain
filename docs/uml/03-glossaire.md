@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Fixer le sens des termes réellement présents dans DartChain, avec le statut « confirmé » ou « non identifié ». Un terme confirmé est un nom lu dans le code, le SQL, la configuration ou le README du canon. Un terme non identifié n’a pas d’objet correspondant dans le périmètre décrit par le mémo et les fichiers ouverts.
+Fixer le sens des termes réellement présents dans R4V3chain, avec le statut « confirmé » ou « non identifié ». Un terme confirmé est un nom lu dans le code, le SQL, la configuration ou le README du canon. Un terme non identifié n’a pas d’objet correspondant dans le périmètre décrit par le mémo et les fichiers ouverts.
 
 ## Statut
 
@@ -10,15 +10,15 @@ Les entrées ci-dessous sont des faits de nommage. Les définitions qui dépasse
 
 ## Sources analysées
 
-- `/home/azertyuiop/dev/dartchain/README.md`
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-backend/src/main/resources/application.yaml`
+- `/home/azertyuiop/dev/r4v3chain/README.md`
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-backend/src/main/resources/application.yaml`
 - `V12__ad_persistence.sql` (graine `chain_config`)
-- `apps/dartchain-frontend/Dart/src/environments/environment.ts`
-- `apps/dartchain-frontend/Dart/src/app/world-map/map-configuration.ts` (`canopyTitleLegacy`)
-- `apps/dartchain-frontend/Dart/src/app/core/config/product-config.service.ts`
-- `apps/dartchain-frontend/Dart/src/app/components/depth-rail/`
-- `apps/dartchain-frontend/Dart/src/app/showcase/components/showcase-window/showcase-window.ts`
-- `apps/dartchain-frontend/Dart/src/app/showcase/components/showcase-tabs/showcase-tabs.ts`
+- `apps/r4v3chain-frontend/R4V3/src/environments/environment.ts`
+- `apps/r4v3chain-frontend/R4V3/src/app/world-map/map-configuration.ts` (`canopyTitleLegacy`)
+- `apps/r4v3chain-frontend/R4V3/src/app/core/config/product-config.service.ts`
+- `apps/r4v3chain-frontend/R4V3/src/app/components/depth-rail/`
+- `apps/r4v3chain-frontend/R4V3/src/app/showcase/components/showcase-window/showcase-window.ts`
+- `apps/r4v3chain-frontend/R4V3/src/app/showcase/components/showcase-tabs/showcase-tabs.ts`
 
 ## Éléments représentés
 
@@ -28,12 +28,12 @@ Termes produit, rôles, chaîne, persistance, interfaces et absences. Le mindmap
 
 ```mermaid
 mindmap
-  root((DartChain))
+  root((R4V3chain))
     Chaine
       R4V3 confirme
       M4T3R confirme
       chainId 3377 confirme
-      DartChain Native confirme
+      R4V3chain Native confirme
     Roles
       USER confirme
       ADMIN confirme
@@ -58,21 +58,21 @@ mindmap
 
 | Terme | Statut | Sens attesté |
 |-------|--------|----------------|
-| DartChain | confirmé | Nom du produit et du dépôt. `spring.application.name` vaut `dartchain-backend`. `wrangler.toml` name `dartchain`. |
-| R4V3 | confirmé | Token natif. YAML `dartchain.chain.native-token`. Graine SQL `chain_config.nativeToken`. |
+| R4V3chain | confirmé | Nom du produit et du dépôt. `spring.application.name` vaut `r4v3chain-backend`. `wrangler.toml` name `r4v3chain`. |
+| R4V3 | confirmé | Token natif. YAML `r4v3chain.chain.native-token`. Graine SQL `chain_config.nativeToken`. |
 | M4T3R | confirmé | Micro-unité citée par le README. Rewards, trail, faucet et `TestnetSettlementService`. L’échelle numérique exacte entre R4V3 et M4T3R n’est pas dans le mémo : voir le fichier 07. |
-| chain-id 3377 | confirmé | `dartchain.chain.chain-id` et graine SQL `chainId`. |
-| DartChain Native | confirmé | `dartchain.chain.network-name` et graine SQL `networkName`. |
+| chain-id 3377 | confirmé | `r4v3chain.chain.chain-id` et graine SQL `chainId`. |
+| R4V3chain Native | confirmé | `r4v3chain.chain.network-name` et graine SQL `networkName`. |
 | R4V3 Testnet | confirmé | Défaut Java `ChainProperties.networkName` si le YAML ne charge pas. |
 | DCv1 | confirmé | Graine SQL `signingPayloadVersion`. |
 | evm-compatible | confirmé | Graine SQL `addressSchemeDefault`. |
 | evm | confirmé | Défaut SQL de `chain_accounts.address_scheme`. |
-| mempool | confirmé | Terme du README et seuil `dartchain.ops.mempool-alert-threshold` (défaut 50). Le code du pool s’appelle `TransactionPoolService`, `PendingTransaction`, table `pending_transactions`. |
+| mempool | confirmé | Terme du README et seuil `r4v3chain.ops.mempool-alert-threshold` (défaut 50). Le code du pool s’appelle `TransactionPoolService`, `PendingTransaction`, table `pending_transactions`. |
 | Bloc | confirmé | Modèle `Block` : index, timestamp, data, transactions, previousHash, hash, nonce, difficulty. Table `blocks`. |
 | Transaction | confirmé | Modèle `Transaction` : id, hash, sender, recipient, amount, timestamp, signature, systemReward, payload, status. |
 | Wallet | confirmé | `WalletController`, `WalletV1Controller`, champs `walletAddress` / `walletPublicKey` sur `users`, table `chain_accounts`. |
-| Faucet | confirmé | `FaucetController` `/api/faucet`, table `faucet_claims`, `dartchain.product.faucet-enabled` true. |
-| Showcase | confirmé | Dossier frontend et contrôleurs `Showcase*`. `dartchain.product.showcase-enabled` true. Onglets README : TOUS, R4V3, CHAT, LABZ, D.A.O, MARCHÉ. |
+| Faucet | confirmé | `FaucetController` `/api/faucet`, table `faucet_claims`, `r4v3chain.product.faucet-enabled` true. |
+| Showcase | confirmé | Dossier frontend et contrôleurs `Showcase*`. `r4v3chain.product.showcase-enabled` true. Onglets README : TOUS, R4V3, CHAT, LABZ, D.A.O, MARCHÉ. |
 | MetaVerseBB | confirmé | README, section ville 3D Marseille. `canopyTitleLegacy` vaut `MetaVerseBB` dans `map-configuration.ts`. |
 | Arène BB | confirmé | Commentaire de `product-config.service.ts` : Arène BB, ex-MetaVerseBB. WebSocket `/ws/metaverse-arena`, `ArenaController` `/api/metaverse/arena`. |
 | Star Conquest | confirmé | Dossier `star-conquest/`. README : 35 quêtes, 5 galaxies, univers live Ruche, persistance `localStorage`. Flag `starConquestEnabled` false. |
@@ -104,9 +104,9 @@ mindmap
 | A1 à A6 | confirmé | Identifiants d’acteurs du mémo : visiteur, USER, ADMIN, pair P2P, jobs locaux, externes. |
 | permitAll | confirmé | Règles de `SecurityConfig`, dont `GET /**`. |
 | NativeJwtService | confirmé | Émission JWT. Access 3600 s, refresh 604800 s. |
-| legacy-session | confirmé | `dartchain.auth.legacy-session-enabled` false. |
-| seed admin | confirmé | Propriété `dartchain.admin.seed-sha256`, variable `DARTCHAIN_ADMIN_SEED_SHA256`. Valeur `[SECRET MASQUÉ]`. Unlock `POST /api/v1/admin/unlock`. |
-| jwt-secret | confirmé | Propriété `dartchain.auth.jwt-secret`, variable `DARTCHAIN_JWT_SECRET`. Valeur `[SECRET MASQUÉ]`. |
+| legacy-session | confirmé | `r4v3chain.auth.legacy-session-enabled` false. |
+| seed admin | confirmé | Propriété `r4v3chain.admin.seed-sha256`, variable `R4V3CHAIN_ADMIN_SEED_SHA256`. Valeur `[SECRET MASQUÉ]`. Unlock `POST /api/v1/admin/unlock`. |
+| jwt-secret | confirmé | Propriété `r4v3chain.auth.jwt-secret`, variable `R4V3CHAIN_JWT_SECRET`. Valeur `[SECRET MASQUÉ]`. |
 | RateLimitFilter | confirmé | 60 requêtes par fenêtre de 60000 ms. Table `rate_limit_buckets`. |
 | LegacyApiDeprecationFilter | confirmé | Filtre de l’API historique. `ApiRoutes.LEGACY_STATS` = `/api/stats`. `legacy-api-aliases-enabled` false. |
 
@@ -114,7 +114,7 @@ mindmap
 
 | Terme | Statut | Sens attesté |
 |-------|--------|----------------|
-| memory | confirmé | Défaut `dartchain.persistence.mode` si `DARTCHAIN_PERSISTENCE_MODE` est absent. |
+| memory | confirmé | Défaut `r4v3chain.persistence.mode` si `R4V3CHAIN_PERSISTENCE_MODE` est absent. |
 | postgres | confirmé | Mode Flyway / JPA. Exporté par `dev-env.sh`. Profils. |
 | Flyway V1–V14 | confirmé | Migrations sous `db/migration/`. |
 | FaqQuestionStatus | confirmé | `ACTIVE`, `PINNED`, `ARCHIVED` dans `CommunityFaqService`. |
@@ -129,9 +129,9 @@ mindmap
 | Overpass | confirmé | `OverpassProxyService`, `POST /api/metaverse/overpass`. |
 | CoinGecko | confirmé | `CryptoRatesProxyService`. |
 | GeckoTerminal | confirmé | `CryptoRatesProxyService`. |
-| WiGLE | confirmé | `WiglePointsService`, `WigleVisualizationController`. Mock `dartchain.wigle.mock-enabled` true. |
+| WiGLE | confirmé | `WiglePointsService`, `WigleVisualizationController`. Mock `r4v3chain.wigle.mock-enabled` true. |
 | OAuth | confirmé | Fournisseurs google, meta, apple, microsoft, github, x, discord. `enabled` false par défaut. |
-| Cloudflare Pages | confirmé | `dartchain.pages.dev`, `wrangler.toml`. |
+| Cloudflare Pages | confirmé | `r4v3chain.pages.dev`, `wrangler.toml`. |
 | Render | confirmé | URL d’API du README, `deploy/render.yaml`. |
 | OpenStreetMap / ODbL | confirmé | Attribution du README. |
 
@@ -157,7 +157,7 @@ mindmap
 
 ## Correspondance avec le code
 
-Les enums et propriétés cités portent les noms exacts du dépôt : `UserRole`, `NativeJwtService`, `ChatService.ANONYMOUS_AUTHOR`, `dartchain.persistence.mode`, `dartchain.chain.chain-id`, `starConquestEnabled`, `app-depth-rail`. Les graines `chain_config` sont dans `V12__ad_persistence.sql`.
+Les enums et propriétés cités portent les noms exacts du dépôt : `UserRole`, `NativeJwtService`, `ChatService.ANONYMOUS_AUTHOR`, `r4v3chain.persistence.mode`, `r4v3chain.chain.chain-id`, `starConquestEnabled`, `app-depth-rail`. Les graines `chain_config` sont dans `V12__ad_persistence.sql`.
 
 ## Hypothèses
 
@@ -165,7 +165,7 @@ Le mot « micro-unité » pour M4T3R vient du README. Il ne fixe pas un nombre d
 
 ## Anomalies détectées
 
-`addressSchemeDefault` dans `chain_config` vaut `evm-compatible`. Le défaut de colonne `chain_accounts.address_scheme` vaut `evm`. `R4V3 Testnet` et `DartChain Native` coexistent selon que le YAML est chargé. `GUEST` peut être lu à tort comme une troisième valeur d’enum. Le nom de fichier `V12__ad_persistence.sql` peut être lu à tort comme de la publicité.
+`addressSchemeDefault` dans `chain_config` vaut `evm-compatible`. Le défaut de colonne `chain_accounts.address_scheme` vaut `evm`. `R4V3 Testnet` et `R4V3chain Native` coexistent selon que le YAML est chargé. `GUEST` peut être lu à tort comme une troisième valeur d’enum. Le nom de fichier `V12__ad_persistence.sql` peut être lu à tort comme de la publicité.
 
 ## Recommandations
 

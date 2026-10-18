@@ -10,7 +10,7 @@ Cette fiche est une vue complémentaire de la série documentaire 41–60. Elle 
 
 ## Sources analysées
 
-- `io.dartchain.backend.wallet.infrastructure.web.WalletController`
+- `io.r4v3chain.backend.wallet.infrastructure.web.WalletController`
 - `WalletV1Controller`
 - `ChainAccountEntity`, migration V12 `chain_accounts`
 - `UserEntity.walletAddress`

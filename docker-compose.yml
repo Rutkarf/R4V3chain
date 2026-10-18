@@ -1,4 +1,4 @@
-# DartChain — fichier Docker Compose unique (profils)
+# R4V3chain — fichier Docker Compose unique (profils)
 #
 # Stack par défaut (Postgres + backend + frontend) :
 #   docker compose --profile default up --build
@@ -21,13 +21,13 @@
 x-backend-env-prod: &backend-env-prod
   PORT: 8080
   SPRING_PROFILES_ACTIVE: postgres,prod
-  DARTCHAIN_PERSISTENCE_MODE: postgres
-  DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-dartchain}
-  DATABASE_USERNAME: ${POSTGRES_USER:-dartchain}
-  DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run secrets:generate in apps/dartchain-backend}
-  DARTCHAIN_ACTUATOR_TOKEN: ${DARTCHAIN_ACTUATOR_TOKEN:?Run npm run secrets:generate in apps/dartchain-backend}
-  DARTCHAIN_JWT_SECRET: ${DARTCHAIN_JWT_SECRET:?Run npm run secrets:generate in apps/dartchain-backend}
-  DARTCHAIN_CORS_EXTRA: ${DARTCHAIN_CORS_EXTRA:-}
+  R4V3CHAIN_PERSISTENCE_MODE: postgres
+  DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-r4v3chain}
+  DATABASE_USERNAME: ${POSTGRES_USER:-r4v3chain}
+  DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run secrets:generate in apps/r4v3chain-backend}
+  R4V3CHAIN_ACTUATOR_TOKEN: ${R4V3CHAIN_ACTUATOR_TOKEN:?Run npm run secrets:generate in apps/r4v3chain-backend}
+  R4V3CHAIN_JWT_SECRET: ${R4V3CHAIN_JWT_SECRET:?Run npm run secrets:generate in apps/r4v3chain-backend}
+  R4V3CHAIN_CORS_EXTRA: ${R4V3CHAIN_CORS_EXTRA:-}
   OAUTH_DEV_MOCK_ENABLED: "false"
   OAUTH_BACKEND_BASE_URL: ${OAUTH_BACKEND_BASE_URL:-}
   OAUTH_FRONTEND_CALLBACK_URL: ${OAUTH_FRONTEND_CALLBACK_URL:-}
@@ -69,13 +69,13 @@ services:
     profiles: [default]
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-dartchain}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run secrets:generate in apps/dartchain-backend}
+      POSTGRES_DB: ${POSTGRES_DB:-r4v3chain}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run secrets:generate in apps/r4v3chain-backend}
     volumes:
-      - dartchain_pg_data:/var/lib/postgresql/data
+      - r4v3chain_pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB:-dartchain}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB:-r4v3chain}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -84,7 +84,7 @@ services:
   backend:
     profiles: [default]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     environment:
       <<: *backend-env-prod
@@ -97,7 +97,7 @@ services:
   frontend:
     profiles: [default]
     build:
-      context: ./apps/dartchain-frontend/Dart
+      context: ./apps/r4v3chain-frontend/R4V3
       dockerfile: Dockerfile
     ports:
       - "${APP_PORT:-8080}:80"
@@ -119,13 +119,13 @@ services:
     ports:
       - "${POSTGRES_DEV_PORT:-5432}:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-dartchain}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      POSTGRES_DB: ${POSTGRES_DB:-r4v3chain}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
     volumes:
-      - dartchain_pg_dev_data:/var/lib/postgresql/data
+      - r4v3chain_pg_dev_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB:-dartchain}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB:-r4v3chain}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -134,21 +134,21 @@ services:
   backend-dev:
     profiles: [dev]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     ports:
       - "${BACKEND_DEV_PORT:-8080}:8080"
     environment:
       PORT: 8080
       SPRING_PROFILES_ACTIVE: postgres
-      DARTCHAIN_PERSISTENCE_MODE: postgres
-      DARTCHAIN_PRODUCT_COMMERCIAL: "false"
-      DATABASE_URL: jdbc:postgresql://postgres-dev:5432/${POSTGRES_DB:-dartchain}
-      DATABASE_USERNAME: ${POSTGRES_USER:-dartchain}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
-      DARTCHAIN_JWT_SECRET: ${DARTCHAIN_JWT_SECRET:-dev-local-jwt-secret-for-cursor-development-only-32}
-      DARTCHAIN_ACTUATOR_TOKEN: ${DARTCHAIN_ACTUATOR_TOKEN:-dev-local-actuator-token-for-development}
-      DARTCHAIN_CORS_EXTRA: ${DARTCHAIN_CORS_EXTRA:-}
+      R4V3CHAIN_PERSISTENCE_MODE: postgres
+      R4V3CHAIN_PRODUCT_COMMERCIAL: "false"
+      DATABASE_URL: jdbc:postgresql://postgres-dev:5432/${POSTGRES_DB:-r4v3chain}
+      DATABASE_USERNAME: ${POSTGRES_USER:-r4v3chain}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
+      R4V3CHAIN_JWT_SECRET: ${R4V3CHAIN_JWT_SECRET:-dev-local-jwt-secret-for-cursor-development-only-32}
+      R4V3CHAIN_ACTUATOR_TOKEN: ${R4V3CHAIN_ACTUATOR_TOKEN:-dev-local-actuator-token-for-development}
+      R4V3CHAIN_CORS_EXTRA: ${R4V3CHAIN_CORS_EXTRA:-}
       OAUTH_DEV_MOCK_ENABLED: ${OAUTH_DEV_MOCK_ENABLED:-true}
       OAUTH_BACKEND_BASE_URL: ${OAUTH_BACKEND_BASE_URL:-http://localhost:8080}
       OAUTH_FRONTEND_CALLBACK_URL: ${OAUTH_FRONTEND_CALLBACK_URL:-http://localhost:4200/}
@@ -189,13 +189,13 @@ services:
     ports:
       - "${POSTGRES_LOCAL_PORT:-5432}:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-dartchain}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      POSTGRES_DB: ${POSTGRES_DB:-r4v3chain}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
     volumes:
-      - dartchain_pg_local_data:/var/lib/postgresql/data
+      - r4v3chain_pg_local_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB:-dartchain}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB:-r4v3chain}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -205,15 +205,15 @@ services:
     profiles: [staging]
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-dartchain_staging}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      POSTGRES_DB: ${POSTGRES_DB:-r4v3chain_staging}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
     ports:
       - "${POSTGRES_STAGING_PORT:-5433}:5432"
     volumes:
-      - dartchain_staging_pg_data:/var/lib/postgresql/data
+      - r4v3chain_staging_pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB:-dartchain_staging}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB:-r4v3chain_staging}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -222,17 +222,17 @@ services:
   backend-staging:
     profiles: [staging]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     environment:
       PORT: 8080
       SPRING_PROFILES_ACTIVE: postgres,prod,staging
-      DARTCHAIN_PERSISTENCE_MODE: postgres
-      DATABASE_URL: jdbc:postgresql://postgres-staging:5432/${POSTGRES_DB:-dartchain_staging}
-      DATABASE_USERNAME: ${POSTGRES_USER:-dartchain}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
-      DARTCHAIN_ACTUATOR_TOKEN: ${DARTCHAIN_ACTUATOR_TOKEN:-}
-      DARTCHAIN_CORS_EXTRA: ${DARTCHAIN_CORS_EXTRA:-}
+      R4V3CHAIN_PERSISTENCE_MODE: postgres
+      DATABASE_URL: jdbc:postgresql://postgres-staging:5432/${POSTGRES_DB:-r4v3chain_staging}
+      DATABASE_USERNAME: ${POSTGRES_USER:-r4v3chain}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
+      R4V3CHAIN_ACTUATOR_TOKEN: ${R4V3CHAIN_ACTUATOR_TOKEN:-}
+      R4V3CHAIN_CORS_EXTRA: ${R4V3CHAIN_CORS_EXTRA:-}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--Xmx512m}
     depends_on:
       postgres-staging:
@@ -248,7 +248,7 @@ services:
   frontend-staging:
     profiles: [staging]
     build:
-      context: ./apps/dartchain-frontend/Dart
+      context: ./apps/r4v3chain-frontend/R4V3
       dockerfile: Dockerfile
     ports:
       - "${APP_STAGING_PORT:-9080}:80"
@@ -268,13 +268,13 @@ services:
     profiles: [prod]
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-dartchain}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run secrets:generate in apps/dartchain-backend}
+      POSTGRES_DB: ${POSTGRES_DB:-r4v3chain}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run npm run secrets:generate in apps/r4v3chain-backend}
     volumes:
-      - dartchain_pg_prod_data:/var/lib/postgresql/data
+      - r4v3chain_pg_prod_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB:-dartchain}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB:-r4v3chain}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -283,11 +283,11 @@ services:
   backend-a:
     profiles: [prod]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     environment:
       <<: *backend-env-prod
-      DATABASE_URL: jdbc:postgresql://postgres-prod:5432/${POSTGRES_DB:-dartchain}
+      DATABASE_URL: jdbc:postgresql://postgres-prod:5432/${POSTGRES_DB:-r4v3chain}
     depends_on:
       postgres-prod:
         condition: service_healthy
@@ -302,11 +302,11 @@ services:
   backend-b:
     profiles: [prod]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     environment:
       <<: *backend-env-prod
-      DATABASE_URL: jdbc:postgresql://postgres-prod:5432/${POSTGRES_DB:-dartchain}
+      DATABASE_URL: jdbc:postgresql://postgres-prod:5432/${POSTGRES_DB:-r4v3chain}
     depends_on:
       postgres-prod:
         condition: service_healthy
@@ -321,7 +321,7 @@ services:
   frontend-prod:
     profiles: [prod]
     build:
-      context: ./apps/dartchain-frontend/Dart
+      context: ./apps/r4v3chain-frontend/R4V3
       dockerfile: Dockerfile
     ports:
       - "${APP_PORT:-8080}:80"
@@ -345,13 +345,13 @@ services:
     profiles: [p2p]
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB_A:-dartchain_a}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      POSTGRES_DB: ${POSTGRES_DB_A:-r4v3chain_a}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
     volumes:
-      - dartchain_pg_a:/var/lib/postgresql/data
+      - r4v3chain_pg_a:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB_A:-dartchain_a}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB_A:-r4v3chain_a}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -361,13 +361,13 @@ services:
     profiles: [p2p]
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB_B:-dartchain_b}
-      POSTGRES_USER: ${POSTGRES_USER:-dartchain}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      POSTGRES_DB: ${POSTGRES_DB_B:-r4v3chain_b}
+      POSTGRES_USER: ${POSTGRES_USER:-r4v3chain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
     volumes:
-      - dartchain_pg_b:/var/lib/postgresql/data
+      - r4v3chain_pg_b:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dartchain} -d ${POSTGRES_DB_B:-dartchain_b}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-r4v3chain} -d ${POSTGRES_DB_B:-r4v3chain_b}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -376,17 +376,17 @@ services:
   backend-p2p-a:
     profiles: [p2p]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     ports:
       - "${P2P_NODE_A_PORT:-8081}:8080"
     environment:
       PORT: 8080
       SPRING_PROFILES_ACTIVE: postgres,prod
-      DARTCHAIN_PERSISTENCE_MODE: postgres
-      DATABASE_URL: jdbc:postgresql://postgres-a:5432/${POSTGRES_DB_A:-dartchain_a}
-      DATABASE_USERNAME: ${POSTGRES_USER:-dartchain}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      R4V3CHAIN_PERSISTENCE_MODE: postgres
+      DATABASE_URL: jdbc:postgresql://postgres-a:5432/${POSTGRES_DB_A:-r4v3chain_a}
+      DATABASE_USERNAME: ${POSTGRES_USER:-r4v3chain}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--Xmx512m}
     depends_on:
       postgres-a:
@@ -397,17 +397,17 @@ services:
   backend-p2p-b:
     profiles: [p2p]
     build:
-      context: ./apps/dartchain-backend
+      context: ./apps/r4v3chain-backend
       dockerfile: Dockerfile
     ports:
       - "${P2P_NODE_B_PORT:-8082}:8080"
     environment:
       PORT: 8080
       SPRING_PROFILES_ACTIVE: postgres,prod
-      DARTCHAIN_PERSISTENCE_MODE: postgres
-      DATABASE_URL: jdbc:postgresql://postgres-b:5432/${POSTGRES_DB_B:-dartchain_b}
-      DATABASE_USERNAME: ${POSTGRES_USER:-dartchain}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-dartchain}
+      R4V3CHAIN_PERSISTENCE_MODE: postgres
+      DATABASE_URL: jdbc:postgresql://postgres-b:5432/${POSTGRES_DB_B:-r4v3chain_b}
+      DATABASE_USERNAME: ${POSTGRES_USER:-r4v3chain}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-r4v3chain}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--Xmx512m}
     depends_on:
       postgres-b:
@@ -416,10 +416,10 @@ services:
     restart: unless-stopped
 
 volumes:
-  dartchain_pg_data:
-  dartchain_pg_dev_data:
-  dartchain_pg_local_data:
-  dartchain_staging_pg_data:
-  dartchain_pg_prod_data:
-  dartchain_pg_a:
-  dartchain_pg_b:
+  r4v3chain_pg_data:
+  r4v3chain_pg_dev_data:
+  r4v3chain_pg_local_data:
+  r4v3chain_staging_pg_data:
+  r4v3chain_pg_prod_data:
+  r4v3chain_pg_a:
+  r4v3chain_pg_b:

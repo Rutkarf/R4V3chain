@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Ce fichier est une vue complémentaire, pas un des quatorze diagrammes officiels UML 2.5. Elle sépare trois mécanismes que le code ne mélange pas : l'absence de JWT (lectures `GET /**` en `permitAll`), le rôle porté par le JWT (`USER` ou `ADMIN`, autorités `ROLE_USER` et `ROLE_ADMIN`), et le déverrouillage admin par seed SHA-256 (jeton `X-Admin-Unlock-Token`, propriété `dartchain.admin.seed-sha256`).
+Ce fichier est une vue complémentaire, pas un des quatorze diagrammes officiels UML 2.5. Elle sépare trois mécanismes que le code ne mélange pas : l'absence de JWT (lectures `GET /**` en `permitAll`), le rôle porté par le JWT (`USER` ou `ADMIN`, autorités `ROLE_USER` et `ROLE_ADMIN`), et le déverrouillage admin par seed SHA-256 (jeton `X-Admin-Unlock-Token`, propriété `r4v3chain.admin.seed-sha256`).
 
 ## Statut
 
@@ -24,7 +24,7 @@ La valeur de seed et le secret JWT ne sont pas recopiés : [SECRET MASQUÉ].
 
 - Enum persisté : `USER`, `ADMIN`.
 - Autorités : `ROLE_USER`, `ROLE_ADMIN`.
-- Bootstrap : username égal à `dartchain.auth.bootstrap-admin-username` reçoit `ADMIN` à l'inscription.
+- Bootstrap : username égal à `r4v3chain.auth.bootstrap-admin-username` reçoit `ADMIN` à l'inscription.
 - Matrice courte : anonyme / USER / ADMIN / jeton seed.
 - Routes publiques explicites autres que `GET /**`.
 
@@ -48,7 +48,7 @@ seed ..> roleAdmin : mecanismes distincts
 note bottom of seed
   POST /api/v1/admin/unlock est permitAll.
   Comparaison SHA-256.
-  Propriete dartchain.admin.seed-sha256.
+  Propriete r4v3chain.admin.seed-sha256.
   Valeur : [SECRET MASQUÉ].
 end note
 @enduml
@@ -85,7 +85,7 @@ Les écritures qui ne sont pas listées en `permitAll` exigent un compte (`anyRe
 
 `requireAdmin` compare le rôle à `ADMIN` et journalise un refus RBAC sinon. `CommunityFaqService.updateStatus` fait la même comparaison et lève 403 « Rôle administrateur requis ». C'est le seul usage admin lu pour la FAQ. Le vote FAQ exige un utilisateur authentifié et refuse une question `ARCHIVED`, sans exiger `ADMIN`.
 
-Le seed est un second facteur de panneau, pas un rôle. `POST /api/v1/admin/unlock` est `permitAll`. `AdminUnlockService.unlock` normalise la phrase, calcule un SHA-256 et le compare à `properties.getSeedSha256()` (propriété `dartchain.admin.seed-sha256`). En cas de succès, un UUID est mis en mémoire avec une échéance `unlock-ttl-seconds` (défaut 3600). L'en-tête s'appelle `X-Admin-Unlock-Token`. `GET /api/v1/admin/export` appelle `requireUnlock` sur cet en-tête. Il ne lit pas `UserRole`. `GET /api/v1/admin/status` ne demande ni JWT ni seed : il dit si la seed est configurée (`isConfigured` : présence d'une chaîne de 64 caractères), et liste des domaines et des formats. `POST /api/v1/admin/lock` n'est pas `permitAll`, donc Spring demande un JWT, puis `lock` retire le token seed de la map s'il est fourni. `lock` n'appelle pas `requireAdmin`.
+Le seed est un second facteur de panneau, pas un rôle. `POST /api/v1/admin/unlock` est `permitAll`. `AdminUnlockService.unlock` normalise la phrase, calcule un SHA-256 et le compare à `properties.getSeedSha256()` (propriété `r4v3chain.admin.seed-sha256`). En cas de succès, un UUID est mis en mémoire avec une échéance `unlock-ttl-seconds` (défaut 3600). L'en-tête s'appelle `X-Admin-Unlock-Token`. `GET /api/v1/admin/export` appelle `requireUnlock` sur cet en-tête. Il ne lit pas `UserRole`. `GET /api/v1/admin/status` ne demande ni JWT ni seed : il dit si la seed est configurée (`isConfigured` : présence d'une chaîne de 64 caractères), et liste des domaines et des formats. `POST /api/v1/admin/lock` n'est pas `permitAll`, donc Spring demande un JWT, puis `lock` retire le token seed de la map s'il est fourni. `lock` n'appelle pas `requireAdmin`.
 
 Les POST publics hors GET, confirmés dans `SecurityConfig`, sont : register et login (`/api/auth` et `/api/v1/auth`), refresh, oauth exchange, admin unlock, oauth apple callback, wallets `create`, `verify`, `create-client`, `generate-evm`, chat messages POST et DELETE, trail pickup, overpass, inquiries de placement. `POST /api/wallets/create` n'a pas de méthode de contrôleur. `allow-server-wallet-create` est faux. `allow-server-evm-wallet-create` est vrai, et `POST /api/v1/wallets/generate-evm` existe.
 
@@ -108,7 +108,7 @@ Le rate limit (60 / 60000 ms) s'applique via `RateLimitFilter` sans être un rô
 
 - Le statut « partiellement confirmé » porte sur la matrice : chaque case citée a été lue, mais toutes les méthodes de tous les contrôleurs n'ont pas été ouvertes pour une revue ligne à ligne des `requireAdmin`.
 - Un GET qui rappelle `requireAuthenticatedAccount` (claims faucet) est à la fois permitAll au filtre et authentifié dans la méthode. La matrice le signale pour l'export et les claims ; le même motif peut exister ailleurs.
-- Le mot de passe bootstrap (`dartchain.auth.bootstrap-admin-password`) n'est pas une permission. Il n'est pas recopié.
+- Le mot de passe bootstrap (`r4v3chain.auth.bootstrap-admin-password`) n'est pas une permission. Il n'est pas recopié.
 
 ## Anomalies détectées
 

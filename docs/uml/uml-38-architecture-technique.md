@@ -10,11 +10,11 @@ Fixer les versions et les bibliothèques lues dans les manifestes. Les diagramme
 
 ## Sources analysées
 
-- `apps/dartchain-backend/pom.xml`
-- `apps/dartchain-frontend/Dart/package.json`
+- `apps/r4v3chain-backend/pom.xml`
+- `apps/r4v3chain-frontend/R4V3/package.json`
 - `.node-version`
-- `apps/dartchain-backend/Dockerfile`
-- `apps/dartchain-frontend/Dart/Dockerfile`
+- `apps/r4v3chain-backend/Dockerfile`
+- `apps/r4v3chain-frontend/R4V3/Dockerfile`
 - `docker-compose.yml` (image Postgres)
 - `application.yaml` (`info.app.version`, persistance, TTL)
 - `wrangler.toml` (`compatibility_date`)
@@ -64,7 +64,7 @@ Légende : les versions sont celles des fichiers de build. Les images sont celle
 | Élément | Version lue |
 | --- | --- |
 | Parent Spring Boot | 3.5.14 |
-| Artefact | `io.dartchain:dartchain-backend:1.0.0` |
+| Artefact | `io.r4v3chain:r4v3chain-backend:1.0.0` |
 | `java.version` | 21 |
 | Image build | `eclipse-temurin:21-jdk` |
 | Image runtime | `eclipse-temurin:21-jre` |
@@ -75,7 +75,7 @@ Légende : les versions sont celles des fichiers de build. Les images sont celle
 | Starters | web, security, validation, websocket, data-jpa, actuator, flyway-core, flyway-database-postgresql, driver PostgreSQL |
 | `info.app.version` dans le YAML | `0.17.0-SNAPSHOT` |
 | `info.app.phase` | `AF` |
-| Nom Spring | `dartchain-backend` |
+| Nom Spring | `r4v3chain-backend` |
 | Port | `${PORT:8080}` |
 | Persistance défaut | `memory` |
 | TTL access / refresh | 3600 s / 604800 s |
@@ -89,7 +89,7 @@ Flyway est la bibliothèque de migration. Les scripts vont de `V1__auth.sql` à 
 
 | Élément | Version lue |
 | --- | --- |
-| Nom npm | `dart` 1.0.0, privé |
+| Nom npm | `r4v3chain-frontend` 1.0.0, privé |
 | `packageManager` | `npm@9.2.0` |
 | `.node-version` | `22` |
 | Image build | `node:22-alpine` |
@@ -108,7 +108,7 @@ Flyway est la bibliothèque de migration. Les scripts vont de `V1__auth.sql` à 
 
 - Postgres Compose : `postgres:16-alpine`
 - Wrangler : `compatibility_date = "2025-07-16"`, assets `dist/browser`
-- Render : image tag documenté `dartchain-backend:1.0.0`, Java heap documenté `-Xmx384m` dans `render.yaml` ; Compose utilise `${JAVA_TOOL_OPTIONS:--Xmx512m}`
+- Render : image tag documenté `r4v3chain-backend:1.0.0`, Java heap documenté `-Xmx384m` dans `render.yaml` ; Compose utilise `${JAVA_TOOL_OPTIONS:--Xmx512m}`
 
 ### Non identifié
 
@@ -132,7 +132,7 @@ Les chiffres de cette fiche sont des littéraux de `pom.xml`, `package.json`, `.
 - Licence POM vide.
 - JaCoCo 0,65 avec entités JPA exclues (commentaire POM).
 - Défaut Java du rate limit à 20 contre YAML à 60 (vue 21).
-- Défaut Java `networkName` `R4V3 Testnet` contre YAML `DartChain Native`.
+- Défaut Java `networkName` `R4V3 Testnet` contre YAML `R4V3chain Native`.
 
 ## Recommandations
 

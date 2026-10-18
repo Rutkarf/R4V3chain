@@ -1,0 +1,35 @@
+logging:
+  level:
+    root: INFO
+    io.r4v3chain: DEBUG
+
+r4v3chain:
+  persistence:
+    mode: postgres
+  product:
+    commercial: true
+    allow-legacy-private-key: false
+    allow-server-wallet-create: false
+    faucet-enabled: true
+    showcase-enabled: true
+    legacy-api-aliases-enabled: true
+  ops:
+    restrict-actuator: true
+    actuator-token: ${R4V3CHAIN_ACTUATOR_TOKEN:}
+  cors:
+    allowed-origin-patterns:
+      - http://localhost:*
+      - http://127.0.0.1:*
+      - https://localhost:*
+      - https://127.0.0.1:*
+      - https://staging.r4v3chain.pages.dev
+      - ${R4V3CHAIN_CORS_EXTRA:https://r4v3zvz01-tagname.onrender.com}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized

@@ -14,7 +14,7 @@ Moyen. Les chemins et les handlers sont confirmés. Le catalogue complet des typ
 - Handlers : `PeerSocketHandler`, `LiveSocketHandler`, `ChatSocketHandler`, `ArenaSocketHandler`
 - Intercepteur : `WebSocketAuthHandshakeInterceptor`
 - Frontend : `environment.ts` (`liveWsUrl`, `chatWsUrl`), `environment.factory.ts` (`arenaWsUrl` dérivé de `/ws/live`), `blockchain-api.service.ts` (socket live), `showcase-chat.service.ts`, `arena-transport.hybrid.service.ts`
-- Nginx : `location /ws/` dans `apps/dartchain-frontend/Dart/nginx.conf` et `infra/nginx/nginx.prod.conf`
+- Nginx : `location /ws/` dans `apps/r4v3chain-frontend/R4V3/nginx.conf` et `infra/nginx/nginx.prod.conf`
 - Recherche dépôt : aucune occurrence de Kafka dans les sources Java, YAML, TOML relues
 
 ## Éléments représentés
@@ -54,18 +54,18 @@ Légende : les quatre flèches pleines sont des handlers enregistrés. La flèch
 
 | Chemin | Handler | Package observé |
 | --- | --- | --- |
-| `/ws/peers` | `PeerSocketHandler` | `io.dartchain.backend.p2p` |
-| `/ws/live` | `LiveSocketHandler` | `io.dartchain.backend.live` |
-| `/ws/chat` | `ChatSocketHandler` | `io.dartchain.backend.showcase.chat` |
-| `/ws/metaverse-arena` | `ArenaSocketHandler` | `io.dartchain.backend.metaverse.arena.ws` |
+| `/ws/peers` | `PeerSocketHandler` | `io.r4v3chain.backend.p2p` |
+| `/ws/live` | `LiveSocketHandler` | `io.r4v3chain.backend.live` |
+| `/ws/chat` | `ChatSocketHandler` | `io.r4v3chain.backend.showcase.chat` |
+| `/ws/metaverse-arena` | `ArenaSocketHandler` | `io.r4v3chain.backend.metaverse.arena.ws` |
 
 Chaque handler reçoit `WebSocketAuthHandshakeInterceptor` et `CorsConfig.ALLOWED_ORIGIN_PATTERNS`. `SecurityConfig` laisse `/ws/**` en permitAll au niveau HTTP ; l’intercepteur de handshake reste posé sur les quatre canaux.
 
-Le nginx d’image et le nginx de prod proxifient `/ws/` en HTTP/1.1 avec `Upgrade` et `Connection: upgrade`, `proxy_read_timeout 3600s`. En compose default, la cible est `backend:8080`. En prod, la cible est l’upstream `dartchain_backend` (`backend-a` et `backend-b`).
+Le nginx d’image et le nginx de prod proxifient `/ws/` en HTTP/1.1 avec `Upgrade` et `Connection: upgrade`, `proxy_read_timeout 3600s`. En compose default, la cible est `backend:8080`. En prod, la cible est l’upstream `r4v3chain_backend` (`backend-a` et `backend-b`).
 
 Côté SPA, les URL lues sont :
 
-- `environment.liveWsUrl` = `devWsUrl('/ws/live')` en développement ; en prod et Cloudflare, `wss://dartchain-backend-1-0-0.onrender.com/ws/live` (écrit dans les fichiers d’environnement, pas prouvé par un appel réseau de cette session).
+- `environment.liveWsUrl` = `devWsUrl('/ws/live')` en développement ; en prod et Cloudflare, `wss://r4v3chain-backend-1-0-0.onrender.com/ws/live` (écrit dans les fichiers d’environnement, pas prouvé par un appel réseau de cette session).
 - `chatWsUrl` suit le même schéma avec `/ws/chat`. `ShowcaseChatService.buildWsUrl` ajoute `access_token` si un jeton est en stockage.
 - `arenaWsUrl` est optionnel. `environment.factory.ts` le déduit en remplaçant `/ws/live` par `/ws/metaverse-arena` quand il n’est pas surchargé. `ArenaTransportHybridService` ouvre cette URL avec `access_token` et `room`, après avoir activé un mock local. Sans jeton ou sans base, il reste en mock.
 - Les pairs : le panneau peers propose un exemple `ws://localhost:8080/ws/peers`. Le handler serveur est `/ws/peers`. L’API REST voisine est `PeerController` `/api/peers`.

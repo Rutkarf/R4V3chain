@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Décrire les 17 tables du canon DartChain : champ Java, colonne SQL, type SQL lu dans Flyway, contraintes lues. Le type Java n’est indiqué que lorsque le mémo le donne (`UUID`). Sinon la colonne « Type Java » porte « non précisé ».
+Décrire les 17 tables du canon R4V3chain : champ Java, colonne SQL, type SQL lu dans Flyway, contraintes lues. Le type Java n’est indiqué que lorsque le mémo le donne (`UUID`). Sinon la colonne « Type Java » porte « non précisé ».
 
 ## Statut
 
@@ -10,7 +10,7 @@ Confirmé par lecture des migrations `V1__auth.sql` à `V14__oauth_identities.sq
 
 ## Sources analysées
 
-- `/home/azertyuiop/dev/dartchain/apps/dartchain-backend/src/main/resources/db/migration/V1__auth.sql`
+- `/home/azertyuiop/dev/r4v3chain/apps/r4v3chain-backend/src/main/resources/db/migration/V1__auth.sql`
 - `V2__quests.sql`, `V3__quest_week_key.sql`, `V4__faucet_claims.sql`, `V5__quest_explored_blocks.sql`
 - `V6__blockchain.sql`, `V7__exchange_ledger.sql`, `V8__launch_projects.sql`, `V9__chat_messages.sql`
 - `V10__news_items.sql`, `V11__auth_ab.sql`, `V12__ad_persistence.sql`, `V13__launch_project_metadata.sql`
@@ -22,7 +22,7 @@ Confirmé par lecture des migrations `V1__auth.sql` à `V14__oauth_identities.sq
 
 Dix-sept tables. Les liens `user_id` des entités JPA sont des UUID scalaires : aucun `@ManyToOne` ni `@OneToMany` n’a été relevé. Quatre clés étrangères SQL, elles, sont écrites dans les migrations.
 
-Graine `chain_config` lue dans V12, qui n’est pas un secret : `chainId` = `3377`, `networkName` = `DartChain Native`, `nativeToken` = `R4V3`, `addressSchemeDefault` = `evm-compatible`, `signingPayloadVersion` = `DCv1`.
+Graine `chain_config` lue dans V12, qui n’est pas un secret : `chainId` = `3377`, `networkName` = `R4V3chain Native`, `nativeToken` = `R4V3`, `addressSchemeDefault` = `evm-compatible`, `signingPayloadVersion` = `DCv1`.
 
 ## Diagramme
 

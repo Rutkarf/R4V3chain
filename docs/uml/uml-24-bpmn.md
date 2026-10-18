@@ -83,7 +83,7 @@ Le rate limit connaît ce chemin : `/api/faucet/claim` est dans `RateLimitProper
 
 ## Correspondance avec le code
 
-- Pool utilisateur : `apps/dartchain-frontend/Dart/src/app/faucet/services/faucet.service.ts` méthodes `claim`, `getState`, `getConfig`, `getClaims`.
+- Pool utilisateur : `apps/r4v3chain-frontend/R4V3/src/app/faucet/services/faucet.service.ts` méthodes `claim`, `getState`, `getConfig`, `getClaims`.
 - Pool API : `FaucetController` `@RequestMapping("/api/faucet")`, implémentation `FaucetServiceImpl`.
 - Pool store : `claimStore` (`FaucetClaimStore`, implémentation JSON ou `JpaFaucetClaimStore` selon le mode) et `pendingBalanceStore`.
 - Table postgres quand le mode est `postgres` : `faucet_claims` / `FaucetClaimEntity` (id, walletAddress, amount, claimedAt, nextEligibleAt, txHash, clientId, createdAt).

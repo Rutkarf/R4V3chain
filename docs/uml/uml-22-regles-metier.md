@@ -12,7 +12,7 @@ Moyen. Les valeurs ci-dessous sont lues dans `application.yaml`, `UserRole`, `Fa
 
 ## Sources analysées
 
-- `apps/dartchain-backend/src/main/resources/application.yaml`
+- `apps/r4v3chain-backend/src/main/resources/application.yaml`
 - `config/ChainProperties.java` (défaut `networkName`)
 - `config/ProductProperties.java` et `product/ProductFeatureService.java`
 - `auth/model/UserRole.java`, `auth/application/AuthService.java` (`validatePassword`)
@@ -22,7 +22,7 @@ Moyen. Les valeurs ci-dessous sont lues dans `application.yaml`, `UserRole`, `Fa
 - `SecurityConfig` (permitAll de `POST /api/wallets/create`)
 - `config/RateLimitProperties.java` (le chemin `/api/wallets/create` reste dans la liste limitée)
 
-Secrets : noms de propriétés seulement. `dartchain.auth.jwt-secret` et `dartchain.admin.seed-sha256` = [SECRET MASQUÉ].
+Secrets : noms de propriétés seulement. `r4v3chain.auth.jwt-secret` et `r4v3chain.admin.seed-sha256` = [SECRET MASQUÉ].
 
 ## Éléments représentés
 
@@ -35,7 +35,7 @@ flowchart TD
   subgraph chaine [Chaine]
     CID["chain-id 3377"]
     TOK["native-token R4V3"]
-    NET["YAML network-name DartChain Native"]
+    NET["YAML network-name R4V3chain Native"]
   end
   subgraph produit [Produit]
     F["faucet-enabled true"]
@@ -63,25 +63,25 @@ Légende : les cadres sont des familles de règles lues dans la configuration ou
 
 ### Chaîne et jeton
 
-`dartchain.chain.chain-id` vaut `3377`. `dartchain.chain.native-token` vaut `R4V3`. Le micro-unité cité par le produit est M4T3R (`FaucetServiceImpl.getConfig` renvoie `smallestUnit` `m4t3r`). Le YAML fixe `network-name` à `DartChain Native`. Si cette propriété ne se charge pas, le défaut Java de `ChainProperties.networkName` est `R4V3 Testnet`.
+`r4v3chain.chain.chain-id` vaut `3377`. `r4v3chain.chain.native-token` vaut `R4V3`. Le micro-unité cité par le produit est M4T3R (`FaucetServiceImpl.getConfig` renvoie `smallestUnit` `m4t3r`). Le YAML fixe `network-name` à `R4V3chain Native`. Si cette propriété ne se charge pas, le défaut Java de `ChainProperties.networkName` est `R4V3 Testnet`.
 
-`dartchain.chain.allow-server-evm-wallet-create` vaut `true`. `WalletV1Controller` expose `POST` sous le préfixe `/api/v1/wallets` (`ApiRoutes.WALLETS_GENERATE_EVM_V1` = `/api/v1/wallets/generate-evm`).
+`r4v3chain.chain.allow-server-evm-wallet-create` vaut `true`. `WalletV1Controller` expose `POST` sous le préfixe `/api/v1/wallets` (`ApiRoutes.WALLETS_GENERATE_EVM_V1` = `/api/v1/wallets/generate-evm`).
 
 ### Produit
 
-`dartchain.product.commercial` est `false`. `allow-legacy-private-key` est `false`. `faucet-enabled` est `true`. `showcase-enabled` est `true`. `legacy-api-aliases-enabled` est `false`.
+`r4v3chain.product.commercial` est `false`. `allow-legacy-private-key` est `false`. `faucet-enabled` est `true`. `showcase-enabled` est `true`. `legacy-api-aliases-enabled` est `false`.
 
 `ProductFeatureService.requireFaucet()` ne teste pas le drapeau : le corps est vide et le commentaire dit « Faucet toujours actif ». `requireServerWalletCreate()` lève `FeatureDisabledException` quand `allow-server-wallet-create` est faux. `requireLegacyPrivateKey()` refuse `senderPrivateKey` quand le drapeau legacy est faux.
 
 ### Mot de passe et signatures
 
-`dartchain.auth.password-min-length` vaut `6`. `AuthService.validatePassword` rejette un mot de passe nul ou plus court que `authProperties.getPasswordMinLength()` avec un HTTP 400.
+`r4v3chain.auth.password-min-length` vaut `6`. `AuthService.validatePassword` rejette un mot de passe nul ou plus court que `authProperties.getPasswordMinLength()` avec un HTTP 400.
 
-`dartchain.security.strict-pending-signatures` vaut `true`. La règle est : une transaction pending non système doit porter une signature vérifiable. Le détail d’appel de `TransactionValidationService` n’est pas redessiné ici ; le drapeau de configuration est confirmé.
+`r4v3chain.security.strict-pending-signatures` vaut `true`. La règle est : une transaction pending non système doit porter une signature vérifiable. Le détail d’appel de `TransactionValidationService` n’est pas redessiné ici ; le drapeau de configuration est confirmé.
 
 ### Règles d’arène chiffrées
 
-« Chiffrées » désigne ici les seuils numériques de `dartchain.metaverse.arena` dans `application.yaml`. Aucun chiffrement (AES, clé, blob chiffré) de ces règles n’a été trouvé dans le package `metaverse.arena` lors de la vérification de nom.
+« Chiffrées » désigne ici les seuils numériques de `r4v3chain.metaverse.arena` dans `application.yaml`. Aucun chiffrement (AES, clé, blob chiffré) de ces règles n’a été trouvé dans le package `metaverse.arena` lors de la vérification de nom.
 
 | Propriété | Valeur |
 | --- | --- |
@@ -108,13 +108,13 @@ Légende : les cadres sont des familles de règles lues dans la configuration ou
 
 `fromValue` renvoie `USER` si la chaîne est vide ou inconnue.
 
-Le déverrouillage du panneau admin (`POST /api/v1/admin/unlock`, `AdminUnlockService`) compare un SHA-256 de seed à `dartchain.admin.seed-sha256`. Cette session est distincte de l’autorité `ROLE_ADMIN`. La valeur de seed est [SECRET MASQUÉ].
+Le déverrouillage du panneau admin (`POST /api/v1/admin/unlock`, `AdminUnlockService`) compare un SHA-256 de seed à `r4v3chain.admin.seed-sha256`. Cette session est distincte de l’autorité `ROLE_ADMIN`. La valeur de seed est [SECRET MASQUÉ].
 
 ### FAQ
 
 `FaqQuestionStatus` : `ACTIVE`, `PINNED`, `ARCHIVED`. `CommunityFaqService` pose `ACTIVE` à la création, exclut `ARCHIVED` des listes publiques, peut passer une question `ACTIVE` à `PINNED`, et trie les `PINNED` devant.
 
-En mode `memory` (défaut), le store est `JsonFaqQuestionStore`. En mode `postgres`, le store actif est `InMemoryFaqQuestionStore` : liste en RAM. Aucune table Flyway `faq_questions` n’est identifiée dans le canon. Le site compagnon `dartchainReview` a une table `faq_questions` ; il n’est pas la source de ce diagramme.
+En mode `memory` (défaut), le store est `JsonFaqQuestionStore`. En mode `postgres`, le store actif est `InMemoryFaqQuestionStore` : liste en RAM. Aucune table Flyway `faq_questions` n’est identifiée dans le canon. Le site compagnon `R4V3chainReview` a une table `faq_questions` ; il n’est pas la source de ce diagramme.
 
 ### Wallet serveur et route morte
 
@@ -122,11 +122,11 @@ En mode `memory` (défaut), le store est `JsonFaqQuestionStore`. En mode `postgr
 
 ## Correspondance avec le code
 
-- Chaîne : `application.yaml` clés `dartchain.chain.*`, classe `ChainProperties`.
+- Chaîne : `application.yaml` clés `r4v3chain.chain.*`, classe `ChainProperties`.
 - Garde-fous produit : `ProductFeatureService.requireServerWalletCreate`, `requireLegacyPrivateKey`, `requireFaucet`.
-- Mot de passe : `AuthService.validatePassword`, propriété `dartchain.auth.password-min-length`.
+- Mot de passe : `AuthService.validatePassword`, propriété `r4v3chain.auth.password-min-length`.
 - Rôles : `UserRole.isAtLeast`. Autorités Spring construites par `AuthenticatedUser` : `"ROLE_" + role.name()`, donc `ROLE_USER` et `ROLE_ADMIN`.
-- FAQ : enum `FaqQuestionStatus`, service `CommunityFaqService`, stores conditionnés par `dartchain.persistence.mode`.
+- FAQ : enum `FaqQuestionStatus`, service `CommunityFaqService`, stores conditionnés par `r4v3chain.persistence.mode`.
 - Wallet : `WalletController`, `WalletV1Controller`, constante `ApiRoutes.WALLETS_CREATE_CLIENT` et `WALLETS_GENERATE_EVM_V1`.
 
 ## Hypothèses
@@ -138,7 +138,7 @@ En mode `memory` (défaut), le store est `JsonFaqQuestionStore`. En mode `postgr
 ## Anomalies détectées
 
 1. `POST /api/wallets/create` est autorisé par la sécurité et listé au rate limit, sans mapping de contrôleur.
-2. `network-name` Java par défaut `R4V3 Testnet` contre YAML `DartChain Native`.
+2. `network-name` Java par défaut `R4V3 Testnet` contre YAML `R4V3chain Native`.
 3. FAQ en postgres = RAM (`InMemoryFaqQuestionStore`), pas une table.
 4. Unlock admin par seed, distinct de `ROLE_ADMIN`.
 5. `requireFaucet()` n’honore pas le booléen `faucet-enabled`.
